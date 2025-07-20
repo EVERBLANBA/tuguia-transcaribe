@@ -422,18 +422,31 @@
       return paraderoMasCercano;
     }
     
-    // Función para verificar ruta directa
+    // Función para obtener todas las rutas de un paradero
+    function obtenerTodasLasRutas(paradero) {
+      if (paradero.rutas) {
+        // Si ya existe el campo rutas, úsalo
+        return Array.isArray(paradero.rutas)
+          ? paradero.rutas.map(r => r.trim())
+          : String(paradero.rutas).split(',').map(r => r.trim());
+      }
+      // Si no, une todos los campos de rutas
+      return [
+        ...(paradero.rutas_troncales || []),
+        ...(paradero.rutas_pretroncales || []),
+        ...(paradero.rutas_alimentadoras || []),
+        ...(paradero.rutas_complementarias || [])
+      ].map(r => r.trim());
+    }
+    
+    // Modifica la función verificarRutaDirecta para usar obtenerTodasLasRutas
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
       console.log('🔍 === VERIFICANDO RUTA DIRECTA ===');
       console.log('📍 Paradero Origen:', paraderoOrigen);
       console.log('🎯 Paradero Destino:', paraderoDestino);
-      // Convertir rutas de string a array si es necesario
-      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
-        paraderoOrigen.rutas.split(',').map(r => r.trim()).filter(Boolean) : 
-        (Array.isArray(paraderoOrigen.rutas) ? paraderoOrigen.rutas : []);
-      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
-        paraderoDestino.rutas.split(',').map(r => r.trim()).filter(Boolean) : 
-        (Array.isArray(paraderoDestino.rutas) ? paraderoDestino.rutas : []);
+      // Unifica todas las rutas posibles
+      const rutasOrigen = obtenerTodasLasRutas(paraderoOrigen);
+      const rutasDestino = obtenerTodasLasRutas(paraderoDestino);
       console.log('🚌 Rutas Origen (procesadas):', rutasOrigen);
       console.log('🚌 Rutas Destino (procesadas):', rutasDestino);
       // Buscar intersección
@@ -663,7 +676,7 @@
             <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${puntoPartida}</span>
           </div>
           <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-            <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
+            <span style='font-size:1.2em;'>��</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
           </div>
           <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
             <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
