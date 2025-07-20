@@ -521,7 +521,9 @@
                 lon: lon
               },
               ruta1: rutaDesdeOrigen.ruta,
+              rutas1: rutaDesdeOrigen.todas,
               ruta2: rutaHastaDestino.ruta,
+              rutas2: rutaHastaDestino.todas,
               score: score
             };
           }
@@ -607,7 +609,9 @@
         // Buscar transbordo
         const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
-          let mensaje = `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`;
+          let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? `las rutas ${transbordo.rutas1.join(', ')}` : `la ruta ${transbordo.ruta1}`;
+          let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? `las rutas ${transbordo.rutas2.join(', ')}` : `la ruta ${transbordo.ruta2}`;
+          let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}.`;
           if (endMode !== 'paradero') {
             mensaje += ` Desde allí, desplázate a pie ${Math.round(distanciaAPie)} metros para llegar a ${destinoNombreFiltrado}.`;
           }
@@ -617,12 +621,14 @@
             paraderoDestino: paraderoDestino,
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
+            rutas1: transbordo.rutas1,
             ruta2: transbordo.ruta2,
+            rutas2: transbordo.rutas2,
             mensaje: mensaje,
             pasos: [
-              { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
+              { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
               { accion: 'transbordar', en: transbordo.paraderoTransbordo },
-              { accion: 'tomar', ruta: transbordo.ruta2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
+              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
             ]
           };
         } else {
