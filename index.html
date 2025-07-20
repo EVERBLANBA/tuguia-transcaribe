@@ -2550,6 +2550,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -2923,6 +2925,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
