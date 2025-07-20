@@ -2633,6 +2633,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           endDireccionInput.value = direccionCorta;
           endSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.endMarker) map.removeLayer(window.endMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/447/447031.png', iconSize: [32,32], iconAnchor: [16,32] })
