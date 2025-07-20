@@ -210,12 +210,12 @@
           width: 100%;
           max-width: 420px;
           margin: 24px auto 0 auto; /* arriba, auto, abajo, auto */
-          display: block;
+          
         }
        
         #info-ruta {
           max-height: 350px; /* Ajusta el valor según tu preferencia */
-          overflow-y: auto;
+          
         }
     </style>
 </head>
@@ -1246,7 +1246,7 @@
           } catch(e) {}
         }
         let paraderosHtml = '<b><span style="color:#006400">Paraderos más cercanos a tu destino:</span></b>' + (chipDestino ? `<div>${chipDestino}</div>` : '') + '<ul id="lista-paraderos-destino"></ul>';
-        document.getElementById('info-ruta').innerHTML = paraderosHtml;
+        document.getElementById('info-paraderos').innerHTML += paraderosHtml;
         if (paraderosDestino.length === 0) {
           document.getElementById('lista-paraderos-destino').innerHTML = '<li>No hay paraderos de Transcaribe cercanos a tu destino. Prueba ampliando el radio de búsqueda o selecciona otro destino.</li>';
         } else {
