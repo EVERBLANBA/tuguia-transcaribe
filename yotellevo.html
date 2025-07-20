@@ -583,7 +583,16 @@
       function normalizarTexto(str) {
         return String(str).toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '').trim();
       }
-      const destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal);
+      let destinoNombreFiltrado = '';
+      if (typeof destinoNombreOriginal === 'string') {
+        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal);
+      } else if (destinoNombreOriginal && destinoNombreOriginal.nombre) {
+        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal.nombre);
+      } else if (destinoNombreOriginal && destinoNombreOriginal.display_name) {
+        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal.display_name);
+      } else {
+        destinoNombreFiltrado = '';
+      }
       const nombreParadero = normalizarTexto(paraderoDestino.nombre);
       const nombreDestino = normalizarTexto(destinoNombreFiltrado);
       // Calcular distancia a pie entre el paradero y el destino
