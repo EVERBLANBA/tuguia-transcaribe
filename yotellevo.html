@@ -405,6 +405,7 @@
           });
         }
         
+        // --- Restaurar paraderoMasCercano a su forma original ---
         if (distancia < distanciaMinima) {
           distanciaMinima = distancia;
           paraderoMasCercano = {
@@ -413,10 +414,6 @@
             lon: lon,
             distancia: distancia,
             rutas: paradero.properties.rutas || '',
-            rutas_troncales: paradero.properties.rutas_troncales || [],
-            rutas_pretroncales: paradero.properties.rutas_pretroncales || [],
-            rutas_alimentadoras: paradero.properties.rutas_alimentadoras || [],
-            rutas_complementarias: paradero.properties.rutas_complementarias || [],
             tipos_ruta: paradero.properties.tipos_ruta || ''
           };
         }
@@ -428,19 +425,21 @@
     
     // Función para obtener todas las rutas de un paradero
     function obtenerTodasLasRutas(paradero) {
+      // Unifica todos los campos de rutas si existen, si no, usa rutas
+      let todas = [];
+      if (paradero.rutas_troncales) todas = todas.concat(paradero.rutas_troncales);
+      if (paradero.rutas_pretroncales) todas = todas.concat(paradero.rutas_pretroncales);
+      if (paradero.rutas_alimentadoras) todas = todas.concat(paradero.rutas_alimentadoras);
+      if (paradero.rutas_complementarias) todas = todas.concat(paradero.rutas_complementarias);
       if (paradero.rutas) {
-        // Si ya existe el campo rutas, úsalo
-        return Array.isArray(paradero.rutas)
-          ? paradero.rutas.map(r => r.trim())
-          : String(paradero.rutas).split(',').map(r => r.trim());
+        if (Array.isArray(paradero.rutas)) {
+          todas = todas.concat(paradero.rutas);
+        } else {
+          todas = todas.concat(String(paradero.rutas).split(',').map(r => r.trim()));
+        }
       }
-      // Si no, une todos los campos de rutas
-      return [
-        ...(paradero.rutas_troncales || []),
-        ...(paradero.rutas_pretroncales || []),
-        ...(paradero.rutas_alimentadoras || []),
-        ...(paradero.rutas_complementarias || [])
-      ].map(r => r.trim());
+      // Normaliza y elimina duplicados
+      return [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
     }
     
     // Modifica la función verificarRutaDirecta para usar obtenerTodasLasRutas
@@ -448,7 +447,7 @@
       console.log('🔍 === VERIFICANDO RUTA DIRECTA ===');
       console.log('📍 Paradero Origen:', paraderoOrigen);
       console.log('🎯 Paradero Destino:', paraderoDestino);
-      // Unifica todas las rutas posibles
+      // Unifica todas las rutas posibles SOLO para la comparación directa
       const rutasOrigen = obtenerTodasLasRutas(paraderoOrigen);
       const rutasDestino = obtenerTodasLasRutas(paraderoDestino);
       console.log('🚌 Rutas Origen (procesadas):', rutasOrigen);
