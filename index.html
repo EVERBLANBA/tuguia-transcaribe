@@ -1488,7 +1488,7 @@
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
     
-    <button class="map-selection-toggle" id="toggleMapSelection">��️ Mostrar selección en mapa (origen/destino)</button>
+    <button class="map-selection-toggle" id="toggleMapSelection"> Mostrar selección en mapa (origen/destino)</button>
     <div class="map-selection-controls" id="mapSelectionControls" style="display: none !important;">
         <h4>Selecciona en el mapa</h4>
         <div class="map-selection-buttons">
@@ -2324,7 +2324,7 @@
       paraderos.forEach(stop => {
         const marker = L.marker([stop.lat, stop.lon], {
           icon: L.icon({
-            iconUrl: 'BUS.jpeg',
+            iconUrl: 'bus-parking.png',
             iconSize: [32, 32],
             iconAnchor: [16, 32]
           })
@@ -2550,6 +2550,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -2631,6 +2633,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           endDireccionInput.value = direccionCorta;
           endSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.endMarker) map.removeLayer(window.endMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/447/447031.png', iconSize: [32,32], iconAnchor: [16,32] })
@@ -2923,6 +2927,8 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
+          // Guardar en localStorage el objeto con nombre y coords
+          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -3080,6 +3086,7 @@
       const endMode = document.querySelector('input[name="endMode"]:checked')?.value || 'direccion';
       let startValue = '';
       let endValue = '';
+
       // Procesar punto de partida según el modo
       if (startMode === 'ubicacion') {
         const startUbicacionInput = document.getElementById('startUbicacionInput');
@@ -3091,42 +3098,42 @@
           const parts = coordsStr.split(',').map(Number);
           if (parts.length === 2 && parts.every(Number.isFinite)) {
             coords = parts;
+            // Guardar en el formato correcto
+            startValue = JSON.stringify({
+              nombre: nombre || 'Mi ubicación actual',
+              coords: coords
+            });
           }
-        }
-        if (coords) {
-          startValue = JSON.stringify({ nombre, coords });
-        } else {
-          startValue = nombre;
         }
       } else if (startMode === 'direccion') {
         const startDireccionInput = document.getElementById('startDireccionInput');
-        startValue = startDireccionInput?.value || '';
+        const nombre = startDireccionInput?.value || '';
+        if (window.startMarker) {
+          const startLatLng = window.startMarker.getLatLng();
+          startValue = JSON.stringify({
+            nombre: nombre,
+            coords: [startLatLng.lat, startLatLng.lng]
+          });
+        }
       } else if (startMode === 'paradero') {
         const startParaderoSelect = document.getElementById('startParaderoSelect');
         const selectedOption = startParaderoSelect?.selectedOptions[0];
         if (selectedOption) {
           const paradero = JSON.parse(selectedOption.value);
           startValue = JSON.stringify(paradero);
-        } else {
-          startValue = '';
         }
       }
+
       // Procesar punto destino según el modo
       if (endMode === 'direccion') {
         const endDireccionInput = document.getElementById('endDireccionInput');
         const nombre = endDireccionInput?.value || '';
-        let endLS = localStorage.getItem('tuguia_end');
-        let isObjWithCoords = false;
-        try {
-          const obj = JSON.parse(endLS);
-          if (obj && Array.isArray(obj.coords) && obj.coords.length === 2 && obj.coords.every(Number.isFinite)) {
-            isObjWithCoords = true;
-          }
-        } catch (e) {}
-        if (isObjWithCoords) {
-          endValue = endLS;
-        } else {
-          endValue = nombre;
+        if (window.endMarker) {
+          const endLatLng = window.endMarker.getLatLng();
+          endValue = JSON.stringify({
+            nombre: nombre,
+            coords: [endLatLng.lat, endLatLng.lng]
+          });
         }
       } else if (endMode === 'paradero') {
         const endParaderoSelect = document.getElementById('endParaderoSelect');
@@ -3134,26 +3141,16 @@
         if (selectedOption) {
           const paradero = JSON.parse(selectedOption.value);
           endValue = JSON.stringify(paradero);
-        } else {
-          endValue = '';
         }
       }
-      // Si tenemos marcadores en el mapa, usar sus coordenadas
-      if (window.startMarker && !startValue) {
-        const startLatLng = window.startMarker.getLatLng();
-        startValue = `${startLatLng.lat}, ${startLatLng.lng}`;
-      }
-      if (window.endMarker && !endValue) {
-        const endLatLng = window.endMarker.getLatLng();
-        endValue = `${endLatLng.lat}, ${endLatLng.lng}`;
-      }
+
       // Guardar en localStorage
-      localStorage.setItem('tuguia_start', startValue);
-      localStorage.setItem('tuguia_end', endValue);
       if (startValue) {
+        localStorage.setItem('tuguia_start', startValue);
         localStorage.setItem('tuguia_start_mode', startMode);
       }
       if (endValue) {
+        localStorage.setItem('tuguia_end', endValue);
         localStorage.setItem('tuguia_end_mode', endMode);
       }
     }
