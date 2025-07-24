@@ -989,6 +989,9 @@
             const startData = localStorage.getItem('tuguia_start') || '';
             let ubicacionUsuario;
 
+            console.log('📍 Modo de inicio:', startMode);
+            console.log('📍 Datos de inicio:', startData);
+
             if (startMode === 'ubicacion' || !startMode) {
                 // Usar GPS si el modo es ubicación en tiempo real
                 ubicacionUsuario = await obtenerUbicacionGPS();
@@ -996,22 +999,57 @@
                     console.error('❌ No se pudo obtener ubicación GPS');
                     return;
                 }
+                console.log('📍 Usando ubicación GPS:', ubicacionUsuario);
             } else {
                 // Usar coordenadas guardadas para dirección o paradero
                 try {
                     const datos = typeof startData === 'string' ? JSON.parse(startData) : startData;
-                    if (!datos || !datos.coords) {
-                        console.error('❌ Datos de punto de partida inválidos');
+                    console.log('📍 Datos parseados:', datos);
+                    
+                    if (!datos) {
+                        console.error('❌ Datos de punto de partida nulos');
                         return;
                     }
-                    ubicacionUsuario = {
-                        lat: datos.coords[0],
-                        lng: datos.coords[1]
-                    };
+
+                    // Manejar diferentes formatos de coordenadas
+                    if (Array.isArray(datos.coords)) {
+                        ubicacionUsuario = {
+                            lat: datos.coords[0],
+                            lng: datos.coords[1]
+                        };
+                    } else if (datos.lat && datos.lng) {
+                        ubicacionUsuario = {
+                            lat: datos.lat,
+                            lng: datos.lng
+                        };
+                    } else if (datos.latitude && datos.longitude) {
+                        ubicacionUsuario = {
+                            lat: datos.latitude,
+                            lng: datos.longitude
+                        };
+                    } else {
+                        console.error('❌ Formato de coordenadas inválido:', datos);
+                        return;
+                    }
+                    
+                    console.log('📍 Usando coordenadas guardadas:', ubicacionUsuario);
                 } catch (e) {
                     console.error('❌ Error al procesar datos de punto de partida:', e);
                     return;
                 }
+            }
+            
+            // Validar que tenemos coordenadas válidas
+            if (!ubicacionUsuario || typeof ubicacionUsuario.lat !== 'number' || typeof ubicacionUsuario.lng !== 'number') {
+                console.error('❌ Coordenadas de usuario inválidas:', ubicacionUsuario);
+                return;
+            }
+
+            // Validar coordenadas de destino
+            if (!Array.isArray(destinoCoords) || destinoCoords.length !== 2 || 
+                typeof destinoCoords[0] !== 'number' || typeof destinoCoords[1] !== 'number') {
+                console.error('❌ Coordenadas de destino inválidas:', destinoCoords);
+                return;
             }
             
             // 2. Encontrar paradero más cercano automáticamente
@@ -1046,6 +1084,7 @@
             
         } catch (error) {
             console.error('❌ Error en navegación inteligente:', error);
+            document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> ' + error.message + '</div>';
         }
     }
 
@@ -1058,6 +1097,12 @@
         
         console.log('🔍 Buscando paradero más cercano a:', punto);
         
+        // Validar que el punto tenga coordenadas válidas
+        if (!punto || typeof punto.lat !== 'number' || typeof punto.lng !== 'number') {
+            console.error('❌ Punto no tiene coordenadas válidas:', punto);
+            return null;
+        }
+
         let paraderoMasCercano = null;
         let distanciaMinima = Infinity;
         
@@ -1069,28 +1114,21 @@
             f.properties.network === "Transcaribe"
         );
         
+        console.log('🚌 Paraderos Transcaribe encontrados:', paraderosTranscaribe.length);
+        
         paraderosTranscaribe.forEach((paradero, index) => {
             const coords = paradero.geometry.coordinates;
             const lat = coords[1];
             const lon = coords[0];
             
-            // Asegurarse de que punto.lat y punto.lng existan
-            const puntoLat = punto.lat || punto.latitude || (punto.coords ? punto.coords.latitude : null);
-            const puntoLng = punto.lng || punto.longitude || (punto.coords ? punto.coords.longitude : null);
-            
-            if (!puntoLat || !puntoLng) {
-                console.error('❌ Punto no tiene coordenadas válidas:', punto);
-                return;
-            }
-            
             const distancia = haversine(
-                puntoLat, puntoLng,
+                punto.lat, punto.lng,
                 lat, lon
             );
             
             if (index === 0) {
                 console.log('🔍 Ejemplo de cálculo de distancia:', {
-                    punto: [puntoLat, puntoLng],
+                    punto: [punto.lat, punto.lng],
                     paradero: [lat, lon],
                     distancia: distancia
                 });
@@ -1110,10 +1148,9 @@
         });
         
         if (paraderoMasCercano) {
-            console.log('✅ Paradero más cercano encontrado:', {
-                nombre: paraderoMasCercano.nombre,
-                distancia: paraderoMasCercano.distancia
-            });
+            console.log('✅ Paradero más cercano encontrado:', paraderoMasCercano);
+        } else {
+            console.error('❌ No se encontró ningún paradero cercano');
         }
         
         return paraderoMasCercano;
