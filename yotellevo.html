@@ -1438,7 +1438,10 @@ function detenerAlarmaProximidad() {
         try {
           const obj = JSON.parse(str);
           if (obj && Array.isArray(obj.coords)) return obj.coords;
-        } catch (e) {}
+          if (obj && obj.lat && obj.lng) return [obj.lat, obj.lng];
+        } catch (e) {
+          console.log('Error parseando coordenadas:', e);
+        }
         let match = str.match(/(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
         if (match) return [parseFloat(match[1]), parseFloat(match[2])];
         return null;
@@ -1450,16 +1453,18 @@ function detenerAlarmaProximidad() {
 
       if (!startCoords || !endCoords) {
         console.warn('🟣 [INIT] Faltan coordenadas de inicio o fin. No se puede mostrar el panel.');
+        document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudieron obtener las coordenadas de inicio o destino. Por favor, regresa y selecciona los puntos nuevamente.</div>';
         return;
       }
 
       try {
-        // Simula el flujo de navegación inteligente
-        console.log('🟣 [INIT] Llamando a iniciarNavegacionInteligente con:', endCoords);
+        // Iniciar navegación inteligente con ambas coordenadas
+        console.log('🟣 [INIT] Llamando a iniciarNavegacionInteligente con:', { startCoords, endCoords });
         await iniciarNavegacionInteligente(endCoords);
         console.log('🟣 [INIT] Panel Tu Guía Inteligente debería mostrarse si todo fue bien.');
       } catch (error) {
         console.error('🟣 [INIT] Error al intentar mostrar el panel:', error);
+        document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudo iniciar la navegación inteligente. Por favor, intenta nuevamente.</div>';
       }
     });
     </script>

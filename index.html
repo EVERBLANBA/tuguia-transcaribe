@@ -2324,7 +2324,7 @@
       paraderos.forEach(stop => {
         const marker = L.marker([stop.lat, stop.lon], {
           icon: L.icon({
-            iconUrl: 'bus-stop.png',
+            iconUrl: 'bus-parking.png',
             iconSize: [32, 32],
             iconAnchor: [16, 32]
           })
@@ -3086,6 +3086,7 @@
       const endMode = document.querySelector('input[name="endMode"]:checked')?.value || 'direccion';
       let startValue = '';
       let endValue = '';
+
       // Procesar punto de partida según el modo
       if (startMode === 'ubicacion') {
         const startUbicacionInput = document.getElementById('startUbicacionInput');
@@ -3099,10 +3100,37 @@
             coords = parts;
           }
         }
+        // SIEMPRE guardar como objeto con nombre y coords
         if (coords) {
           startValue = JSON.stringify({ nombre, coords });
+        } else if (window.startMarker) {
+          // Si no hay coords en localStorage pero hay marcador, usar esas coords
+          const startLatLng = window.startMarker.getLatLng();
+          startValue = JSON.stringify({
+            nombre,
+            coords: [startLatLng.lat, startLatLng.lng]
+          });
         } else {
-          startValue = nombre;
+          // Si no hay coords ni marcador, intentar obtener la ubicación actual
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              startValue = JSON.stringify({
+                nombre: 'Mi ubicación actual',
+                coords: [pos.coords.latitude, pos.coords.longitude]
+              });
+              localStorage.setItem('tuguia_start', startValue);
+              localStorage.setItem('tuguia_start_mode', startMode);
+            },
+            (err) => {
+              console.error('Error obteniendo ubicación:', err);
+              startValue = JSON.stringify({
+                nombre: 'Ubicación no disponible',
+                coords: null
+              });
+              localStorage.setItem('tuguia_start', startValue);
+              localStorage.setItem('tuguia_start_mode', startMode);
+            }
+          );
         }
       } else if (startMode === 'direccion') {
         const startDireccionInput = document.getElementById('startDireccionInput');
@@ -3117,6 +3145,7 @@
           startValue = '';
         }
       }
+
       // Procesar punto destino según el modo
       if (endMode === 'direccion') {
         const endDireccionInput = document.getElementById('endDireccionInput');
@@ -3131,8 +3160,18 @@
         } catch (e) {}
         if (isObjWithCoords) {
           endValue = endLS;
+        } else if (window.endMarker) {
+          // Si no hay coords en localStorage pero hay marcador, usar esas coords
+          const endLatLng = window.endMarker.getLatLng();
+          endValue = JSON.stringify({
+            nombre,
+            coords: [endLatLng.lat, endLatLng.lng]
+          });
         } else {
-          endValue = nombre;
+          endValue = JSON.stringify({
+            nombre,
+            coords: null
+          });
         }
       } else if (endMode === 'paradero') {
         const endParaderoSelect = document.getElementById('endParaderoSelect');
@@ -3144,22 +3183,30 @@
           endValue = '';
         }
       }
-      // Si tenemos marcadores en el mapa, usar sus coordenadas
+
+      // Si tenemos marcadores en el mapa y no hay valores, usar sus coordenadas
       if (window.startMarker && !startValue) {
         const startLatLng = window.startMarker.getLatLng();
-        startValue = `${startLatLng.lat}, ${startLatLng.lng}`;
+        startValue = JSON.stringify({
+          nombre: 'Punto seleccionado en mapa',
+          coords: [startLatLng.lat, startLatLng.lng]
+        });
       }
       if (window.endMarker && !endValue) {
         const endLatLng = window.endMarker.getLatLng();
-        endValue = `${endLatLng.lat}, ${endLatLng.lng}`;
+        endValue = JSON.stringify({
+          nombre: 'Punto seleccionado en mapa',
+          coords: [endLatLng.lat, endLatLng.lng]
+        });
       }
+
       // Guardar en localStorage
-      localStorage.setItem('tuguia_start', startValue);
-      localStorage.setItem('tuguia_end', endValue);
       if (startValue) {
+        localStorage.setItem('tuguia_start', startValue);
         localStorage.setItem('tuguia_start_mode', startMode);
       }
       if (endValue) {
+        localStorage.setItem('tuguia_end', endValue);
         localStorage.setItem('tuguia_end_mode', endMode);
       }
     }
