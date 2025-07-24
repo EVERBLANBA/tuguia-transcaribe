@@ -552,101 +552,150 @@
     
     // Función para calcular ruta óptima
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
+      console.log('🎯 Iniciando calcularRutaOptima con:', {
+        paraderoOrigen,
+        destinoCoords
+      });
+
       if (!destinoCoords) {
         console.error('❌ No hay coordenadas de destino');
         return null;
       }
 
-      // Obtener el modo de destino de localStorage
+      // Obtener el modo de destino y datos
       const endMode = localStorage.getItem('tuguia_end_mode') || '';
-      console.log('🔍 Modo de destino:', endMode);
+      const endData = localStorage.getItem('tuguia_end') || '';
+      console.log('🔍 Datos del destino:', {
+        endMode,
+        endData,
+        rawEndData: localStorage.getItem('tuguia_end')
+      });
+
+      // Extraer nombre del destino
+      let nombreDestino = '';
+      try {
+        if (endData) {
+          console.log('🔍 Intentando extraer nombre del destino de:', endData);
+          const datos = JSON.parse(endData);
+          console.log('🔍 Datos parseados:', datos);
+          
+          if (datos.nombre) {
+            nombreDestino = datos.nombre;
+            console.log('✅ Nombre extraído de datos.nombre:', nombreDestino);
+          } else if (datos.display_name) {
+            console.log('🔍 Intentando extraer de display_name:', datos.display_name);
+            const partes = datos.display_name.split(',');
+            nombreDestino = partes[0].trim();
+            console.log('🔍 Primera parte:', nombreDestino);
+            
+            if (nombreDestino.match(/^(Calle|Carrera|Cra\.|Cra|Cl\.|Cl|Av\.|Avenida)/i)) {
+              console.log('🔍 Parece una dirección, buscando barrio...');
+              for (let parte of partes) {
+                parte = parte.trim();
+                console.log('🔍 Analizando parte:', parte);
+                if (!parte.match(/^(Calle|Carrera|Cra\.|Cra|Cl\.|Cl|Av\.|Avenida)/i) &&
+                    !parte.match(/^(Cartagena|Colombia|Bolívar)/i)) {
+                  nombreDestino = parte;
+                  console.log('✅ Encontrado posible barrio:', nombreDestino);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('⚠️ Error extrayendo nombre del destino:', e);
+      }
+
+      console.log('🏁 Nombre final del destino:', nombreDestino);
+
+      // Si no se pudo extraer un nombre, usar un valor por defecto
+      if (!nombreDestino) {
+        nombreDestino = endMode === 'paradero' ? 'paradero seleccionado' : 'destino';
+        console.log('ℹ️ Usando nombre por defecto:', nombreDestino);
+      }
 
       // Buscar paradero más cercano al destino
+      console.log('🔍 Buscando paradero cercano al destino...');
       const paraderoDestino = await encontrarParaderoMasCercano({
         lat: destinoCoords[0],
         lng: destinoCoords[1]
       });
+      
+      console.log('🚏 Paradero destino encontrado:', paraderoDestino);
+
       if (!paraderoDestino) {
         console.error('❌ No se encontró paradero cercano al destino');
         return null;
       }
+
       // Verificar si hay ruta directa
+      console.log('🔍 Verificando ruta directa entre paraderos:', {
+        origen: paraderoOrigen.nombre,
+        destino: paraderoDestino.nombre
+      });
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       console.log('🟢 Resultado de verificarRutaDirecta:', rutaDirecta);
-      // Obtener el nombre filtrado del destino para la comparación
-      let destinoNombreOriginal = (typeof end === 'string') ? end : (paraderoDestino.nombre || '');
-      // --- CORRECCIÓN CLAVE ---
-      // Si destinoNombreOriginal es un JSON, extraer solo el campo 'nombre' si existe
-      try {
-        if (typeof destinoNombreOriginal === 'string' && destinoNombreOriginal.trim().startsWith('{')) {
-          const obj = JSON.parse(destinoNombreOriginal);
-          if (obj && obj.nombre) {
-            destinoNombreOriginal = obj.nombre;
-          } else if (obj && obj.display_name) {
-            destinoNombreOriginal = obj.display_name;
-          } else {
-            destinoNombreOriginal = '';
-          }
-        }
-      } catch (e) {
-        // Si falla el parseo, dejar el valor como está
-      }
-      // Asegura que destinoNombreOriginal sea un string legible
-      if (typeof destinoNombreOriginal === 'object' && destinoNombreOriginal !== null) {
-        if (destinoNombreOriginal.nombre) {
-          destinoNombreOriginal = destinoNombreOriginal.nombre;
-        } else if (destinoNombreOriginal.display_name) {
-          destinoNombreOriginal = destinoNombreOriginal.display_name;
-        } else {
-          destinoNombreOriginal = '';
-        }
-      }
-      // Normaliza nombres para comparación robusta
-      function normalizarTexto(str) {
-        return String(str).toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '').trim();
-      }
-      let destinoNombreFiltrado = '';
-      if (typeof destinoNombreOriginal === 'string') {
-        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal);
-      } else if (destinoNombreOriginal && destinoNombreOriginal.nombre) {
-        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal.nombre);
-      } else if (destinoNombreOriginal && destinoNombreOriginal.display_name) {
-        destinoNombreFiltrado = limpiarDireccionParaMostrar(destinoNombreOriginal.display_name);
-      } else {
-        destinoNombreFiltrado = '';
-      }
-      const nombreParadero = normalizarTexto(paraderoDestino.nombre);
-      const nombreDestino = normalizarTexto(destinoNombreFiltrado);
-      // Calcular distancia a pie entre el paradero y el destino
-      let distanciaAPie = await obtenerDistanciaCaminando([paraderoDestino.lat, paraderoDestino.lon], destinoCoords);
-      // --- AJUSTE CLAVE ---
-      // Si el destino es una dirección escrita, siempre mostrar la caminata final
+
+      // Calcular distancia a pie
+      console.log('🚶 Calculando distancia a pie al destino...');
+      let distanciaAPie = await obtenerDistanciaCaminando(
+        [paraderoDestino.lat, paraderoDestino.lon],
+        destinoCoords
+      );
+      console.log('📏 Distancia a pie calculada:', distanciaAPie);
+
+      let resultado;
       if (rutaDirecta && rutaDirecta.todas && rutaDirecta.todas.length > 0) {
-        let rutasTexto = rutaDirecta.todas.length === 1 ? `la ruta ${rutaDirecta.todas[0]}` : `las rutas ${rutaDirecta.todas.join(', ')}`;
-        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`;
+        console.log('✅ Generando instrucciones para ruta directa');
+        let rutasTexto = rutaDirecta.todas.length === 1 ? 
+          `la ruta ${rutaDirecta.todas[0]}` : 
+          `las rutas ${rutaDirecta.todas.join(', ')}`;
+
+        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}`;
+        
         if (endMode !== 'paradero') {
-          // Siempre mostrar caminata si el destino es dirección escrita, sin importar la distancia ni coincidencia de nombres
-          mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${destinoNombreFiltrado}.`;
+          mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
         }
-        return {
+        mensaje += '.';
+
+        resultado = {
           tipo: 'directa',
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.todas,
           mensaje: mensaje,
-          pasos: rutaDirecta.todas.map(ruta => ({ accion: 'tomar', ruta: ruta, desde: paraderoOrigen, hasta: paraderoDestino }))
+          pasos: rutaDirecta.todas.map(ruta => ({ 
+            accion: 'tomar', 
+            ruta: ruta, 
+            desde: paraderoOrigen, 
+            hasta: paraderoDestino 
+          }))
         };
       } else {
-        // Buscar transbordo
+        console.log('🔄 Buscando ruta con transbordo...');
         const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
+        console.log('🔄 Resultado de búsqueda de transbordo:', transbordo);
+
         if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
-          let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? `las rutas ${transbordo.rutas1.join(', ')}` : `la ruta ${transbordo.ruta1}`;
-          let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? `las rutas ${transbordo.rutas2.join(', ')}` : `la ruta ${transbordo.ruta2}`;
-          let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}.`;
+          console.log('✅ Generando instrucciones para ruta con transbordo');
+          let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? 
+            `las rutas ${transbordo.rutas1.join(', ')}` : 
+            `la ruta ${transbordo.ruta1}`;
+          
+          let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? 
+            `las rutas ${transbordo.rutas2.join(', ')}` : 
+            `la ruta ${transbordo.ruta2}`;
+
+          let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. ` +
+                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}`;
+
           if (endMode !== 'paradero') {
-            mensaje += ` Desde allí, desplázate a pie ${Math.round(distanciaAPie)} metros para llegar a ${destinoNombreFiltrado}.`;
+            mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
           }
-          return {
+          mensaje += '.';
+
+          resultado = {
             tipo: 'con_transbordo',
             paraderoOrigen: paraderoOrigen,
             paraderoDestino: paraderoDestino,
@@ -663,17 +712,19 @@
             ]
           };
         } else {
-          // Si no hay ruta directa ni transbordo válido, mostrar advertencia
-          const mensaje = 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.';
-          return {
+          console.log('❌ No se encontró ruta directa ni con transbordo');
+          resultado = {
             tipo: 'sin_ruta',
             paraderoOrigen: paraderoOrigen,
             paraderoDestino: paraderoDestino,
-            mensaje: mensaje,
+            mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
             pasos: []
           };
         }
       }
+
+      console.log('🏁 Resultado final de calcularRutaOptima:', resultado);
+      return resultado;
     }
     
     // Función para mostrar instrucciones inteligentes
@@ -1473,23 +1524,19 @@ function detenerAlarmaProximidad() {
       let end = localStorage.getItem('tuguia_end') || '';
       let startMode = localStorage.getItem('tuguia_start_mode') || '';
       let endMode = localStorage.getItem('tuguia_end_mode') || '';
-      let startCoords = localStorage.getItem('tuguia_start_coords') || '';
       
-      console.log('🟣 [INIT] Datos localStorage:', { start, end, startMode, endMode, startCoords });
+      console.log('🟣 [INIT] Datos iniciales:', {
+        start,
+        end,
+        startMode,
+        endMode,
+        rawStart: localStorage.getItem('tuguia_start'),
+        rawEnd: localStorage.getItem('tuguia_end')
+      });
 
       // Extraer coordenadas del punto de inicio
       let startLatLng = null;
-      if (startCoords) {
-        const parts = startCoords.split(',').map(Number);
-        if (parts.length === 2 && parts.every(Number.isFinite)) {
-          startLatLng = {
-            lat: parts[0],
-            lng: parts[1]
-          };
-        }
-      }
-      
-      if (!startLatLng && start) {
+      if (start) {
         try {
           const startData = JSON.parse(start);
           if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
@@ -1497,9 +1544,10 @@ function detenerAlarmaProximidad() {
               lat: startData.coords[0],
               lng: startData.coords[1]
             };
+            console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
           }
         } catch (e) {
-          console.warn('⚠️ Error parsing start data:', e);
+          console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
         }
       }
 
@@ -1513,9 +1561,10 @@ function detenerAlarmaProximidad() {
               lat: endData.coords[0],
               lng: endData.coords[1]
             };
+            console.log('✅ Coordenadas de destino extraídas:', endLatLng);
           }
         } catch (e) {
-          console.warn('⚠️ Error parsing end data:', e);
+          console.warn('⚠️ Error extrayendo coordenadas de destino:', e);
         }
       }
 
@@ -1530,7 +1579,7 @@ function detenerAlarmaProximidad() {
       try {
         console.log('🟣 [INIT] Iniciando navegación inteligente con:', { startLatLng, endLatLng });
         
-        // Guardar coordenadas de inicio en localStorage para que iniciarNavegacionInteligente las use
+        // Guardar coordenadas de inicio en localStorage
         localStorage.setItem('tuguia_start_coords', [startLatLng.lat, startLatLng.lng].join(','));
         
         // Iniciar navegación con las coordenadas del destino
