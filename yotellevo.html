@@ -1504,6 +1504,30 @@ window.addEventListener('DOMContentLoaded', async function() {
     console.error('🟣 [INIT] Error al intentar mostrar el panel:', error);
     document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudo iniciar la navegación inteligente. Por favor, intenta nuevamente.</div>';
   }
+
+  // Inicializar mapas de paraderos cercanos a punto de partida y destino
+  try {
+    // Mapa de origen
+    const mapaOrigenDiv = document.getElementById('mapa-origen');
+    if (mapaOrigenDiv) {
+      window.mapaOrigen = L.map('mapa-origen').setView([10.42312, -75.54802], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(window.mapaOrigen);
+    }
+    // Mapa de destino
+    const mapaDestinoDiv = document.getElementById('mapa-destino');
+    if (mapaDestinoDiv) {
+      window.mapaDestino = L.map('mapa-destino').setView([10.42312, -75.54802], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(window.mapaDestino);
+    }
+  } catch (e) {
+    console.error('❌ Error inicializando los mapas de paraderos:', e);
+  }
 });
   </script>
 </body>
