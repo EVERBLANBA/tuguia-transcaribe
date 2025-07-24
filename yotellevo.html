@@ -1389,7 +1389,7 @@ function mostrarAlertaProximidad() {
     }
   }, 100);
 
-  // Notificación del sistema (opcional, no bloquea la alarma/vibración)
+  // Notificación del sistema (opcional)
   if (window.Notification && Notification.permission === 'granted') {
     new Notification('¡Faltan menos de 300 metros!', {
       body: 'Prepárate para descender en tu destino.',
@@ -1414,363 +1414,97 @@ function detenerAlarmaProximidad() {
   }
   if (navigator.vibrate) navigator.vibrate(0); // Detener vibración
 }
-    </script>
-    <script>
-    // Script adicional para asegurar que los mapas se carguen correctamente
-    document.addEventListener('DOMContentLoaded', function() {
-      // Verificar que los contenedores de mapas existan
-      const mapaOrigen = document.getElementById('mapa-origen');
-      const mapaDestino = document.getElementById('mapa-destino');
-      
-      if (mapaOrigen) {
-        console.log('✅ Contenedor mapa-origen encontrado');
-      } else {
-        console.error('❌ Contenedor mapa-origen no encontrado');
-      }
-      
-      if (mapaDestino) {
-        console.log('✅ Contenedor mapa-destino encontrado');
-      } else {
-        console.error('❌ Contenedor mapa-destino no encontrado');
-      }
-      
-      // Verificar que Leaflet esté disponible
-      if (typeof L !== 'undefined') {
-        console.log('✅ Leaflet cargado correctamente');
-      } else {
-        console.error('❌ Leaflet no está disponible');
-      }
-    });
-    
-    // Función para forzar el redibujado de mapas
-    function redibujarMapas() {
-      const mapaOrigen = document.getElementById('mapa-origen');
-      const mapaDestino = document.getElementById('mapa-destino');
-      
-      if (mapaOrigen && mapaOrigen._leaflet_map) {
-        mapaOrigen._leaflet_map.invalidateSize();
-        console.log('🔄 Mapa de origen redibujado');
-      }
-      
-      if (mapaDestino && mapaDestino._leaflet_map) {
-        mapaDestino._leaflet_map.invalidateSize();
-        console.log('🔄 Mapa de destino redibujado');
-      }
-    }
-    
-    // Redibujar mapas cuando la ventana cambie de tamaño
-    window.addEventListener('resize', redibujarMapas);
-    
-    // Redibujar mapas después de que la página se cargue completamente
-    window.addEventListener('load', function() {
-      setTimeout(redibujarMapas, 1000);
-    });
-    </script>
-    <script>
-    // --- FUNCIONES UTILITARIAS GLOBALES ---
-    function limpiarDireccionParaMostrar(displayName) {
-      if (!displayName) return '';
-      const partes = displayName.split(',').map(s => s.trim());
-      const irrelevantes = [
-        'Cartagena de Indias',
-        'Cartagena',
-        'Bolivar',
-        'Bolívar',
-        '130003',
-        'Dique',
-        'Tierra Bomba',
-        '130018',
-        '130010',
-        '130001',
-        'Colombia',
-        'Provincia',
-        'Provincia de Cartagena'
-      ];
-      let partesFiltradas = partes.filter(parte => {
-        const p = parte.toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '');
-        return !irrelevantes.includes(parte) && !irrelevantes.includes(p);
-      });
-      // Elimina duplicados consecutivos
-      partesFiltradas = partesFiltradas.filter((parte, idx, arr) => idx === 0 || parte !== arr[idx-1]);
-      // Si al filtrar queda vacío, mostrar al menos el primer fragmento original
-      if (partesFiltradas.length === 0 && partes.length > 0) {
-        return partes[0];
-      }
-      return partesFiltradas.join(', ');
-    }
-    // ... el resto del código JS ...
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-      console.log('🟣 [INIT] DOMContentLoaded en yotellevo.html');
-      
-      // Esperar a que los datos de paraderos se carguen
-      if (!window.rutasTranscaribe || window.rutasTranscaribe.length === 0) {
-        console.log('🔄 Esperando datos de paraderos...');
-        try {
-          const response = await fetch('rutas_transcaribe.geojson');
-          const data = await response.json();
-          window.rutasTranscaribe = data.features;
-          console.log('✅ Datos de paraderos cargados:', window.rutasTranscaribe.length);
-        } catch (error) {
-          console.error('❌ Error cargando datos de paraderos:', error);
-          document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudieron cargar los datos de paraderos. Por favor, recarga la página.</div>';
-          return;
-        }
-      }
 
-      // Obtener datos de localStorage
-      let start = localStorage.getItem('tuguia_start') || '';
-      let end = localStorage.getItem('tuguia_end') || '';
-      let startMode = localStorage.getItem('tuguia_start_mode') || '';
-      let endMode = localStorage.getItem('tuguia_end_mode') || '';
-      
-      console.log('🟣 [INIT] Datos iniciales:', {
-        start,
-        end,
-        startMode,
-        endMode,
-        rawStart: localStorage.getItem('tuguia_start'),
-        rawEnd: localStorage.getItem('tuguia_end')
-      });
-
-      // Extraer coordenadas del punto de inicio
-      let startLatLng = null;
-      if (start) {
-        try {
-          const startData = JSON.parse(start);
-          if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
-            startLatLng = {
-              lat: startData.coords[0],
-              lng: startData.coords[1]
-            };
-            console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
-          }
-        } catch (e) {
-          console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
-        }
-      }
-
-      // Extraer coordenadas del punto final
-      let endLatLng = null;
-      if (end) {
-        try {
-          const endData = JSON.parse(end);
-          if (endData.coords && Array.isArray(endData.coords) && endData.coords.length === 2) {
-            endLatLng = {
-              lat: endData.coords[0],
-              lng: endData.coords[1]
-            };
-            console.log('✅ Coordenadas de destino extraídas:', endLatLng);
-          }
-        } catch (e) {
-          console.warn('⚠️ Error extrayendo coordenadas de destino:', e);
-        }
-      }
-
-      console.log('🟣 [INIT] Coordenadas extraídas:', { startLatLng, endLatLng });
-
-      if (!startLatLng || !endLatLng) {
-        console.warn('🟣 [INIT] Faltan coordenadas de inicio o fin. No se puede mostrar el panel.');
-        document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudieron obtener las coordenadas de inicio o destino. Por favor, regresa y selecciona los puntos nuevamente.</div>';
-        return;
-      }
-
-      try {
-        console.log('🟣 [INIT] Iniciando navegación inteligente con:', { startLatLng, endLatLng });
-        
-        // Guardar coordenadas de inicio en localStorage
-        localStorage.setItem('tuguia_start_coords', [startLatLng.lat, startLatLng.lng].join(','));
-        
-        // Iniciar navegación con las coordenadas del destino
-        await iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
-        console.log('🟣 [INIT] Panel Tu Guía Inteligente debería mostrarse si todo fue bien.');
-      } catch (error) {
-        console.error('🟣 [INIT] Error al intentar mostrar el panel:', error);
-        document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudo iniciar la navegación inteligente. Por favor, intenta nuevamente.</div>';
-      }
-    });
-    </script>
-    <script>
-    // === LÓGICA OPTIMIZADA DE RUTA MÁS CORTA ===
-    async function calcularRutaOptimaTotalmenteOptima(startCoords, endCoords, paraderos) {
-      let paraderosOrigen = paraderos.map(f => {
-        let dist = haversine(startCoords[0], startCoords[1], f.lat, f.lon);
-        return { ...f, dist };
-      }).sort((a, b) => a.dist - b.dist).slice(0, 3);
-      let paraderosDestino = paraderos.map(f => {
-        let dist = haversine(endCoords[0], endCoords[1], f.lat, f.lon);
-        return { ...f, dist };
-      }).sort((a, b) => a.dist - b.dist).slice(0, 3);
-      let mejorOpcion = null;
-      let mejorScore = Infinity;
-      for (let origen of paraderosOrigen) {
-        for (let destino of paraderosDestino) {
-          let caminataInicio = origen.dist;
-          let caminataFin = destino.dist;
-          let rutasComunes = origen.rutas.filter(r => destino.rutas.includes(r));
-          let rutasBus = [];
-          let tipo = '';
-          if (rutasComunes.length > 0) {
-            rutasBus = [rutasComunes[0]];
-            tipo = 'directa';
-          } else {
-            for (let intermedio of paraderos) {
-              if (intermedio === origen || intermedio === destino) continue;
-              let rutas1 = origen.rutas.filter(r => intermedio.rutas.includes(r));
-              let rutas2 = destino.rutas.filter(r => intermedio.rutas.includes(r));
-              if (rutas1.length > 0 && rutas2.length > 0) {
-                let score =
-                  caminataInicio +
-                  haversine(origen.lat, origen.lon, intermedio.lat, intermedio.lon) +
-                  haversine(intermedio.lat, intermedio.lon, destino.lat, destino.lon) +
-                  caminataFin;
-                if (score < mejorScore) {
-                  mejorScore = score;
-                  mejorOpcion = {
-                    tipo: 'transbordo',
-                    origen,
-                    destino,
-                    intermedio,
-                    rutasBus: [rutas1[0], rutas2[0]],
-                    caminataInicio,
-                    caminataFin,
-                    score
-                  };
-                }
-              }
-            }
-          }
-          if (tipo === 'directa') {
-            let score = caminataInicio + caminataFin;
-            if (score < mejorScore) {
-              mejorScore = score;
-              mejorOpcion = {
-                tipo: 'directa',
-                origen,
-                destino,
-                rutasBus,
-                caminataInicio,
-                caminataFin,
-                score
-              };
-            }
-          }
-        }
-      }
-      return mejorOpcion;
-    }
-    // === FIN LÓGICA OPTIMIZADA ===
-
-    // ... dentro de procesarInformacion, después de filtrar/mapear paraderos ...
-    const mejorRuta = await calcularRutaOptimaTotalmenteOptima(startCoords, endCoords, paraderos);
-    if (mejorRuta) {
-      let leyenda = '';
-      if (mejorRuta.tipo === 'directa') {
-        leyenda = `Toma la ruta <b>${mejorRuta.rutasBus[0]}</b> en <b>${mejorRuta.origen.nombre}</b> hasta <b>${mejorRuta.destino.nombre}</b>.`;
-      } else if (mejorRuta.tipo === 'transbordo') {
-        leyenda = `Toma la ruta <b>${mejorRuta.rutasBus[0]}</b> en <b>${mejorRuta.origen.nombre}</b> hasta <b>${mejorRuta.intermedio.nombre}</b>. Allí cambia a la ruta <b>${mejorRuta.rutasBus[1]}</b> hasta <b>${mejorRuta.destino.nombre}</b>.`;
-      }
-      if (endMode !== 'paradero') {
-        leyenda += `<br>Al llegar a <b>${mejorRuta.destino.nombre}</b>, desplácese a pie <b>${Math.round(mejorRuta.caminataFin)} metros</b> para llegar a su destino.`;
-      }
-      document.getElementById('info-ruta').innerHTML = `<div style='background:#e6ffe6;border-left:5px solid #1ca12d;padding:1em;margin-bottom:1em;'>${leyenda}</div>`;
+// Inicializar la aplicación cuando el DOM esté listo
+window.addEventListener('DOMContentLoaded', async function() {
+  console.log('🟣 [INIT] DOMContentLoaded en yotellevo.html');
+  
+  // Esperar a que los datos de paraderos se carguen
+  if (!window.rutasTranscaribe || window.rutasTranscaribe.length === 0) {
+    console.log('🔄 Esperando datos de paraderos...');
+    try {
+      const response = await fetch('rutas_transcaribe.geojson');
+      const data = await response.json();
+      window.rutasTranscaribe = data.features;
+      console.log('✅ Datos de paraderos cargados:', window.rutasTranscaribe.length);
+    } catch (error) {
+      console.error('❌ Error cargando datos de paraderos:', error);
+      document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudieron cargar los datos de paraderos. Por favor, recarga la página.</div>';
       return;
     }
-    // ... continuar con la lógica anterior si no hay mejorRuta ...
-    </script>
-    <script>
-    // ... después de await crearMapasParaderos(paraderosOrigen, paraderosDestino); ...
-    // === DIBUJAR RECORRIDO EN BUS SOBRE LA RED DE TRANSCARIBE ===
-    if (paraderosOrigen && paraderosOrigen.length > 0 && paraderosDestino && paraderosDestino.length > 0) {
-      // Tomar el paradero más cercano de origen y destino
-      const paraderoOrigenSeleccionado = paraderosOrigen[0];
-      const paraderoDestinoSeleccionado = paraderosDestino[0];
-      // Buscar la ruta oficial más cercana entre los paraderos
-      if (typeof encontrarRutaOficialMasCercana === 'function') {
-        const rutaOficial = encontrarRutaOficialMasCercana(
-          [paraderoOrigenSeleccionado.lat, paraderoOrigenSeleccionado.lon],
-          [paraderoDestinoSeleccionado.lat, paraderoDestinoSeleccionado.lon]
-        );
-        if (rutaOficial && rutaOficial.geometry && rutaOficial.geometry.coordinates) {
-          // Dibujar la polilínea sobre la red de Transcaribe
-          const coords = rutaOficial.geometry.coordinates.map(c => [c[1], c[0]]); // [lat, lng]
-          if (typeof map !== 'undefined') {
-            L.polyline(coords, { color: '#ff6600', weight: 6, opacity: 0.8 }).addTo(map);
-          } else if (typeof mapaPrincipal !== 'undefined') {
-            L.polyline(coords, { color: '#ff6600', weight: 6, opacity: 0.8 }).addTo(mapaPrincipal);
-          }
-        }
-      }
-    }
-    // ...
-    </script>
-    <script>
-    // === UTILIDAD PARA ENCONTRAR RUTA OFICIAL DE TRANSCARIBE ===
-    function distanciaPuntoLinea(punto, linea) {
-      // punto: [lat, lng], linea: array de [lng, lat]
-      let minDist = Infinity;
-      for (let i = 0; i < linea.length; i++) {
-        const d = L.latLng(punto[0], punto[1]).distanceTo(L.latLng(linea[i][1], linea[i][0]));
-        if (d < minDist) minDist = d;
-      }
-      return minDist;
-    }
-
-    function encontrarRutaOficialMasCercana(origen, destino) {
-      // origen/destino: [lat, lng]
-      if (!window.rutasTranscaribe) return null;
-      let mejorRuta = null;
-      let mejorScore = Infinity;
-      let mejorSegmento = null;
-      window.rutasTranscaribe.forEach(ruta => {
-        const coords = ruta.geometry.coordinates;
-        // Buscar el punto más cercano al origen
-        let minDistOrigen = Infinity, idxOrigen = 0;
-        for (let i = 0; i < coords.length; i++) {
-          const d = L.latLng(origen[0], origen[1]).distanceTo(L.latLng(coords[i][1], coords[i][0]));
-          if (d < minDistOrigen) { minDistOrigen = d; idxOrigen = i; }
-        }
-        // Buscar el punto más cercano al destino
-        let minDistDestino = Infinity, idxDestino = 0;
-        for (let i = 0; i < coords.length; i++) {
-          const d = L.latLng(destino[0], destino[1]).distanceTo(L.latLng(coords[i][1], coords[i][0]));
-          if (d < minDistDestino) { minDistDestino = d; idxDestino = i; }
-        }
-        const score = minDistOrigen + minDistDestino;
-        if (score < mejorScore) {
-          mejorScore = score;
-          mejorRuta = ruta;
-          // Extraer el segmento entre idxOrigen y idxDestino
-          if (idxOrigen < idxDestino) {
-            mejorSegmento = coords.slice(idxOrigen, idxDestino + 1);
-          } else {
-            mejorSegmento = coords.slice(idxDestino, idxOrigen + 1).reverse();
-          }
-        }
-      });
-      return mejorRuta && mejorSegmento ? { ruta: mejorRuta, segmento: mejorSegmento } : null;
-    }
-    // === FIN UTILIDAD ===
-    </script>
-    <script>
-    // =================== ACTIVAR NAVEGACIÓN INTELIGENTE ===================
-    console.log('🧠 Activando navegación inteligente automáticamente...');
-    
-    // Verificar si tenemos coordenadas de destino válidas
-    if (endCoords && Array.isArray(endCoords) && endCoords.length === 2) {
-      console.log('✅ Coordenadas de destino válidas, iniciando navegación inteligente...');
-      
-      // Iniciar navegación inteligente automáticamente
-      iniciarNavegacionInteligente(endCoords);
-    } else {
-      console.log('❌ No hay coordenadas de destino válidas para navegación inteligente');
-      document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudo obtener las coordenadas de destino. Por favor, selecciona un destino válido.</div>';
-    }
-    
-  } catch (error) {
-    document.getElementById('info-paraderos').innerHTML = '<b>Error procesando la información:</b> ' + error.message;
   }
-</script>
+
+  // Obtener datos de localStorage
+  let start = localStorage.getItem('tuguia_start') || '';
+  let end = localStorage.getItem('tuguia_end') || '';
+  let startMode = localStorage.getItem('tuguia_start_mode') || '';
+  let endMode = localStorage.getItem('tuguia_end_mode') || '';
+  
+  console.log('🟣 [INIT] Datos iniciales:', {
+    start,
+    end,
+    startMode,
+    endMode,
+    rawStart: localStorage.getItem('tuguia_start'),
+    rawEnd: localStorage.getItem('tuguia_end')
+  });
+
+  // Extraer coordenadas del punto de inicio
+  let startLatLng = null;
+  if (start) {
+    try {
+      const startData = JSON.parse(start);
+      if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
+        startLatLng = {
+          lat: startData.coords[0],
+          lng: startData.coords[1]
+        };
+        console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
+      }
+    } catch (e) {
+      console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
+    }
+  }
+
+  // Extraer coordenadas del punto final
+  let endLatLng = null;
+  if (end) {
+    try {
+      const endData = JSON.parse(end);
+      if (endData.coords && Array.isArray(endData.coords) && endData.coords.length === 2) {
+        endLatLng = {
+          lat: endData.coords[0],
+          lng: endData.coords[1]
+        };
+        console.log('✅ Coordenadas de destino extraídas:', endLatLng);
+      }
+    } catch (e) {
+      console.warn('⚠️ Error extrayendo coordenadas de destino:', e);
+    }
+  }
+
+  console.log('🟣 [INIT] Coordenadas extraídas:', { startLatLng, endLatLng });
+
+  if (!startLatLng || !endLatLng) {
+    console.warn('🟣 [INIT] Faltan coordenadas de inicio o fin. No se puede mostrar el panel.');
+    document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudieron obtener las coordenadas de inicio o destino. Por favor, regresa y selecciona los puntos nuevamente.</div>';
+    return;
+  }
+
+  try {
+    console.log('🟣 [INIT] Iniciando navegación inteligente con:', { startLatLng, endLatLng });
+    
+    // Guardar coordenadas de inicio en localStorage
+    localStorage.setItem('tuguia_start_coords', [startLatLng.lat, startLatLng.lng].join(','));
+    
+    // Iniciar navegación con las coordenadas del destino
+    await iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
+    console.log('🟣 [INIT] Panel Tu Guía Inteligente debería mostrarse si todo fue bien.');
+  } catch (error) {
+    console.error('🟣 [INIT] Error al intentar mostrar el panel:', error);
+    document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudo iniciar la navegación inteligente. Por favor, intenta nuevamente.</div>';
+  }
+});
+  </script>
 </body>
 </html> 
