@@ -369,64 +369,63 @@
     
     // Función para encontrar paradero más cercano
     async function encontrarParaderoMasCercano(ubicacionUsuario) {
-      if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
-        console.error('❌ No hay datos de paraderos disponibles');
-        return null;
-      }
-      
-      console.log('🔍 === BUSCANDO PARADERO MÁS CERCANO ===');
-      console.log('📍 Ubicación usuario:', ubicacionUsuario);
-      console.log('📊 Total de features en GeoJSON:', window.rutasTranscaribe.length);
-      
-      let paraderoMasCercano = null;
-      let distanciaMinima = Infinity;
-      
-      // Filtrar solo paraderos Transcaribe
-      const paraderosTranscaribe = window.rutasTranscaribe.filter(f => 
-        f.geometry && 
-        f.geometry.type === "Point" && 
-        f.properties && 
-        f.properties.network === "Transcaribe"
-      );
-      
-      console.log('🚌 Paraderos Transcaribe encontrados:', paraderosTranscaribe.length);
-      
-      paraderosTranscaribe.forEach((paradero, index) => {
-        const coords = paradero.geometry.coordinates;
-        const lat = coords[1];
-        const lon = coords[0];
+        if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
+            console.error('❌ No hay datos de paraderos disponibles');
+            return null;
+        }
         
-        const distancia = haversine(
-          ubicacionUsuario.lat, ubicacionUsuario.lng,
-          lat, lon
+        console.log('🔍 === BUSCANDO PARADERO MÁS CERCANO ===');
+        console.log('📍 Ubicación usuario:', ubicacionUsuario);
+        console.log('📊 Total de features en GeoJSON:', window.rutasTranscaribe.length);
+        
+        let paraderoMasCercano = null;
+        let distanciaMinima = Infinity;
+        
+        // Filtrar solo paraderos Transcaribe
+        const paraderosTranscaribe = window.rutasTranscaribe.filter(f => 
+            f.geometry && 
+            f.geometry.type === "Point" && 
+            f.properties && 
+            f.properties.network === "Transcaribe"
         );
         
-        // Log del primer paradero para debugging
-        if (index === 0) {
-          console.log('🔍 Ejemplo de paradero:', {
-            nombre: paradero.properties.nombre_paradero,
-            rutas: paradero.properties.rutas,
-            network: paradero.properties.network,
-            distancia: distancia
-          });
-        }
+        console.log('🚌 Paraderos Transcaribe encontrados:', paraderosTranscaribe.length);
         
-        // --- Restaurar paraderoMasCercano a su forma original ---
-        if (distancia < distanciaMinima) {
-          distanciaMinima = distancia;
-          paraderoMasCercano = {
-            nombre: paradero.properties.nombre_paradero || 'Paradero',
-            lat: lat,
-            lon: lon,
-            distancia: distancia,
-            rutas: paradero.properties.rutas || '',
-            tipos_ruta: paradero.properties.tipos_ruta || ''
-          };
-        }
-      });
-      
-      console.log('📍 Paradero más cercano encontrado:', paraderoMasCercano);
-      return paraderoMasCercano;
+        paraderosTranscaribe.forEach((paradero, index) => {
+            const coords = paradero.geometry.coordinates;
+            const lat = coords[1];
+            const lon = coords[0];
+            
+            const distancia = haversine(
+                ubicacionUsuario.lat, ubicacionUsuario.lng,
+                lat, lon
+            );
+            
+            // Log del primer paradero para debugging
+            if (index === 0) {
+                console.log('🔍 Ejemplo de paradero:', {
+                    nombre: paradero.properties.nombre_paradero,
+                    rutas: paradero.properties.rutas,
+                    network: paradero.properties.network,
+                    distancia: distancia
+                });
+            }
+            
+            if (distancia < distanciaMinima) {
+                distanciaMinima = distancia;
+                paraderoMasCercano = {
+                    nombre: paradero.properties.nombre_paradero || 'Paradero',
+                    lat: lat,
+                    lon: lon,
+                    distancia: distancia,
+                    rutas: paradero.properties.rutas || '',
+                    tipos_ruta: paradero.properties.tipos_ruta || ''
+                };
+            }
+        });
+        
+        console.log('📍 Paradero más cercano encontrado:', paraderoMasCercano);
+        return paraderoMasCercano;
     }
     
     // Función para obtener todas las rutas de un paradero
@@ -988,7 +987,7 @@
             // Obtener modo y punto de partida
             const startMode = localStorage.getItem('tuguia_start_mode') || '';
             const startData = localStorage.getItem('tuguia_start') || '';
-            let puntoPartida;
+            let ubicacionUsuario;
 
             console.log('📍 Modo de inicio:', startMode);
             console.log('📍 Datos de inicio:', startData);
@@ -996,12 +995,11 @@
             // Determinar punto de partida según el modo
             if (startMode === 'ubicacion' || !startMode) {
                 // Usar GPS si el modo es ubicación en tiempo real o no hay modo definido
-                puntoPartida = await obtenerUbicacionGPS();
-                if (!puntoPartida) {
+                ubicacionUsuario = await obtenerUbicacionGPS();
+                if (!ubicacionUsuario) {
                     console.error('❌ No se pudo obtener ubicación GPS');
                     return;
                 }
-                console.log('📍 Usando ubicación GPS:', puntoPartida);
             } else {
                 try {
                     // Usar datos guardados en localStorage
@@ -1010,20 +1008,20 @@
                         console.error('❌ Datos de punto de partida inválidos');
                         return;
                     }
-                    puntoPartida = {
+                    ubicacionUsuario = {
                         lat: datos.coords[0],
-                        lng: datos.coords[1],
-                        nombre: datos.nombre || ''
+                        lng: datos.coords[1]
                     };
-                    console.log('📍 Usando punto guardado:', puntoPartida);
                 } catch (e) {
                     console.error('❌ Error al procesar datos de punto de partida:', e);
                     return;
                 }
             }
 
-            // 2. Encontrar paradero más cercano automáticamente usando el punto correcto
-            const paraderoCercano = await encontrarParaderoMasCercano(puntoPartida);
+            console.log('📍 Ubicación a usar:', ubicacionUsuario);
+            
+            // 2. Encontrar paradero más cercano automáticamente
+            const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
             if (!paraderoCercano) {
                 console.error('❌ No se encontró paradero cercano');
                 return;
@@ -1050,7 +1048,7 @@
             }
             
             // 4. Mostrar instrucciones inteligentes
-            mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida);
+            mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario);
             
         } catch (error) {
             console.error('❌ Error en navegación inteligente:', error);
