@@ -1691,6 +1691,67 @@ window.addEventListener('DOMContentLoaded', async function() {
         return `<li style="${liStyle}"><b>${p.nombre}</b> (${p.dist.toFixed(0)} m) <br>Rutas: ${(Array.isArray(p.rutas) && p.rutas.length ? p.rutas.join(', ') : 'Sin rutas')}</li>`;
       }).join('') + '</ul>';
     }
+    // === NUEVO: Paraderos cercanos al destino ===
+    let paraderosDestino = paraderos.map(f => {
+      let dist = haversine(endCoords[0], endCoords[1], f.lat, f.lon);
+      let rutas = Array.isArray(f.rutas) ? f.rutas : [];
+      let nombreInfo = procesarNombreParadero(f.nombre);
+      if (rutas.length === 0 && nombreInfo.ruta) rutas = [nombreInfo.ruta];
+      return {
+        nombre: nombreInfo.nombreParadero,
+        ruta: nombreInfo.ruta,
+        dist,
+        rutas,
+        lat: f.lat,
+        lon: f.lon,
+        id: f.id
+      };
+    })
+    .filter(p => p.dist >= 50)
+    .filter(p => p.dist <= 500)
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, 3);
+    if (paraderosDestino.length === 0) {
+      paraderosDestino = paraderos
+        .map(f => {
+          let dist = haversine(endCoords[0], endCoords[1], f.lat, f.lon);
+          let rutas = Array.isArray(f.rutas) ? f.rutas : [];
+          let nombreInfo = procesarNombreParadero(f.nombre);
+          if (rutas.length === 0 && nombreInfo.ruta) rutas = [nombreInfo.ruta];
+          return {
+            nombre: nombreInfo.nombreParadero,
+            ruta: nombreInfo.ruta,
+            dist,
+            rutas,
+            lat: f.lat,
+            lon: f.lon,
+            id: f.id
+          };
+        })
+        .filter(p => p.dist >= 50)
+        .sort((a, b) => a.dist - b.dist)
+        .slice(0, 3);
+    }
+    let chipDestino = '';
+    if (end && endMode === 'paradero') {
+      try {
+        const obj = typeof end === 'string' ? JSON.parse(end) : end;
+        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 Paradero: ${obj.nombre}</span>`;
+      } catch(e) {}
+    } else if (end) {
+      try {
+        const obj = typeof end === 'string' ? JSON.parse(end) : end;
+        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 ${obj.nombre}</span>`;
+      } catch(e) {}
+    }
+    if (paraderosDestino.length === 0) {
+      html += '<b style="display:block;margin-top:2em;">No hay paraderos de Transcaribe cercanos a tu punto destino.</b><br>Puedes considerar ampliar el radio de búsqueda o seleccionar otro destino.';
+    } else {
+      html += '<b style="display:block;margin-top:2em;">Paraderos cercanos a tu punto destino:</b>' + (chipDestino ? `<div>${chipDestino}</div>` : '') + '<ul>' + paraderosDestino.map((p, idx) => {
+        let liStyle = idx === 0 ? 'background:#e6ffe6;border-left:5px solid #1ca12d;padding:0.5em 0.5em 0.5em 1em;margin-bottom:0.5em;' : '';
+        return `<li style="${liStyle}"><b>${p.nombre}</b> (${p.dist.toFixed(0)} m) <br>Rutas: ${(Array.isArray(p.rutas) && p.rutas.length ? p.rutas.join(', ') : 'Sin rutas')}</li>`;
+      }).join('') + '</ul>';
+    }
     document.getElementById('info-paraderos').innerHTML = html;
   }
 
