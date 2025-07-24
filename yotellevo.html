@@ -313,6 +313,18 @@
     // Variables globales para alarma/vibración
     let alarmaFinalInterval = null;
     
+    // Cargar datos de paraderos al inicio
+    window.rutasTranscaribe = [];
+    fetch('rutas_transcaribe.geojson')
+        .then(response => response.json())
+        .then(data => {
+            console.log('✅ Datos de paraderos cargados:', data.features.length);
+            window.rutasTranscaribe = data.features;
+        })
+        .catch(error => {
+            console.error('❌ Error cargando datos de paraderos:', error);
+        });
+    
     // Utilidad para calcular distancia entre dos puntos (Haversine)
     function haversine(lat1, lon1, lat2, lon2) {
       const R = 6371000; // Radio de la Tierra en metros
@@ -990,23 +1002,8 @@
             let ubicacionUsuario;
 
             if (startMode === 'ubicacion' || !startMode) {
-                // Primero intentar usar coordenadas guardadas
-                const coordsStr = localStorage.getItem('tuguia_start_coords');
-                if (coordsStr) {
-                    const parts = coordsStr.split(',').map(Number);
-                    if (parts.length === 2 && parts.every(Number.isFinite)) {
-                        ubicacionUsuario = {
-                            lat: parts[0],
-                            lng: parts[1]
-                        };
-                    }
-                }
-                
-                // Si no hay coordenadas guardadas, usar GPS
-                if (!ubicacionUsuario) {
-                    ubicacionUsuario = await obtenerUbicacionGPS();
-                }
-                
+                // Usar GPS si el modo es ubicación en tiempo real
+                ubicacionUsuario = await obtenerUbicacionGPS();
                 if (!ubicacionUsuario) {
                     console.error('❌ No se pudo obtener ubicación GPS');
                     return;
@@ -1073,12 +1070,6 @@
         
         console.log('🔍 Buscando paradero más cercano a:', punto);
         
-        // Validar que el punto tenga coordenadas válidas
-        if (!punto || typeof punto.lat !== 'number' || typeof punto.lng !== 'number') {
-            console.error('❌ Punto no tiene coordenadas válidas:', punto);
-            return null;
-        }
-
         let paraderoMasCercano = null;
         let distanciaMinima = Infinity;
         
@@ -1090,21 +1081,28 @@
             f.properties.network === "Transcaribe"
         );
         
-        console.log('🚌 Paraderos Transcaribe encontrados:', paraderosTranscaribe.length);
-        
         paraderosTranscaribe.forEach((paradero, index) => {
             const coords = paradero.geometry.coordinates;
             const lat = coords[1];
             const lon = coords[0];
             
+            // Asegurarse de que punto.lat y punto.lng existan
+            const puntoLat = punto.lat || punto.latitude || (punto.coords ? punto.coords.latitude : null);
+            const puntoLng = punto.lng || punto.longitude || (punto.coords ? punto.coords.longitude : null);
+            
+            if (!puntoLat || !puntoLng) {
+                console.error('❌ Punto no tiene coordenadas válidas:', punto);
+                return;
+            }
+            
             const distancia = haversine(
-                punto.lat, punto.lng,
+                puntoLat, puntoLng,
                 lat, lon
             );
             
             if (index === 0) {
                 console.log('🔍 Ejemplo de cálculo de distancia:', {
-                    punto: [punto.lat, punto.lng],
+                    punto: [puntoLat, puntoLng],
                     paradero: [lat, lon],
                     distancia: distancia
                 });
@@ -1124,9 +1122,10 @@
         });
         
         if (paraderoMasCercano) {
-            console.log('✅ Paradero más cercano encontrado:', paraderoMasCercano);
-        } else {
-            console.error('❌ No se encontró ningún paradero cercano');
+            console.log('✅ Paradero más cercano encontrado:', {
+                nombre: paraderoMasCercano.nombre,
+                distancia: paraderoMasCercano.distancia
+            });
         }
         
         return paraderoMasCercano;
@@ -1440,6 +1439,23 @@ function detenerAlarmaProximidad() {
     <script>
     document.addEventListener('DOMContentLoaded', async function() {
       console.log('🟣 [INIT] DOMContentLoaded en yotellevo.html');
+      
+      // Esperar a que los datos de paraderos se carguen
+      if (!window.rutasTranscaribe || window.rutasTranscaribe.length === 0) {
+        console.log('🔄 Esperando datos de paraderos...');
+        try {
+          const response = await fetch('rutas_transcaribe.geojson');
+          const data = await response.json();
+          window.rutasTranscaribe = data.features;
+          console.log('✅ Datos de paraderos cargados:', window.rutasTranscaribe.length);
+        } catch (error) {
+          console.error('❌ Error cargando datos de paraderos:', error);
+          document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudieron cargar los datos de paraderos. Por favor, recarga la página.</div>';
+          return;
+        }
+      }
+
+      // Obtener datos de localStorage
       let start = localStorage.getItem('tuguia_start') || '';
       let end = localStorage.getItem('tuguia_end') || '';
       let startMode = localStorage.getItem('tuguia_start_mode') || '';
