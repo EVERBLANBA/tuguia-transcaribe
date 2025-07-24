@@ -556,6 +556,11 @@
         console.error('❌ No hay coordenadas de destino');
         return null;
       }
+
+      // Obtener el modo de destino de localStorage
+      const endMode = localStorage.getItem('tuguia_end_mode') || '';
+      console.log('🔍 Modo de destino:', endMode);
+
       // Buscar paradero más cercano al destino
       const paraderoDestino = await encontrarParaderoMasCercano({
         lat: destinoCoords[0],
@@ -598,7 +603,7 @@
       }
       // Normaliza nombres para comparación robusta
       function normalizarTexto(str) {
-        return String(str).toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '').trim();
+        return String(str).toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '').trim();
       }
       let destinoNombreFiltrado = '';
       if (typeof destinoNombreOriginal === 'string') {
@@ -999,33 +1004,60 @@
             // Obtener datos del punto de partida seleccionado
             const startMode = localStorage.getItem('tuguia_start_mode') || '';
             const startData = localStorage.getItem('tuguia_start') || '';
+            const startCoordsStr = localStorage.getItem('tuguia_start_coords') || '';
             let ubicacionUsuario;
 
-            if (startMode === 'ubicacion' || !startMode) {
-                // Usar GPS si el modo es ubicación en tiempo real
-                ubicacionUsuario = await obtenerUbicacionGPS();
-                if (!ubicacionUsuario) {
-                    console.error('❌ No se pudo obtener ubicación GPS');
-                    return;
-                }
-            } else {
-                // Usar coordenadas guardadas para dirección o paradero
-                try {
-                    const datos = typeof startData === 'string' ? JSON.parse(startData) : startData;
-                    if (!datos || !datos.coords) {
-                        console.error('❌ Datos de punto de partida inválidos');
-                        return;
-                    }
+            console.log('🧠 Datos de inicio:', { startMode, startData, startCoordsStr });
+
+            // Primero intentar usar coordenadas guardadas
+            if (startCoordsStr) {
+                const parts = startCoordsStr.split(',').map(Number);
+                if (parts.length === 2 && parts.every(Number.isFinite)) {
                     ubicacionUsuario = {
-                        lat: datos.coords[0],
-                        lng: datos.coords[1]
+                        lat: parts[0],
+                        lng: parts[1]
                     };
+                    console.log('✅ Usando coordenadas guardadas:', ubicacionUsuario);
+                }
+            }
+
+            // Si no hay coordenadas guardadas, intentar extraerlas del startData
+            if (!ubicacionUsuario && startData) {
+                try {
+                    const datos = JSON.parse(startData);
+                    if (datos && datos.coords && Array.isArray(datos.coords) && datos.coords.length === 2) {
+                        ubicacionUsuario = {
+                            lat: datos.coords[0],
+                            lng: datos.coords[1]
+                        };
+                        console.log('✅ Usando coordenadas de startData:', ubicacionUsuario);
+                    }
                 } catch (e) {
-                    console.error('❌ Error al procesar datos de punto de partida:', e);
+                    console.warn('⚠️ Error al procesar startData:', e);
+                }
+            }
+
+            // Solo usar GPS si el modo es ubicación y no tenemos coordenadas guardadas
+            if (!ubicacionUsuario && (startMode === 'ubicacion' || !startMode)) {
+                try {
+                    ubicacionUsuario = await obtenerUbicacionGPS();
+                    if (ubicacionUsuario) {
+                        console.log('✅ Usando coordenadas de GPS:', ubicacionUsuario);
+                        // Guardar las coordenadas GPS para futura referencia
+                        localStorage.setItem('tuguia_start_coords', [ubicacionUsuario.lat, ubicacionUsuario.lng].join(','));
+                    }
+                } catch (error) {
+                    console.error('❌ Error al obtener ubicación GPS:', error);
                     return;
                 }
             }
-            
+
+            if (!ubicacionUsuario) {
+                console.error('❌ No se pudo obtener ubicación de inicio');
+                document.getElementById('info-ruta').innerHTML = '<div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 1rem; color: #721c24;"><strong>❌ Error:</strong> No se pudo obtener la ubicación de inicio. Por favor, regresa y selecciona el punto de partida nuevamente.</div>';
+                return;
+            }
+
             // 2. Encontrar paradero más cercano automáticamente
             const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
             if (!paraderoCercano) {
@@ -1179,39 +1211,57 @@
     async function obtenerDistanciaCaminando(origen, destino) {
       const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
       const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
+      
       // Log de depuración
       console.log('[DISTANCIA CAMINANDO] Enviando a ORS:', {
-        origen, destino,
-        origenLonLat: [origen[1], origen[0]],
-        destinoLonLat: [destino[1], destino[0]]
+        origen: [origen[0], origen[1]],
+        destino: [destino[0], destino[1]]
       });
+
       const body = {
         coordinates: [
-          [origen[1], origen[0]], // [lon, lat]
+          [origen[1], origen[0]], // [lon, lat] para ORS
           [destino[1], destino[0]]
         ]
       };
+
       try {
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         console.log('[DISTANCIA CAMINANDO] Respuesta ORS:', data);
-        if (data && data.features && data.features[0]) {
+
+        if (data && data.features && data.features[0] && 
+            data.features[0].properties && 
+            data.features[0].properties.summary && 
+            typeof data.features[0].properties.summary.distance === 'number') {
           const distancia = data.features[0].properties.summary.distance;
-          if (typeof distancia === 'number' && distancia > 0) {
+          if (distancia > 0) {
+            console.log('[DISTANCIA CAMINANDO] Distancia calculada:', distancia);
             return distancia;
           }
         }
-        // Si la API responde mal, usar fallback
+
+        // Si la API responde pero no tiene la distancia esperada
         console.warn('[DISTANCIA CAMINANDO] ORS no devolvió distancia válida, usando haversine.');
-        return haversine(origen[0], origen[1], destino[0], destino[1]);
-      } catch (e) {
-        console.error('Error consultando ORS:', e);
+        const distanciaHaversine = haversine(origen[0], origen[1], destino[0], destino[1]);
+        console.log('[DISTANCIA CAMINANDO] Distancia haversine:', distanciaHaversine);
+        return distanciaHaversine;
+
+      } catch (error) {
+        console.error('[DISTANCIA CAMINANDO] Error consultando ORS:', error);
         // Fallback a haversine si hay error
-        return haversine(origen[0], origen[1], destino[0], destino[1]);
+        const distanciaHaversine = haversine(origen[0], origen[1], destino[0], destino[1]);
+        console.log('[DISTANCIA CAMINANDO] Distancia haversine (fallback):', distanciaHaversine);
+        return distanciaHaversine;
       }
     }
     </script>
@@ -1423,7 +1473,7 @@ function detenerAlarmaProximidad() {
         'Provincia de Cartagena'
       ];
       let partesFiltradas = partes.filter(parte => {
-        const p = parte.toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '');
+        const p = parte.toLowerCase().normalize('NFD').replace(/[0-\u036f]/g, '');
         return !irrelevantes.includes(parte) && !irrelevantes.includes(p);
       });
       // Elimina duplicados consecutivos
@@ -1460,47 +1510,68 @@ function detenerAlarmaProximidad() {
       let end = localStorage.getItem('tuguia_end') || '';
       let startMode = localStorage.getItem('tuguia_start_mode') || '';
       let endMode = localStorage.getItem('tuguia_end_mode') || '';
-      console.log('🟣 [INIT] Datos localStorage:', { start, end, startMode, endMode });
+      let startCoords = localStorage.getItem('tuguia_start_coords') || '';
+      
+      console.log('🟣 [INIT] Datos localStorage:', { start, end, startMode, endMode, startCoords });
 
-      function extraerCoords(str) {
-        if (!str) return null;
-        try {
-          const obj = JSON.parse(str);
-          if (obj && Array.isArray(obj.coords)) return obj.coords;
-          if (obj && obj.lat && obj.lng) return [obj.lat, obj.lng];
-        } catch (e) {
-          console.log('Error parseando coordenadas:', e);
+      // Extraer coordenadas del punto de inicio
+      let startLatLng = null;
+      if (startCoords) {
+        const parts = startCoords.split(',').map(Number);
+        if (parts.length === 2 && parts.every(Number.isFinite)) {
+          startLatLng = {
+            lat: parts[0],
+            lng: parts[1]
+          };
         }
-        let match = str.match(/(-?\d+\.\d+),\s*(-?\d+\.\d+)/);
-        if (match) return [parseFloat(match[1]), parseFloat(match[2])];
-        return null;
+      }
+      
+      if (!startLatLng && start) {
+        try {
+          const startData = JSON.parse(start);
+          if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
+            startLatLng = {
+              lat: startData.coords[0],
+              lng: startData.coords[1]
+            };
+          }
+        } catch (e) {
+          console.warn('⚠️ Error parsing start data:', e);
+        }
       }
 
-      let startCoords = extraerCoords(start);
-      let endCoords = extraerCoords(end);
-      console.log('🟣 [INIT] Coordenadas extraídas:', { startCoords, endCoords });
+      // Extraer coordenadas del punto final
+      let endLatLng = null;
+      if (end) {
+        try {
+          const endData = JSON.parse(end);
+          if (endData.coords && Array.isArray(endData.coords) && endData.coords.length === 2) {
+            endLatLng = {
+              lat: endData.coords[0],
+              lng: endData.coords[1]
+            };
+          }
+        } catch (e) {
+          console.warn('⚠️ Error parsing end data:', e);
+        }
+      }
 
-      if (!startCoords || !endCoords) {
+      console.log('🟣 [INIT] Coordenadas extraídas:', { startLatLng, endLatLng });
+
+      if (!startLatLng || !endLatLng) {
         console.warn('🟣 [INIT] Faltan coordenadas de inicio o fin. No se puede mostrar el panel.');
         document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudieron obtener las coordenadas de inicio o destino. Por favor, regresa y selecciona los puntos nuevamente.</div>';
         return;
       }
 
       try {
-        // Iniciar navegación inteligente con ambas coordenadas
-        console.log('🟣 [INIT] Llamando a iniciarNavegacionInteligente con:', { startCoords, endCoords });
+        console.log('🟣 [INIT] Iniciando navegación inteligente con:', { startLatLng, endLatLng });
         
-        // Crear objeto de ubicación inicial
-        const ubicacionInicial = {
-          lat: startCoords[0],
-          lng: startCoords[1]
-        };
+        // Guardar coordenadas de inicio en localStorage para que iniciarNavegacionInteligente las use
+        localStorage.setItem('tuguia_start_coords', [startLatLng.lat, startLatLng.lng].join(','));
         
-        // Guardar en localStorage para que iniciarNavegacionInteligente lo use
-        localStorage.setItem('tuguia_start_coords', startCoords.join(','));
-        
-        // Iniciar navegación
-        await iniciarNavegacionInteligente(endCoords);
+        // Iniciar navegación con las coordenadas del destino
+        await iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
         console.log('🟣 [INIT] Panel Tu Guía Inteligente debería mostrarse si todo fue bien.');
       } catch (error) {
         console.error('🟣 [INIT] Error al intentar mostrar el panel:', error);
