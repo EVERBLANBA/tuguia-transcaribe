@@ -984,25 +984,21 @@
         try {
             console.log('🧠 Iniciando navegación inteligente...');
             
-            // Obtener modo y punto de partida
+            // Obtener datos del punto de partida seleccionado
             const startMode = localStorage.getItem('tuguia_start_mode') || '';
             const startData = localStorage.getItem('tuguia_start') || '';
             let ubicacionUsuario;
 
-            console.log('📍 Modo de inicio:', startMode);
-            console.log('📍 Datos de inicio:', startData);
-
-            // Determinar punto de partida según el modo
             if (startMode === 'ubicacion' || !startMode) {
-                // Usar GPS si el modo es ubicación en tiempo real o no hay modo definido
+                // Usar GPS si el modo es ubicación en tiempo real
                 ubicacionUsuario = await obtenerUbicacionGPS();
                 if (!ubicacionUsuario) {
                     console.error('❌ No se pudo obtener ubicación GPS');
                     return;
                 }
             } else {
+                // Usar coordenadas guardadas para dirección o paradero
                 try {
-                    // Usar datos guardados en localStorage
                     const datos = typeof startData === 'string' ? JSON.parse(startData) : startData;
                     if (!datos || !datos.coords) {
                         console.error('❌ Datos de punto de partida inválidos');
@@ -1017,8 +1013,6 @@
                     return;
                 }
             }
-
-            console.log('📍 Ubicación a usar:', ubicacionUsuario);
             
             // 2. Encontrar paradero más cercano automáticamente
             const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
@@ -1123,6 +1117,47 @@
         }
         
         return paraderoMasCercano;
+    }
+
+    // Función para iniciar navegación con coordenadas personalizadas
+    async function iniciarNavegacionConCoordenadas(startCoords, endCoords) {
+        try {
+            console.log('🧠 Iniciando navegación con coordenadas personalizadas...');
+            
+            // Crear objeto de ubicación inicial
+            const ubicacionInicial = {
+                lat: startCoords[0],
+                lng: startCoords[1]
+            };
+            
+            // Encontrar paradero más cercano al punto de partida
+            const paraderoCercano = await encontrarParaderoMasCercano(ubicacionInicial);
+            if (!paraderoCercano) {
+                console.error('❌ No se encontró paradero cercano');
+                return;
+            }
+            
+            // Calcular ruta óptima
+            const rutaOptima = await calcularRutaOptima(paraderoCercano, endCoords);
+            if (!rutaOptima) {
+                console.error('❌ No se pudo calcular ruta óptima');
+                return;
+            }
+
+            // Configurar variables de transbordo
+            rutaActualTieneTransbordo = rutaOptima.tipo === 'con_transbordo';
+            if (rutaActualTieneTransbordo) {
+                paraderoTransbordoActual = rutaOptima.paraderoTransbordo;
+                seRealizoTransbordo = false;
+                distanciaTransbordoRegistrada = false;
+            }
+            
+            // Mostrar instrucciones
+            mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionInicial);
+            
+        } catch (error) {
+            console.error('❌ Error en navegación con coordenadas:', error);
+        }
     }
 
     // ... resto del código existente ...
@@ -1590,5 +1625,24 @@ function detenerAlarmaProximidad() {
     }
     // === FIN UTILIDAD ===
     </script>
+    <script>
+    // =================== ACTIVAR NAVEGACIÓN INTELIGENTE ===================
+    console.log('🧠 Activando navegación inteligente automáticamente...');
+    
+    // Verificar si tenemos coordenadas de destino válidas
+    if (endCoords && Array.isArray(endCoords) && endCoords.length === 2) {
+      console.log('✅ Coordenadas de destino válidas, iniciando navegación inteligente...');
+      
+      // Iniciar navegación inteligente automáticamente
+      iniciarNavegacionInteligente(endCoords);
+    } else {
+      console.log('❌ No hay coordenadas de destino válidas para navegación inteligente');
+      document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Navegación Inteligente:</strong> No se pudo obtener las coordenadas de destino. Por favor, selecciona un destino válido.</div>';
+    }
+    
+  } catch (error) {
+    document.getElementById('info-paraderos').innerHTML = '<b>Error procesando la información:</b> ' + error.message;
+  }
+</script>
 </body>
 </html> 
