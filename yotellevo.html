@@ -1557,32 +1557,6 @@ window.addEventListener('DOMContentLoaded', async function() {
         maxZoom: 19,
         attribution: '© OpenStreetMap contributors'
       }).addTo(window.mapaDestino);
-      async function dibujarRutaCaminando(mapa, origen, destino) {
-  const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
-  const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
-  const body = {
-    coordinates: [
-      [origen[1], origen[0]], // [lon, lat]
-      [destino[1], destino[0]]
-    ]
-  };
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!response.ok) throw new Error('Error consultando ORS');
-    const data = await response.json();
-    if (data && data.features && data.features[0] && data.features[0].geometry && data.features[0].geometry.coordinates) {
-      const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]); // [lat, lon]
-      L.polyline(coords, { color: '#1ca12d', weight: 5, opacity: 0.8, dashArray: '8,8' }).addTo(mapa);
-      mapa.fitBounds(coords, { padding: [30, 30] });
-    }
-  } catch (e) {
-    console.error('Error dibujando ruta caminando:', e);
-  }
-}
     }
   } catch (e) {
     console.error('❌ Error inicializando los mapas de paraderos:', e);
@@ -1795,52 +1769,4 @@ window.addEventListener('DOMContentLoaded', async function() {
     if (end && endMode === 'paradero') {
       try {
         const obj = typeof end === 'string' ? JSON.parse(end) : end;
-        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 Paradero: ${obj.nombre}</span>`;
-      } catch(e) {}
-    } else if (end) {
-      try {
-        const obj = typeof end === 'string' ? JSON.parse(end) : end;
-        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 ${obj.nombre}</span>`;
-      } catch(e) {}
-    }
-    if (paraderosDestino.length === 0) {
-      html += '<b style="display:block;margin-top:2em;">No hay paraderos de Transcaribe cercanos a tu punto destino.</b><br>Puedes considerar ampliar el radio de búsqueda o seleccionar otro destino.';
-    } else {
-      html += '<b style="display:block;margin-top:2em;">Paraderos cercanos a tu punto destino:</b>' + (chipDestino ? `<div>${chipDestino}</div>` : '') + '<ul>' + paraderosDestino.map((p, idx) => {
-        let liStyle = idx === 0 ? 'background:#e6ffe6;border-left:5px solid #1ca12d;padding:0.5em 0.5em 0.5em 1em;margin-bottom:0.5em;' : '';
-        return `<li style="${liStyle}"><b>${p.nombre}</b> (${p.dist.toFixed(0)} m) <br>Rutas: ${(Array.isArray(p.rutas) && p.rutas.length ? p.rutas.join(', ') : 'Sin rutas')}</li>`;
-      }).join('') + '</ul>';
-    }
-    if (window.mapaOrigen && paraderosOrigen.length > 0 && startCoords) {
-  // Limpiar capas previas
-  window.mapaOrigen.eachLayer(function(layer) {
-    if (layer instanceof L.Polyline || layer instanceof L.Marker) window.mapaOrigen.removeLayer(layer);
-  });
-  // Marcar punto de partida
-  L.marker([startCoords[0], startCoords[1]], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [32,32]})}).addTo(window.mapaOrigen);
-  // Marcar paradero más cercano
-  L.marker([paraderosOrigen[0].lat, paraderosOrigen[0].lon], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/190/190411.png', iconSize: [32,32]})}).addTo(window.mapaOrigen);
-  // Dibujar ruta caminando real
-  dibujarRutaCaminando(window.mapaOrigen, [startCoords[0], startCoords[1]], [paraderosOrigen[0].lat, paraderosOrigen[0].lon]);
-}
-
-if (window.mapaDestino && paraderosDestino.length > 0 && endCoords) {
-  // Limpiar capas previas
-  window.mapaDestino.eachLayer(function(layer) {
-    if (layer instanceof L.Polyline || layer instanceof L.Marker) window.mapaDestino.removeLayer(layer);
-  });
-  // Marcar punto destino
-  L.marker([endCoords[0], endCoords[1]], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [32,32]})}).addTo(window.mapaDestino);
-  // Marcar paradero más cercano
-  L.marker([paraderosDestino[0].lat, paraderosDestino[0].lon], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/190/190411.png', iconSize: [32,32]})}).addTo(window.mapaDestino);
-  // Dibujar ruta caminando real
-  dibujarRutaCaminando(window.mapaDestino, [paraderosDestino[0].lat, paraderosDestino[0].lon], [endCoords[0], endCoords[1]]);
-}
-    document.getElementById('info-paraderos').innerHTML = html;
-  }
-
-  procesarInformacion();
-});
-  </script>
-</body>
-</html> 
+        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 Paradero: ${obj.nombre}</span>`
