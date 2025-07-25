@@ -309,6 +309,7 @@
     let paraderoTransbordoActual = null;
     let seRealizoTransbordo = false;
     let distanciaTransbordoRegistrada = false;
+    let pasoPorDestinoAntesDeTransbordo = false; // <--- NUEVO
     
     // Variables globales para alarma/vibración
     let alarmaFinalInterval = null;
@@ -746,7 +747,7 @@
             <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
           </div>
           <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
-            <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento Inteligente
+            <span style='font-size:1.2em;'>🚀</span> Iniciar Guia Inteligente
           </button>
         </div>
       `;
@@ -809,7 +810,7 @@
             <div style="background: #007bff; height: 8px; border-radius: 4px; width: 0%; transition: width 0.3s;" id="barraProgreso"></div>
           </div>
           <button id="detenerSeguimientoBtn" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
-            ⏹️ Detener Seguimiento
+            ⏹️ Detener Recorrido
           </button>
         </div>
       `;
@@ -881,6 +882,13 @@
                     const distanciaATransbordo = current.distanceTo(
                         L.latLng(paraderoTransbordoActual.lat, paraderoTransbordoActual.lon)
                     );
+                    const distanciaADestino = distRestante;
+
+                    // Si pasa por el destino antes del transbordo, registrar pero NO alertar
+                    if (!seRealizoTransbordo && distanciaADestino <= 300) {
+                        pasoPorDestinoAntesDeTransbordo = true;
+                        // No mostrar alerta
+                    }
 
                     // Registrar paso por el transbordo
                     if (!distanciaTransbordoRegistrada && distanciaATransbordo <= 100) {
@@ -894,10 +902,10 @@
                         seRealizoTransbordo = true;
                     }
 
-                    // Solo mostrar alerta si ya pasamos el transbordo
+                    // Solo mostrar alerta si ya pasamos el transbordo y nos acercamos al destino
                     if (!intelligentTrackingAlarmaActivada && 
-                        distRestante <= 300 && 
-                        distRestante > 30 && 
+                        distanciaADestino <= 300 && 
+                        distanciaADestino > 30 && 
                         seRealizoTransbordo) {
                         console.log('🔔 Activando alerta de proximidad al destino final');
                         intelligentTrackingAlarmaActivada = true;
@@ -941,7 +949,7 @@
         }
       );
       
-      console.log('🚀 Seguimiento inteligente iniciado');
+      console.log('🚀 Guia inteligente iniciado');
     }
     
     // Función para detener seguimiento inteligente
@@ -958,6 +966,7 @@
     paraderoTransbordoActual = null;
     seRealizoTransbordo = false;
     distanciaTransbordoRegistrada = false;
+    pasoPorDestinoAntesDeTransbordo = false; // <--- NUEVO
       
       // Mostrar resumen con botón
       const resumenHTML = `
