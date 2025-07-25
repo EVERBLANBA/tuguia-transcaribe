@@ -720,23 +720,6 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-75.47590000557224, 10.39388456826611]
-      },
-      "properties": {
-        "nombre_paradero": "Paraiso Real",
-        "rutas": ["X101"],
-        "network": "Transcaribe",
-        "tipos_ruta": ["Pretroncales"],
-        "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-        "name": "Paraiso Real"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
         "coordinates": [-75.47590677195208, 10.393778082673993]
       },
       "properties": {
