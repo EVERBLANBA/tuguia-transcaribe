@@ -805,7 +805,7 @@
       // Crear panel de seguimiento
       const seguimientoHTML = `
         <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
-          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Seguimiento Inteligente Activo</h4>
+          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Tu Guia Inteligente Activo</h4>
           <div style="background: #ffe9b3; color: #b26a00; border-radius: 8px; padding: 8px 0; margin-bottom: 12px; font-weight: 700; font-size: 1.13rem; text-align: center; box-shadow: 0 1px 4px rgba(33,136,56,0.07); letter-spacing: 0.5px;">
             <span style="display:inline-flex;align-items:center;gap:8px;">
               <span style="font-size:1.3em;">🟢</span> ¡Estás siendo guiado en tiempo real!
@@ -1007,7 +1007,7 @@
             </div>
           </div>
           <button id="btnNuevoSeguimiento" style="background: #007bff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-top: 1rem;">
-            🔄 Iniciar Nuevo Seguimiento
+            🔄 Iniciar Nueva Guia
           </button>
         </div>
       `;
@@ -1557,6 +1557,32 @@ window.addEventListener('DOMContentLoaded', async function() {
         maxZoom: 19,
         attribution: '© OpenStreetMap contributors'
       }).addTo(window.mapaDestino);
+      async function dibujarRutaCaminando(mapa, origen, destino) {
+  const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
+  const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
+  const body = {
+    coordinates: [
+      [origen[1], origen[0]], // [lon, lat]
+      [destino[1], destino[0]]
+    ]
+  };
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) throw new Error('Error consultando ORS');
+    const data = await response.json();
+    if (data && data.features && data.features[0] && data.features[0].geometry && data.features[0].geometry.coordinates) {
+      const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]); // [lat, lon]
+      L.polyline(coords, { color: '#1ca12d', weight: 5, opacity: 0.8, dashArray: '8,8' }).addTo(mapa);
+      mapa.fitBounds(coords, { padding: [30, 30] });
+    }
+  } catch (e) {
+    console.error('Error dibujando ruta caminando:', e);
+  }
+}
     }
   } catch (e) {
     console.error('❌ Error inicializando los mapas de paraderos:', e);
@@ -1785,6 +1811,31 @@ window.addEventListener('DOMContentLoaded', async function() {
         return `<li style="${liStyle}"><b>${p.nombre}</b> (${p.dist.toFixed(0)} m) <br>Rutas: ${(Array.isArray(p.rutas) && p.rutas.length ? p.rutas.join(', ') : 'Sin rutas')}</li>`;
       }).join('') + '</ul>';
     }
+    if (window.mapaOrigen && paraderosOrigen.length > 0 && startCoords) {
+  // Limpiar capas previas
+  window.mapaOrigen.eachLayer(function(layer) {
+    if (layer instanceof L.Polyline || layer instanceof L.Marker) window.mapaOrigen.removeLayer(layer);
+  });
+  // Marcar punto de partida
+  L.marker([startCoords[0], startCoords[1]], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [32,32]})}).addTo(window.mapaOrigen);
+  // Marcar paradero más cercano
+  L.marker([paraderosOrigen[0].lat, paraderosOrigen[0].lon], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/190/190411.png', iconSize: [32,32]})}).addTo(window.mapaOrigen);
+  // Dibujar ruta caminando real
+  dibujarRutaCaminando(window.mapaOrigen, [startCoords[0], startCoords[1]], [paraderosOrigen[0].lat, paraderosOrigen[0].lon]);
+}
+
+if (window.mapaDestino && paraderosDestino.length > 0 && endCoords) {
+  // Limpiar capas previas
+  window.mapaDestino.eachLayer(function(layer) {
+    if (layer instanceof L.Polyline || layer instanceof L.Marker) window.mapaDestino.removeLayer(layer);
+  });
+  // Marcar punto destino
+  L.marker([endCoords[0], endCoords[1]], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', iconSize: [32,32]})}).addTo(window.mapaDestino);
+  // Marcar paradero más cercano
+  L.marker([paraderosDestino[0].lat, paraderosDestino[0].lon], {icon: L.icon({iconUrl: 'https://cdn-icons-png.flaticon.com/512/190/190411.png', iconSize: [32,32]})}).addTo(window.mapaDestino);
+  // Dibujar ruta caminando real
+  dibujarRutaCaminando(window.mapaDestino, [paraderosDestino[0].lat, paraderosDestino[0].lon], [endCoords[0], endCoords[1]]);
+}
     document.getElementById('info-paraderos').innerHTML = html;
   }
 
