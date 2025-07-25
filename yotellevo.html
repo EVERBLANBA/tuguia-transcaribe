@@ -732,6 +732,30 @@
     function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida) {
       // Determinar el texto del punto de partida
       let textoPartida = puntoPartida.nombre || 'Punto de partida';
+      const irrelevantes = [
+        'Cartagena de indias',
+        'Dique',
+        'Bolívar',
+        'Bolivar',
+        'Cartagena',
+        'Colombia',
+        '130003',
+        'Provincia de Cartagena',
+        'Provincia',
+        'Barrio'
+      ];
+      // Limpiar fragmentos irrelevantes si la dirección contiene comas
+      if (textoPartida && textoPartida.includes(',')) {
+        textoPartida = textoPartida
+          .split(',')
+          .map(part => part.trim())
+          .filter(part => !irrelevantes.map(x => x.toLowerCase()).includes(part.toLowerCase()))
+          .join(', ');
+      }
+      // Si después de limpiar queda vacío, mostrar 'Punto seleccionado'
+      if (!textoPartida || textoPartida === '') {
+        textoPartida = 'Punto seleccionado';
+      }
       
       let instruccionesHTML = `
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 420px;">
