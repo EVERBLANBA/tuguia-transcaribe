@@ -236,8 +236,8 @@
       "type": "Feature",
       "properties": {
         "nombre_paradero": "Terrazas de Granada Eje 6",
-        "coordenadas": "10.392665153526705, -75.47175614028703",
-        "rutas": "A101,A102",
+        "coordenadas": "10.392348612534349, -75.47189021168218",
+        "rutas": "A102",
         "network": "Transcaribe",
         "tipos_ruta": "Complementarias",
         "fuente": "csv_2025",
@@ -248,8 +248,29 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-         -75.47175614028703,
-          10.392665153526705
+         -75.47189021168218,
+          10.392348612534349
+        ]
+      }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Terrazas de Granada Eje 6(VUELTA)",
+        "coordenadas": "10.39240005512381, -75.47178885315691",
+        "rutas": "A101, A102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Terrazas de Granada"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+         -75.47178885315691,
+          10.39240005512381
         ]
       }
     },
@@ -258,7 +279,7 @@
       "type": "Feature",
       "properties": {
         "nombre_paradero": "PATIO PORTAL",
-        "coordenadas": "10.395392, -75.472826",
+        "coordenadas": "10.396287627433699, -75.47221836649437",
         "rutas": "T101,T102,T103,T100E,X102,X103,A101,A102,A114,A117,C016",
         "network": "Transcaribe",
 	      "fuente": "csv_2025",
@@ -270,8 +291,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -75.472826,
-          10.395392
+         -75.47221836649437,
+         10.396287627433699
         ]
       }
     },
