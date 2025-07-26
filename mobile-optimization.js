@@ -298,19 +298,19 @@ class MobileOptimizer {
     
     handleOrientationChange() {
         // Reajustar mapas
-        if (window.map) {
+        if (window.map && typeof window.map.invalidateSize === 'function') {
             setTimeout(() => {
                 window.map.invalidateSize();
             }, 200);
         }
         
-        if (window.mapaOrigen) {
+        if (window.mapaOrigen && typeof window.mapaOrigen.invalidateSize === 'function') {
             setTimeout(() => {
                 window.mapaOrigen.invalidateSize();
             }, 200);
         }
         
-        if (window.mapaDestino) {
+        if (window.mapaDestino && typeof window.mapaDestino.invalidateSize === 'function') {
             setTimeout(() => {
                 window.mapaDestino.invalidateSize();
             }, 200);

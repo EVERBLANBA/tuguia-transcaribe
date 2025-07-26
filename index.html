@@ -1479,6 +1479,9 @@
         </div>
     </div>
     
+    <!-- Panel Tu Guía Inteligente -->
+    <div id="panel-guia-inteligente" style="max-width: 800px; margin: 1rem auto; padding: 0 1rem;"></div>
+    
     <div class="controls" style="justify-content: center; gap: 1rem;">
         <button id="startRoute" class="btn-primary">Iniciar recorrido</button>
         <button id="clearRoute" class="btn-secondary">Limpiar ruta</button>
@@ -3276,9 +3279,6 @@
         // 4. Mostrar instrucciones inteligentes
         mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario);
         
-        // 5. Iniciar seguimiento inteligente
-        iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario);
-        
       } catch (error) {
         console.error('❌ Error en navegación inteligente:', error);
         // Fallback a lógica existente
@@ -3393,14 +3393,46 @@
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       
       if (rutaDirecta) {
+        // Obtener información del destino final
+        const endMode = localStorage.getItem('tuguia_end_mode') || '';
+        const endData = localStorage.getItem('tuguia_end') || '';
+        
+        let nombreDestino = 'destino';
+        try {
+          if (endData) {
+            const datos = JSON.parse(endData);
+            nombreDestino = datos.nombre || 'destino';
+          }
+        } catch (e) {
+          nombreDestino = 'destino';
+        }
+        
+        // Calcular distancia a pie si no es un paradero como destino
+        let distanciaAPie = 0;
+        if (endMode !== 'paradero') {
+          try {
+            distanciaAPie = haversine(
+              paraderoDestino.lat, paraderoDestino.lon,
+              destinoCoords[0], destinoCoords[1]
+            );
+          } catch (e) {
+            distanciaAPie = 0;
+          }
+        }
+        
+        let mensaje;
+        if (endMode === 'paradero') {
+          mensaje = `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`;
+        } else {
+          mensaje = `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`;
+        }
+        
         return {
           tipo: 'directa',
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.ruta,
-          mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
-            : `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`,
+          mensaje: mensaje,
           pasos: [
             { accion: 'tomar', ruta: rutaDirecta.ruta, desde: paraderoOrigen, hasta: paraderoDestino }
           ]
@@ -3529,24 +3561,74 @@
     
     // Función para mostrar instrucciones inteligentes
     function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario) {
+      // Filtrar nombre de ubicación para eliminar irrelevantes
+      let textoPartida = 'Mi ubicación actual';
+      try {
+        // Si hay datos en localStorage de inicio, intentar extraer nombre limpio
+        const startData = localStorage.getItem('tuguia_start');
+        if (startData) {
+          const datos = JSON.parse(startData);
+          if (datos.nombre) {
+            const irrelevantes = [
+              'Cartagena de indias', 'Dique', 'Bolívar', 'Bolivar', 'Cartagena',
+              'Colombia', '130003', 'Provincia de Cartagena', 'Provincia', 'Barrio'
+            ];
+            if (datos.nombre.includes(',')) {
+              textoPartida = datos.nombre
+                .split(',')
+                .map(part => part.trim())
+                .filter(part => !irrelevantes.map(x => x.toLowerCase()).includes(part.toLowerCase()))
+                .join(', ');
+            } else {
+              textoPartida = datos.nombre;
+            }
+            if (!textoPartida || textoPartida === '') {
+              textoPartida = 'Punto seleccionado';
+            }
+          }
+        }
+      } catch (e) {
+        textoPartida = 'Mi ubicación actual';
+      }
+      
       let instruccionesHTML = `
-        <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
-          <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #764ba2;">🧠 Tu Guía Inteligente</h3>
-          <div style="margin-bottom: 1rem; color: #222;">
-            <strong>📍 Tu ubicación:</strong> ${ubicacionUsuario.lat.toFixed(6)}, ${ubicacionUsuario.lng.toFixed(6)}
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 800px;">
+          <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">🧠 Tu Guía Inteligente</h3>
+          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+            <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${textoPartida}</span>
           </div>
-          <div style="margin-bottom: 1rem; color: #222;">
-            <strong>🚌 Paradero más cercano:</strong> ${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)
+          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+            <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
           </div>
-          <div style="background: #ffe9b3; color: #b26a00; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-            <strong>📋 Instrucciones:</strong><br>
-            ${rutaOptima.mensaje}
+          <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
+            <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
+            <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
+          </div>
+          <div style="text-align: center;">
+            <button id="btnIniciarGuiaInteligente" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: inline-flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>🚀</span> Iniciar Guía Inteligente
+            </button>
           </div>
         </div>
       `;
+      
       const panelGuia = document.getElementById('panel-guia-inteligente');
       if (panelGuia) {
         panelGuia.innerHTML = instruccionesHTML;
+        
+        // Agregar funcionalidad al botón
+        setTimeout(() => {
+          const btn = document.getElementById('btnIniciarGuiaInteligente');
+          if (btn) {
+            btn.addEventListener('click', function() {
+              console.log('🚀 Iniciando Guía Inteligente desde index.html');
+              // Guardar datos en localStorage y redirigir a yotellevo.html
+              localStorage.setItem('tuguia_start_coords', `${ubicacionUsuario.lat},${ubicacionUsuario.lng}`);
+              window.location.href = 'yotellevo.html';
+            });
+            console.log('✅ Event listener agregado al botón Guía Inteligente');
+          }
+        }, 100);
       }
     }
     

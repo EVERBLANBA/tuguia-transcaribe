@@ -35,7 +35,7 @@ class BackgroundManager {
         
         try {
             // Registrar Service Worker
-            this.registration = await navigator.serviceWorker.register('/sw.js');
+            this.registration = await navigator.serviceWorker.register('./sw.js');
             console.log('✅ Service Worker registrado');
             
             // Configurar eventos
