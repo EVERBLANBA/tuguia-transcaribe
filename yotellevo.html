@@ -471,12 +471,112 @@
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
         const rutasOrigen = obtenerTodasLasRutas(paraderoOrigen);
         const rutasDestino = obtenerTodasLasRutas(paraderoDestino);
+        
+        console.log('🔍 === ANÁLISIS DETALLADO DE RUTAS ===');
+        console.log('📊 Rutas origen (SonoMarcas):', rutasOrigen);
+        console.log('📊 Rutas destino (Carrera 4):', rutasDestino);
+        
         const rutasComunes = rutasOrigen.filter(ruta => rutasDestino.includes(ruta));
+        console.log('🎯 Rutas en común:', rutasComunes);
         
         if (rutasComunes.length > 0) {
+            console.log('✅ Ruta directa encontrada:', rutasComunes[0]);
             return { ruta: rutasComunes[0], todas: rutasComunes };
         }
+        
+        console.log('❌ No hay rutas en común. Necesario transbordo.');
         return null;
+    }
+    
+    // =================== FUNCIÓN DE TRANSBORDO ===================
+    
+    function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
+        if (!window.rutasTranscaribe) return null;
+        
+        console.log('🔄 === BUSCANDO TRANSBORDO ===');
+        console.log('📊 Origen:', paraderoOrigen.nombre);
+        console.log('📊 Destino:', paraderoDestino.nombre);
+        
+        // Buscar paraderos que puedan servir como transbordo
+        const paraderosTransbordo = window.rutasTranscaribe.filter(f => {
+            if (!f.geometry || f.geometry.type !== "Point" || !f.properties) return false;
+            
+            const props = f.properties;
+            
+            // Criterios de inclusión para paraderos de Transcaribe
+            const esTranscaribe = 
+                (props.network && props.network.toLowerCase().includes('transcaribe')) ||
+                (props.operator && props.operator.toLowerCase().includes('transcaribe')) ||
+                (props.name && props.name.toLowerCase().includes('transcaribe')) ||
+                (props.nombre_paradero && props.nombre_paradero.trim() !== '') ||
+                (props.highway === 'bus_stop' && props.public_transport === 'platform') ||
+                (props.rutas && props.rutas !== '') ||
+                (props.tipos_ruta && props.tipos_ruta !== '');
+            
+            return esTranscaribe;
+        });
+        
+        console.log(`🔍 Paraderos candidatos para transbordo: ${paraderosTransbordo.length}`);
+        
+        let mejorTransbordo = null;
+        let mejorScore = Infinity;
+        
+        paraderosTransbordo.forEach(paradero => {
+            const coords = paradero.geometry.coordinates;
+            const lat = coords[1];
+            const lon = coords[0];
+            
+            // Crear objeto paradero para verificar rutas
+            const paraderoTransbordo = {
+                nombre: paradero.properties.nombre_paradero || paradero.properties.name || 'Paradero',
+                lat: lat,
+                lon: lon,
+                rutas: paradero.properties.rutas || '',
+                tipos_ruta: paradero.properties.tipos_ruta || ''
+            };
+            
+            // Verificar si este paradero conecta origen y destino
+            const rutaDesdeOrigen = verificarRutaDirecta(paraderoOrigen, paraderoTransbordo);
+            const rutaHastaDestino = verificarRutaDirecta(paraderoTransbordo, paraderoDestino);
+            
+            if (rutaDesdeOrigen && rutaHastaDestino) {
+                // Calcular score basado en distancia total
+                const distOrigenTransbordo = haversine(
+                    paraderoOrigen.lat, paraderoOrigen.lon,
+                    lat, lon
+                );
+                
+                const distTransbordoDestino = haversine(
+                    lat, lon,
+                    paraderoDestino.lat, paraderoDestino.lon
+                );
+                
+                const score = distOrigenTransbordo + distTransbordoDestino;
+                
+                console.log(`🔄 Transbordo posible en ${paraderoTransbordo.nombre}:`);
+                console.log(`   - Ruta1: ${rutaDesdeOrigen.ruta} (${paraderoOrigen.nombre} → ${paraderoTransbordo.nombre})`);
+                console.log(`   - Ruta2: ${rutaHastaDestino.ruta} (${paraderoTransbordo.nombre} → ${paraderoDestino.nombre})`);
+                console.log(`   - Score: ${score.toFixed(0)}m`);
+                
+                if (score < mejorScore) {
+                    mejorScore = score;
+                    mejorTransbordo = {
+                        paraderoTransbordo: paraderoTransbordo,
+                        ruta1: rutaDesdeOrigen.ruta,
+                        ruta2: rutaHastaDestino.ruta,
+                        score: score
+                    };
+                }
+            }
+        });
+        
+        if (mejorTransbordo) {
+            console.log('✅ Mejor transbordo encontrado:', mejorTransbordo);
+        } else {
+            console.log('❌ No se encontró transbordo posible');
+        }
+        
+        return mejorTransbordo;
     }
     
     // =================== CÁLCULO DE RUTA ÓPTIMA ===================
@@ -559,13 +659,43 @@
                 }))
             };
         } else {
-            resultado = {
-                tipo: 'sin_ruta',
-                paraderoOrigen: paraderoOrigen,
-                paraderoDestino: paraderoDestino,
-                mensaje: 'No se encontró una ruta directa entre los paraderos seleccionados.',
-                pasos: []
-            };
+            console.log('🔄 No hay ruta directa. Buscando transbordo...');
+            // Buscar transbordo
+            const transbordo = await encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
+            
+            if (transbordo) {
+                console.log('✅ Transbordo encontrado:', transbordo);
+                let mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} en ${paraderoOrigen.nombre} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}`;
+                
+                if (endMode !== 'paradero') {
+                    mensajeTransbordo += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
+                }
+                mensajeTransbordo += '.';
+                
+                resultado = {
+                    tipo: 'con_transbordo',
+                    paraderoOrigen: paraderoOrigen,
+                    paraderoDestino: paraderoDestino,
+                    paraderoTransbordo: transbordo.paraderoTransbordo,
+                    ruta1: transbordo.ruta1,
+                    ruta2: transbordo.ruta2,
+                    mensaje: mensajeTransbordo,
+                    pasos: [
+                        { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
+                        { accion: 'transbordar', paradero: transbordo.paraderoTransbordo },
+                        { accion: 'tomar', ruta: transbordo.ruta2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
+                    ]
+                };
+            } else {
+                console.log('❌ No se encontró transbordo posible');
+                resultado = {
+                    tipo: 'sin_ruta',
+                    paraderoOrigen: paraderoOrigen,
+                    paraderoDestino: paraderoDestino,
+                    mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
+                    pasos: []
+                };
+            }
         }
 
         return resultado;
