@@ -3460,6 +3460,20 @@
         const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         
         if (transbordo) {
+          // Obtener información del destino final para transbordo
+          const endMode = localStorage.getItem('tuguia_end_mode') || '';
+          const endData = localStorage.getItem('tuguia_end') || '';
+          
+          let nombreDestino = 'destino';
+          try {
+            if (endData) {
+              const datos = JSON.parse(endData);
+              nombreDestino = datos.nombre || 'destino';
+            }
+          } catch (e) {
+            nombreDestino = 'destino';
+          }
+          
           // Calcular distancia a pie para transbordo
           let distanciaAPieTransbordo = 0;
           if (endMode !== 'paradero') {

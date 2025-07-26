@@ -1352,33 +1352,95 @@
             }
         }
 
-        // Obtener coordenadas
+        // === DIAGNÓSTICO MEJORADO DE COORDENADAS ===
+        console.log('🔍 === DIAGNÓSTICO EN YOTELLEVO.HTML ===');
+        
+        // Obtener TODOS los datos del localStorage
         const start = localStorage.getItem('tuguia_start') || '';
         const end = localStorage.getItem('tuguia_end') || '';
+        const startMode = localStorage.getItem('tuguia_start_mode') || '';
+        const endMode = localStorage.getItem('tuguia_end_mode') || '';
+        const startCoords = localStorage.getItem('tuguia_start_coords') || '';
+        
+        console.log('📊 Datos recibidos en yotellevo.html:');
+        console.log('  - tuguia_start:', start);
+        console.log('  - tuguia_end:', end);
+        console.log('  - tuguia_start_mode:', startMode);
+        console.log('  - tuguia_end_mode:', endMode);
+        console.log('  - tuguia_start_coords:', startCoords);
         
         let startLatLng = null;
         let endLatLng = null;
         
+        // Intentar obtener coordenadas de inicio
         if (start) {
             try {
                 const startData = JSON.parse(start);
-                if (startData.coords && Array.isArray(startData.coords)) {
+                console.log('  - Datos de inicio parseados:', startData);
+                if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
                     startLatLng = { lat: startData.coords[0], lng: startData.coords[1] };
+                    console.log('✅ Coordenadas de inicio obtenidas:', startLatLng);
+                } else {
+                    console.log('❌ Coordenadas de inicio inválidas:', startData.coords);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.log('❌ Error parseando datos de inicio:', e.message);
+            }
+        } else {
+            console.log('❌ No hay datos de inicio en localStorage');
         }
         
+        // Intentar obtener coordenadas de destino
         if (end) {
             try {
                 const endData = JSON.parse(end);
-                if (endData.coords && Array.isArray(endData.coords)) {
+                console.log('  - Datos de destino parseados:', endData);
+                if (endData.coords && Array.isArray(endData.coords) && endData.coords.length === 2) {
                     endLatLng = { lat: endData.coords[0], lng: endData.coords[1] };
+                    console.log('✅ Coordenadas de destino obtenidas:', endLatLng);
+                } else {
+                    console.log('❌ Coordenadas de destino inválidas:', endData.coords);
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.log('❌ Error parseando datos de destino:', e.message);
+            }
+        } else {
+            console.log('❌ No hay datos de destino en localStorage');
+        }
+        
+        // Fallback: intentar usar tuguia_start_coords si está disponible
+        if (!startLatLng && startCoords) {
+            try {
+                const coords = startCoords.split(',');
+                if (coords.length === 2) {
+                    const lat = parseFloat(coords[0]);
+                    const lng = parseFloat(coords[1]);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        startLatLng = { lat, lng };
+                        console.log('✅ Coordenadas de inicio desde tuguia_start_coords:', startLatLng);
+                    }
+                }
+            } catch (e) {
+                console.log('❌ Error obteniendo coords desde tuguia_start_coords:', e.message);
+            }
         }
 
+        console.log('🎯 Estado final:');
+        console.log('  - Inicio válido:', startLatLng ? 'SÍ' : 'NO', startLatLng);
+        console.log('  - Destino válido:', endLatLng ? 'SÍ' : 'NO', endLatLng);
+
         if (!startLatLng || !endLatLng) {
-            document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Error:</strong> No se pudieron obtener las coordenadas. Regresa y selecciona los puntos nuevamente.</div>';
+            const errorMsg = `
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;">
+                    <strong>⚠️ Error:</strong> No se pudieron obtener las coordenadas.<br>
+                    <strong>Diagnóstico:</strong><br>
+                    • Inicio válido: ${startLatLng ? 'SÍ' : 'NO'}<br>
+                    • Destino válido: ${endLatLng ? 'SÍ' : 'NO'}<br>
+                    <em>Revisa la consola (F12) para más detalles.</em><br>
+                    <br><a href="index.html" style="color: #856404; font-weight: bold;">← Regresar y seleccionar puntos nuevamente</a>
+                </div>
+            `;
+            document.getElementById('info-ruta').innerHTML = errorMsg;
             return;
         }
 

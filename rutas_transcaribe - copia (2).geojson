@@ -1,0 +1,6075 @@
+{
+  "type": "FeatureCollection",
+  "generator": "Transcaribe Complete Data",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2025-07-14T00:08:15.637Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MUELLE DE LA BODEGUITA",
+        "coordenadas": "10.420105, -75.551386",
+        "rutas": "T100E,T101,T103,X101,X102,X103,X104,X105,X106,C017,C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Bodeguita",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.551053,
+	  10.420351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "CENTRO UNO",
+        "coordenadas": "10.425291, -75.546270",
+        "rutas":  "T100E,T101,T102,X101,X102,X103,X104,X105,X106,C017",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Uno",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.546270,
+          10.425291
+        ]
+      }
+    },
+   
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MERCADO BAZURTO",
+        "coordenadas": "10.413713, -75.523973",
+        "rutas": "T101,T102,T103,X101,X102,X103,X104,X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales,Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mercado Bazurto",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+         -75.523973,
+         10.413713
+        ]
+      }
+    },
+    
+    
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "CUATRO VIENTOS",
+        "coordenadas": "10.406451, -75.502601",
+        "rutas": "T100E,T101,T103,X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cuatro Vientos",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.502601,
+          10.406451
+        ]
+      }
+    },
+    
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "LOS EJECUTIVOS",
+        "coordenadas": "10.399543, -75.493653",
+        "rutas": "T101,T103,X101,X106",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Ejecutivos",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.493653,
+          10.399543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MADRE BERNARDA",
+        "coordenadas": "10.395007, -75.478893",
+        "rutas": "T100E,T101,T102,T103,X102,X103,A103,A104,A105,A107,A108,A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Madre Bernarda",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.478893,
+          10.395007
+        ]
+      }
+    },
+    
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "EL PRADO",
+        "coordenadas": "10.41104, -75.519531",
+        "rutas": "T101,T102,X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Prado",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.519531,
+          10.41104
+        ]
+      }
+    },
+    
+       {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "LA CASTELLANA",
+        "coordenadas": "10.394408,-75.486631",
+        "rutas": "T100E,T101,T103,X106",       
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Castellana",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.486631,
+          10.394408
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "PIE DE LA POPA",
+        "coordenadas": "10.420479, -75.531084",
+        "rutas": "T101,T103,X104,X106",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "PIE DE LA POPA",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.531084,
+          10.420479
+        ]
+      }
+    },
+    
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "LO AMADOR",
+        "coordenadas": "10.422358, -75.534597",
+        "rutas": "X102,X105,X106",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Lo Amador",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.534597,
+          10.422358
+        ]
+      }
+    },
+     
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Terrazas de Granada Eje 6",
+        "coordenadas": "10.392665153526705, -75.47175614028703",
+        "rutas": "A101,A102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Terrazas de Granada"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+         -75.47175614028703,
+          10.392665153526705
+        ]
+      }
+    },
+      
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "PATIO PORTAL",
+        "coordenadas": "10.395392, -75.472826",
+        "rutas": "T101,T102,T103,T100E,X102,X103,A101,A102,A114,A117,C016",
+        "network": "Transcaribe",
+	      "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+      	"name": "Patio Portal",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.472826,
+          10.395392
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "LOS ANGELES",
+        "coordenadas": "10.395071, -75.49033",
+        "rutas": "T102,T103",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+ 	"name": "Los Angeles",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49033,
+          10.395071
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "VILLA OLIMPICA",
+        "coordenadas": "10.403742, -75.497435",
+        "rutas": "T101,T102,X101",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+ 	"name": "Villa Olimpica",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.497435,
+          10.403742
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "REPUBLICA DEL LIBANO",
+        "coordenadas": "10.40734, -75.507542",
+        "rutas": "T102,X101,X106",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+	 "name": "Republica del Libano",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.507542,
+          10.40734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "ESPAÑA",
+        "coordenadas": "10.408311, -75.512971",
+        "rutas": "T101,T103,X101",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+ 	"name": "España",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.512971,
+          10.408311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MARIA AUXILIADORA",
+        "coordenadas": "10.408976, -75.51583",
+        "rutas": "T102,T100E,X101,X106",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+ 	"name": "Maria Auxiliadora",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51583,
+          10.408976
+        ]
+      }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "LAS DELICIAS",
+        "coordenadas": "10.416640, -75.527932",
+        "rutas": "X102,X103,X105,X106",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Las Delicias",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.527932,
+          10.416640
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "CHAMBACU",
+        "coordenadas": "10.425853, -75.540498",
+        "rutas": "T101,T102,T103,X101,X104",
+        "network": "Transcaribe",
+	"fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+ 	"name": "Chambacu",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.540498,
+          10.425853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Maria Mulata",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Maria Mulata"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.550326, 10.414748 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olimpica",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Olimpica"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.550640, 10.410430 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Farmatodo",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Farmatodo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.551847, 10.407089 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Crepes & Waffles",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Crepes & Waffles"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.553732, 10.404932 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parrilla Paisa, Bocagrande",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parrilla Paisa, Bocagrande"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.555572, 10.402734 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dulceria, Cra 2 Bocagrande",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Dulceria, Cra 2 Bocagrande"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.556490, 10.401789 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Pueblito (Kr 2-Cl 5)",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Pueblito (Kr 2-Cl 5)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.559156, 10.399364 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Club Cartagena, Bocagrande",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Club Cartagena, Bocagrande"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.559909, 10.397612 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hotel Or Cartagena, calle 5A",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hotel Or Cartagena, calle 5A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55764136765733, 10.399414808588741 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Berlitz",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente Berlitz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55521643231016, 10.40180099901731 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Porvenir",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente Porvenir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55430748195208, 10.402825895022554 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Maternidad Bogrande",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente Maternidad Bogrande"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55299167568937, 10.404397313666374 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Calle 10",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Calle 10"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55164138730625, 10.405915958057921 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Ed. Grupo Area",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente Ed. Grupo Area"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.5508758588157, 10.408149665269992 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entre Calle 12 y 13",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entre Calle 12 y 13"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55047236150708, 10.410375513496781 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Edificio La Marina",
+        "rutas": "T103,X105",
+        "network": "Transcaribe",
+        "tipo_ruta": "Trocal - Pretroncal",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Edificio La Marina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ -75.55045960269891, 10.414968334041918 ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47590000557224, 10.39388456826611]
+      },
+      "properties": {
+        "nombre_paradero": "Paraiso Real",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Paraiso Real"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47590677195208, 10.393778082673993]
+      },
+      "properties": {
+        "nombre_paradero": "Paraiso Real",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Paraiso Real"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47451740862535, 10.391983351271088]
+      },
+      "properties": {
+        "nombre_paradero": "diag 32 N 71A-260",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "diag 32 N 71A-260"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47176800295163, 10.391169174279277]
+      },
+      "properties": {
+        "nombre_paradero": "Los Abetos",
+        "rutas": ["A101", "A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Abetos"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47075530143604, 10.390969512028494]
+      },
+      "properties": {
+        "nombre_paradero": "Colegio Castillo",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Castillo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47049366808234, 10.39094289038547]
+      },
+      "properties": {
+        "nombre_paradero": "Iglesia El Recreo",
+        "rutas": ["A101", "A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia El Recreo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46832617107476, 10.388972882477677]
+      },
+      "properties": {
+        "nombre_paradero": "Entrada Amarilo",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Amarilo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46785026902626, 10.388418260887077]
+      },
+      "properties": {
+        "nombre_paradero": "MARVAL",
+        "rutas": ["A101", "A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "MARVAL"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46762021211181, 10.38761073010277]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Del Sol",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Del Sol"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46669338194302, 10.38638696599214]
+      },
+      "properties": {
+        "nombre_paradero": "U. San Buenaventura",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "U. San Buenaventura"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46604160514846, 10.385933185080003]
+      },
+      "properties": {
+        "nombre_paradero": "U. San Buenaventura (vuelta)",
+        "rutas": ["A101", "A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "U. San Buenaventura (vuelta)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46577874866956, 10.38499660028667]
+      },
+      "properties": {
+        "nombre_paradero": "C.C San Fernando",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "C.C San Fernando"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46570901123503, 10.384030991621682]
+      },
+      "properties": {
+        "nombre_paradero": "Iglesia Ternera",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Ternera"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4656312271736, 10.38315772001381]
+      },
+      "properties": {
+        "nombre_paradero": "Drogueria Calidad y Musica RS",
+        "rutas": ["A101", "A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogueria Calidad y Musica RS"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46565000263689, 10.382949295316395]
+      },
+      "properties": {
+        "nombre_paradero": "Viper",
+        "rutas": ["A102", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Viper"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.48236198723322, 10.39279592095262]
+      },
+      "properties": {
+        "nombre_paradero": "Piko Riko",
+        "rutas": ["A107", "A108", "X102", "X103"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Piko Riko"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.48164047300816, 10.392344787549279]
+      },
+      "properties": {
+        "nombre_paradero": "SonoMarcas",
+        "rutas": ["A103", "A104", "A105", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "SonoMarcas"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.48009283840658, 10.391529579927866]
+      },
+      "properties": {
+        "nombre_paradero": "Centro Comercial Santa Lucia",
+        "rutas": ["A103", "A104", "A111", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Comercial Santa Lucia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47880269587037, 10.39074602884464]
+      },
+      "properties": {
+        "nombre_paradero": "El Campesino",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Campesino"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47871049493558, 10.3905577256605]
+      },
+      "properties": {
+        "nombre_paradero": "Centro Comercial La Plazuela",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Comercial La Plazuela"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47669615596534, 10.389491881333457]
+      },
+      "properties": {
+        "nombre_paradero": "Ferreteria Antioquia",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ferreteria Antioquia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47646012157205, 10.389241249100678]
+      },
+      "properties": {
+        "nombre_paradero": "Parque Santa Monica",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Santa Monica"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4744494706392, 10.388041839158927]
+      },
+      "properties": {
+        "nombre_paradero": "Urbanización Sevilla",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Urbanización Sevilla"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47392643988127, 10.387580145897159]
+      },
+      "properties": {
+        "nombre_paradero": "Cementerio Jardines De Cartagena",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cementerio Jardines De Cartagena"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47159023582941, 10.386118552444419]
+      },
+      "properties": {
+        "nombre_paradero": "La Bodega del Tablón",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Bodega del Tablón"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.47230906784539, 10.386498461861676]
+      },
+      "properties": {
+        "nombre_paradero": "La Bonguita",
+        "rutas": ["A103", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Bonguita"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46924598515038, 10.38443269879398]
+      },
+      "properties": {
+        "nombre_paradero": "Mi Vaquita",
+        "rutas": ["X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mi Vaquita"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46865858137608, 10.384145126607228]
+      },
+      "properties": {
+        "nombre_paradero": "Centro Comercial San Fernando",
+        "rutas": ["X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Comercial San Fernando"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46607393771409, 10.382377145464044]
+      },
+      "properties": {
+        "nombre_paradero": "Hotel Confort",
+        "rutas": ["X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hotel Confort"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46444300857354, 10.381007509150436]
+      },
+      "properties": {
+        "nombre_paradero": "La Princesa",
+        "rutas": ["A101", "A102", "X101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Princesa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46381268946, 10.380218655071367]
+      },
+      "properties": {
+        "nombre_paradero": "Entrada Simon Bolivar",
+        "rutas": ["A101", "A102", "X101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Simon Bolivar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46260569540583, 10.379028774419076]
+      },
+      "properties": {
+        "nombre_paradero": "Centro Industrial Ternera",
+        "rutas": ["A101", "A102", "X101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Industrial Ternera"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46082739083054, 10.377076410557022]
+      },
+      "properties": {
+        "nombre_paradero": "Quintas de Manantial",
+        "rutas": ["A101", "A102", "X101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Quintas de Manantial"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46075765339543, 10.37680466165345]
+      },
+      "properties": {
+        "nombre_paradero": "Cerveceria Aguila",
+        "rutas": ["A102", "X101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cerveceria Aguila"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45895252672781, 10.374841730483755]
+      },
+      "properties": {
+        "nombre_paradero": "El Rodeo",
+        "rutas": ["X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Rodeo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45864139047886, 10.374820623630534]
+      },
+      "properties": {
+        "nombre_paradero": "Sena Ternera",
+        "rutas": ["A101", "X106"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Sena Ternera"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4631796881299, 10.381276616110295]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Vanessa",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Vanessa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4629543825703, 10.381614318622317]
+      },
+      "properties": {
+        "nombre_paradero": "Veterinaria Los Campanos",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Veterinaria Los Campanos"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46180168888351, 10.383767372993063]
+      },
+      "properties": {
+        "nombre_paradero": "Ara San Jose",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ara San Jose"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46118873282661, 10.383873960413661]
+      },
+      "properties": {
+        "nombre_paradero": "Cll 35 No 100-27",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 35 No 100-27"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.46026981407094, 10.382994943148018]
+      },
+      "properties": {
+        "nombre_paradero": "Campanos Cll35 No 101-08",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Campanos Cll35 No 101-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45951416586585, 10.383413482687798]
+      },
+      "properties": {
+        "nombre_paradero": "Tienda El Cambiazo",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda El Cambiazo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45717238080799, 10.38593314860866]
+      },
+      "properties": {
+        "nombre_paradero": "Taller Lloreda",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Taller Lloreda"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45681872347274, 10.3863844299117]
+      },
+      "properties": {
+        "nombre_paradero": "Cll 102 Dg Terraza Tribuna Verde",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 102 Dg Terraza Tribuna Verde"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45516513647277, 10.388189548668981]
+      },
+      "properties": {
+        "nombre_paradero": "Supergiros San José",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Supergiros San José"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4547923625248, 10.38857501537328]
+      },
+      "properties": {
+        "nombre_paradero": "Abastos La Buenos Aires",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Abastos La Buenos Aires"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45355934100456, 10.389928845934849]
+      },
+      "properties": {
+        "nombre_paradero": "Diagonal Drogueria Shelema",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Diagonal Drogueria Shelema"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45306230907393, 10.390897207216343]
+      },
+      "properties": {
+        "nombre_paradero": "Huellas De Alberto Uribe",
+        "rutas": ["X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Huellas De Alberto Uribe"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45608273388301, 10.394413367703669]
+      },
+      "properties": {
+        "nombre_paradero": "Refugio La Carolina",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Refugio La Carolina"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45595847590036, 10.394977453921715]
+      },
+      "properties": {
+        "nombre_paradero": "El Jardín Orquidea",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Jardín Orquidea"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45727752217775, 10.395099672488172]
+      },
+      "properties": {
+        "nombre_paradero": "Cl 39H entre Kr 91B y 91A",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 39H entre Kr 91B y 91A"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4550122035708, 10.39694234631281]
+      },
+      "properties": {
+        "nombre_paradero": "El Jardín Camelia",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Jardín Camelia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45851919501354, 10.395675838343985]
+      },
+      "properties": {
+        "nombre_paradero": "Ciudad Jardin Primavera 2",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ciudad Jardin Primavera 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45521240180027, 10.398936721910271]
+      },
+      "properties": {
+        "nombre_paradero": "Parque De Galilea",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque De Galilea"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4568519086511, 10.40020419280177]
+      },
+      "properties": {
+        "nombre_paradero": "Palmas De Salamanca",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Palmas De Salamanca"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45945470551935, 10.401710092158705]
+      },
+      "properties": {
+        "nombre_paradero": "Terminal de Transportes de Cartagena",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Terminal de Transportes de Cartagena"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45275011292206, 10.392799251272155]
+      },
+      "properties": {
+        "nombre_paradero": "Parque Huellas de Alberto Uribe",
+        "rutas": ["A101", "X101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Pretroncales", "Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Huellas de Alberto Uribe"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45122542199894, 10.378769413072842]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Grande 2",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Grande 2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45029617250128, 10.383818807494029]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Andrea",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Andrea"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.44979997131323, 10.386436651244606]
+      },
+      "properties": {
+        "nombre_paradero": "Horizontes",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Horizontes"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.44888876549523, 10.390642903472392]
+      },
+      "properties": {
+        "nombre_paradero": "Brisas De Galicia",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Brisas De Galicia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.4507292208108, 10.381449418141768]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Grande 1",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Grande 1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-75.45046098387378, 10.38269466527242]
+      },
+      "properties": {
+        "nombre_paradero": "Villa Sol",
+        "rutas": ["A101"],
+        "network": "Transcaribe",
+        "tipos_ruta": ["Alimentadoras"],
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Villa Sol"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Balcones De Cerezos",
+        "coordenadas": "10.39675404360676, -75.4777553235592",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Balcones De Cerezos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4777553235592,
+          10.39675404360676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Los Cerezos",
+        "coordenadas": "10.39687521883311, -75.47840505831192",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Los Cerezos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47840505831192,
+          10.39687521883311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Viejo Porvenir",
+        "coordenadas": "10.397716794314933, -75.47940418122859",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Viejo Porvenir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47940418122859,
+          10.397716794314933
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MonteBianco",
+        "coordenadas": "10.399260116124587, -75.4801672696698",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "MonteBianco"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4801672696698,
+          10.399260116124587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Chapacua",
+        "coordenadas": "10.399510740242043, -75.48037111792618",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Chapacua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48037111792618,
+          10.399510740242043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dg Olimpica 13 Junio",
+        "coordenadas": "10.401517045680597, -75.48180073497318",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Dg Olimpica 13 Junio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48180073497318,
+          10.401517045680597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olimpica 13 Junio",
+        "coordenadas": "10.401854726369324, -75.4820126301876",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Olimpica 13 Junio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4820126301876,
+          10.401854726369324
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda La Pradera",
+        "coordenadas": "10.402919209156197, -75.48422813466412",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda La Pradera"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48422813466412,
+          10.402919209156197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "13 de Junio Tv69A No 64B-14",
+        "coordenadas": "10.402871063797221, -75.48472031951292",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "13 de Junio Tv69A No 64B-14"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48472031951292,
+          10.402871063797221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Gaviotas Mnz 36 Etapa 1ra",
+        "coordenadas": "10.402142940611757, -75.48737034347342",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Gaviotas Mnz 36 Etapa 1ra"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48737034347342,
+          10.402142940611757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Gaviotas 1",
+        "coordenadas": "10.402032138512066, -75.48756882707725",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Gaviotas 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48756882707725,
+          10.402032138512066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Gaviotas Mnz 32 Etapa 2da",
+        "coordenadas": "10.40046508456601, -75.48927471235703",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Gaviotas Mnz 32 Etapa 2da"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48927471235703,
+          10.40046508456601
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "I.E Las Gaviotas",
+        "coordenadas": "10.398829436278787, -75.49177989510547",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "I.E Las Gaviotas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49177989510547,
+          10.398829436278787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente I.E Las Gaviotas",
+        "coordenadas": "10.398454816452942, -75.49212858175112",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente I.E Las Gaviotas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49212858175112,
+          10.398454816452942
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Martinez Martelo Dg 22 No. 20-50",
+        "coordenadas": "10.408915168844095, -75.52163443998808",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Martinez Martelo Dg 22 No. 20-50"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52163443998808,
+          10.408915168844095
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cancha Microfutbol Martinez Martelo",
+        "coordenadas": "10.40759612817218, -75.52240691386767",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cancha Microfutbol Martinez Martelo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52240691386767,
+          10.40759612817218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "EDS Esso Bruselas",
+        "coordenadas": "10.405108405704139, -75.52036843777522",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "EDS Esso Bruselas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52036843777522,
+          10.405108405704139
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Cuchilla",
+        "coordenadas": "10.404068994089442, -75.5214681438831",
+        "rutas": "C001, X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Cuchilla"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5214681438831,
+          10.404068994089442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Supergiros Bruselas",
+        "coordenadas": "10.401742170063624, -75.51935456381389",
+        "rutas": "C001, X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Supergiros Bruselas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51935456381389,
+          10.401742170063624
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Coca Cola",
+        "coordenadas": "10.401341173264184, -75.52162907571096",
+        "rutas": "C001, X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Coca Cola"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52162907571096,
+          10.401341173264184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Calle del Mamon",
+        "coordenadas": "10.399589448899487, -75.52076540357217",
+        "rutas": "C001, X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Calle del Mamon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52076540357217,
+          10.399589448899487
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Chile",
+        "coordenadas": "10.399774114079188, -75.51770768718202",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Chile"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51770768718202,
+          10.399774114079188
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 24 Lt 38",
+        "coordenadas": "10.399779170506743, -75.51648404443888",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 24 Lt 38"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51648404443888,
+          10.399779170506743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Marión No. 46-43",
+        "coordenadas": "10.398882425646939, -75.51851234948724",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Marión No. 46-43"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51851234948724,
+          10.398882425646939
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bosque No 45-57",
+        "coordenadas": "10.398830094761694, -75.52028037485083",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Bosque No 45-57"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52028037485083,
+          10.398830094761694
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hogar San Pedro Claver",
+        "coordenadas": "10.397901466415798, -75.5218628786824",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hogar San Pedro Claver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5218628786824,
+          10.397901466415798
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Refugio",
+        "coordenadas": "10.397553211401435, -75.51824187671123",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Refugio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51824187671123,
+          10.397553211401435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olimpica Alto Bosque",
+        "coordenadas": "10.394218564512292, -75.51717437628217",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Olimpica Alto Bosque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51717437628217,
+          10.394218564512292
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Alto Bosque Tv 51",
+        "coordenadas": "10.393073582545725, -75.51681496349893",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Alto Bosque Tv 51"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51681496349893,
+          10.393073582545725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ara Buenos Aires",
+        "coordenadas": "10.393300472494731, -75.52059687441859",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ara Buenos Aires"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52059687441859,
+          10.393300472494731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Paradero provisional",
+        "coordenadas": "10.392720061561226, -75.51661647501659",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Paradero provisional"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51661647501659,
+          10.392720061561226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Manzanillo",
+        "coordenadas": "10.392121857970949, -75.52220755111848",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Manzanillo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52220755111848,
+          10.392121857970949
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Crisanto Luque Los olivos No. 52-49",
+        "coordenadas": "10.390860783103054, -75.51609210116833",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Crisanto Luque Los olivos No. 52-49"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51609210116833,
+          10.390860783103054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Olga Gonzalez Arrauth",
+        "coordenadas": "10.390618066227606, -75.51610819610984",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Olga Gonzalez Arrauth"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51610819610984,
+          10.390618066227606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bodega Copetran",
+        "coordenadas": "10.389541678052595, -75.52079133685992",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Bodega Copetran"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52079133685992,
+          10.389541678052595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Postobon",
+        "coordenadas": "10.388808248811028, -75.5212687688503",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Postobon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5212687688503,
+          10.388808248811028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Navitrans",
+        "coordenadas": "10.388581358312184, -75.51770679858463",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Navitrans"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51770679858463,
+          10.388581358312184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Punte Peatonal Cll Periodistas",
+        "coordenadas": "10.388618289360386, -75.51699869447532",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Punte Peatonal Cll Periodistas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51699869447532,
+          10.388618289360386
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tv 54 con Dg 22",
+        "coordenadas": "10.388486381283734, -75.5156790482496",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tv 54 con Dg 22"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5156790482496,
+          10.388486381283734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Nuevo Oriente (Bascula)",
+        "coordenadas": "10.388159240970563, -75.51334552508949",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Nuevo Oriente (Bascula)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51334552508949,
+          10.388159240970563
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bajo San Isidro",
+        "coordenadas": "10.387283342948306, -75.51154844501676",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Bajo San Isidro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51154844501676,
+          10.387283342948306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "San Isidro No. 25-43",
+        "coordenadas": "10.387541890574962, -75.51112465597504",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "San Isidro No. 25-43"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51112465597504,
+          10.387541890574962
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Estación De Policia Nuevo Bosque",
+        "coordenadas": "10.387647418042727, -75.50745538642951",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Estación De Policia Nuevo Bosque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50745538642951,
+          10.387647418042727
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada a Ceballos",
+        "coordenadas": "10.385019715850165, -75.50707451932918",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada a Ceballos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50707451932918,
+          10.385019715850165
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Proleca",
+        "coordenadas": "10.382566111443476, -75.50128631473359",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Proleca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50128631473359,
+          10.382566111443476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Los Corales",
+        "coordenadas": "10.385383789262626, -75.50082497047762",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Corales"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50082497047762,
+          10.385383789262626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Nuevo Bosque",
+        "coordenadas": "10.388117028751706, -75.504601523755",
+        "rutas": "X102, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Entrada Nuevo Bosque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.504601523755,
+          10.388117028751706
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Clinica El Bosque V",
+        "coordenadas": "10.388428339262779, -75.50226464738876",
+        "rutas": "A111, C001, X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Clinica El Bosque V"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50226464738876,
+          10.388428339262779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Excursiones Maria Elena",
+        "coordenadas": "10.389868818222725, -75.50344482116037",
+        "rutas": "A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Excursiones Maria Elena"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50344482116037,
+          10.389868818222725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Campiña Mz 56 Lt 8",
+        "coordenadas": "10.391409539989679, -75.50289764907264",
+        "rutas": "A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Campiña Mz 56 Lt 8"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50289764907264,
+          10.391409539989679
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Campiña Mz 49 Lt 16",
+        "coordenadas": "10.391783506107716, -75.50002969983427",
+        "rutas": "A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 49 Lt 16"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50002969983427,
+          10.391783506107716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia San Enrique",
+        "coordenadas": "10.392316421750436, -75.49947179733385",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia San Enrique"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49947179733385,
+          10.392316421750436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz E Lt 10",
+        "coordenadas": "10.391846819329782, -75.4988012482434",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz E Lt 10"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4988012482434,
+          10.391846819329782
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Paseo De La Castellana",
+        "coordenadas": "10.393389184218671, -75.4891633974253",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Paseo De La Castellana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4891633974253,
+          10.393389184218671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Universidad Del Sinu",
+        "coordenadas": "10.38896752912022, -75.49982249480571",
+        "rutas": "C001, X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Universidad Del Sinu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49982249480571,
+          10.38896752912022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Terrazas Los Luceros",
+        "coordenadas": "10.394063576812195, -75.49902990384408",
+        "rutas": "A111, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Terrazas Los Luceros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49902990384408,
+          10.394063576812195
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Terraza de Los Luceros",
+        "coordenadas": "10.394237697435935, -75.4989548022617",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Terraza de Los Luceros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4989548022617,
+          10.394237697435935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda La Rebaja Oficial",
+        "coordenadas": "10.394601762860846, -75.49715772270105",
+        "rutas": "A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda La Rebaja Oficial"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49715772270105,
+          10.394601762860846
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 96 Lt 28 Calamares",
+        "coordenadas": "10.39637990197084, -75.4987134037092",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 96 Lt 28 Calamares"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4987134037092,
+          10.39637990197084
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque De Los Calamares",
+        "coordenadas": "10.397102760880687, -75.4990942773153",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque De Los Calamares"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4990942773153,
+          10.397102760880687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Escallon Villa (Cll 30 No 56-73)",
+        "coordenadas": "10.397651496654571, -75.4966641966059",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Escallon Villa (Cll 30 No 56-73)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4966641966059,
+          10.397651496654571
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Zaragocilla (Cll30 No 56-26)",
+        "coordenadas": "10.397946973162927, -75.49730256214129",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Zaragocilla (Cll30 No 56-26)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49730256214129,
+          10.397946973162927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Escallon Villa (Cll 30 No 55-69)",
+        "coordenadas": "10.398564303456451, -75.49834325961542",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Escallon Villa (Cll 30 No 55-69)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49834325961542,
+          10.398564303456451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 28 entre Kr 54 y 53",
+        "coordenadas": "10.398566938758684, -75.49995861810672",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 28 entre Kr 54 y 53"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49995861810672,
+          10.398566938758684
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda La Nacional (Cll30 53-18)",
+        "coordenadas": "10.399395321779775, -75.49982987385305",
+        "rutas": "C001, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda La Nacional (Cll30 53-18)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49982987385305,
+          10.399395321779775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Caci-K Cll30 50A-115",
+        "coordenadas": "10.400425184743513, -75.5014435562108",
+        "rutas": "C001, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Caci-K Cll30 50A-115"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5014435562108,
+          10.400425184743513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hogar Infantil Dulces Sonrisas",
+        "coordenadas": "10.400757592439142, -75.50207655787379",
+        "rutas": "C001, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hogar Infantil Dulces Sonrisas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50207655787379,
+          10.400757592439142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hospital Universitario.",
+        "coordenadas": "10.40181317333847, -75.50379551815742",
+        "rutas": "C001, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hospital Universitario."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50379551815742,
+          10.40181317333847
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tv 50 entre Cl 30C y 30D",
+        "coordenadas": "10.402256377849453, -75.50286211148745",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tv 50 entre Cl 30C y 30D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50286211148745,
+          10.402256377849453
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Universidad De Cartagena",
+        "coordenadas": "10.403467275802749, -75.50543334203455",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Universidad De Cartagena"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50543334203455,
+          10.403467275802749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Universidad De Cartagena",
+        "coordenadas": "10.403599182636789, -75.50571765642405",
+        "rutas": "C001, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Universidad De Cartagena"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50571765642405,
+          10.403599182636789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Piedra De Bolivar",
+        "coordenadas": "10.404701913782601, -75.50749864442784",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Piedra De Bolivar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50749864442784,
+          10.404701913782601
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dg 30 entre Cl 30A y Kr 49",
+        "coordenadas": "10.405176771916901, -75.50719287210532",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Dg 30 entre Cl 30A y Kr 49"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50719287210532,
+          10.405176771916901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Junín Mz E Lt 16",
+        "coordenadas": "10.400322629484076, -75.51162388182638",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Junín Mz E Lt 16"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51162388182638,
+          10.400322629484076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz U Lote 2( Las Lomas)",
+        "coordenadas": "10.402190423452263, -75.51152195782484",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz U Lote 2( Las Lomas)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51152195782484,
+          10.402190423452263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Casa 26 D 42 Junín 2",
+        "coordenadas": "10.403145427553405, -75.51155414460926",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Casa 26 D 42 Junín 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51155414460926,
+          10.403145427553405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 45 entre Cl 29 y 30",
+        "coordenadas": "10.405050142382178, -75.51052417733179",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 45 entre Cl 29 y 30"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51052417733179,
+          10.405050142382178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cruz Roja.",
+        "coordenadas": "10.405720218964246, -75.51043834488232",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cruz Roja."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51043834488232,
+          10.405720218964246
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Amberes",
+        "coordenadas": "10.40701816043422, -75.51278259673308",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Amberes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51278259673308,
+          10.40701816043422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Amberes",
+        "coordenadas": "10.40737166376835, -75.51345314820107",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Amberes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51345314820107,
+          10.40737166376835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mitsubishi",
+        "coordenadas": "10.407952040755811, -75.51442947217454",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mitsubishi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51442947217454,
+          10.407952040755811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Octaviana",
+        "coordenadas": "10.408305544015283, -75.51511075298477",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Octaviana"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51511075298477,
+          10.408305544015283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tv 33 con 29B",
+        "coordenadas": "10.409252278498773, -75.51880180710634",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tv 33 con 29B"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51880180710634,
+          10.409252278498773
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tv 33 entre Kr 22 y 23",
+        "coordenadas": "10.408112633782547, -75.52084565150524",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tv 33 entre Kr 22 y 23"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52084565150524,
+          10.408112633782547
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "EDS Mobil El Bosque",
+        "coordenadas": "10.408561104509877, -75.52146892867842",
+        "rutas": "X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "EDS Mobil El Bosque"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52146892867842,
+          10.408561104509877
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dg 30 entre Kr 50 y Cl 30D",
+        "coordenadas": "10.405565561247975, -75.50302873034589",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Dg 30 entre Kr 50 y Cl 30D"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50302873034589,
+          10.405565561247975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 96 Lt 28 Calamares",
+        "coordenadas": "10.3963742958764, -75.49871575074572",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 96 Lt 28 Calamares"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49871575074572,
+          10.3963742958764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Danna Express",
+        "coordenadas": "10.396092670873651, -75.49568116718729",
+        "rutas": "A111",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Danna Express"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49568116718729,
+          10.396092670873651
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Camagüey Sector La Gloria",
+        "coordenadas": "10.39599769693318, -75.49398064721959",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Camagüey Sector La Gloria"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49398064721959,
+          10.39599769693318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Restaurante En Pin",
+        "coordenadas": "10.395565034586395, -75.49313306770561",
+        "rutas": "A111, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Restaurante En Pin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49313306770561,
+          10.395565034586395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Conjunto Residencial Tacarigua",
+        "coordenadas": "10.394277600934803, -75.491030215178",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Conjunto Residencial Tacarigua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.491030215178,
+          10.394277600934803
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Conjunto Residencial Tacarigua",
+        "coordenadas": "10.393734131392472, -75.49153447173882",
+        "rutas": "A111, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Conjunto Residencial Tacarigua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49153447173882,
+          10.393734131392472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Prosegur (Villa Leon)",
+        "coordenadas": "10.383838424081514, -75.50019129987399",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Prosegur (Villa Leon)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50019129987399,
+          10.383838424081514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Punta Alta Vuelta",
+        "coordenadas": "10.383643189193586, -75.4997996968632",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Punta Alta Vuelta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4997996968632,
+          10.383643189193586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cll 14 Entrada Golf",
+        "coordenadas": "10.382550942793372, -75.49707457375662",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 14 Entrada Golf"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49707457375662,
+          10.382550942793372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 17 Lt 22",
+        "coordenadas": "10.382920303838759, -75.49686536021271",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 17 Lt 22"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49686536021271,
+          10.382920303838759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Patinodromo",
+        "coordenadas": "10.379226677869363, -75.49730524425196",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Patinodromo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49730524425196,
+          10.379226677869363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Bertha Gedeon",
+        "coordenadas": "10.37814496483727, -75.49823865092492",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Bertha Gedeon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49823865092492,
+          10.37814496483727
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Nuevo Campestre Mz G Lt 2",
+        "coordenadas": "10.378767609741926, -75.49955293483366",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Nuevo Campestre Mz G Lt 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49955293483366,
+          10.378767609741926
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hotel La Estancia",
+        "coordenadas": "10.379851296916003, -75.50196725745326",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hotel La Estancia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50196725745326,
+          10.379851296916003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Indupollo",
+        "coordenadas": "10.376922755342806, -75.49809415041231",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Indupollo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49809415041231,
+          10.376922755342806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Institucion Educativa 20 De Julio",
+        "coordenadas": "10.375323918209036, -75.50007361909839",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Institucion Educativa 20 De Julio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50007361909839,
+          10.375323918209036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Vidrios y Auminios 1A",
+        "coordenadas": "10.373656475962491, -75.50026673823459",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Vidrios y Auminios 1A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50026673823459,
+          10.373656475962491
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Estibas El Guedo",
+        "coordenadas": "10.37276008705262, -75.50243597356906",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Estibas El Guedo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50243597356906,
+          10.37276008705262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bellavista Mz I Lt 5",
+        "coordenadas": "10.37285507082128, -75.50414722429066",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Bellavista Mz I Lt 5"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50414722429066,
+          10.37285507082128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olimpica",
+        "coordenadas": "10.376846235617835, -75.49947018260606",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Olimpica"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49947018260606,
+          10.376846235617835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Del Gordo",
+        "coordenadas": "10.380731173525017, -75.49657836434503",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Del Gordo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49657836434503,
+          10.380731173525017
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 68 Lt 1",
+        "coordenadas": "10.37996078849785, -75.49694851188207",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 68 Lt 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49694851188207,
+          10.37996078849785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cancha 2",
+        "coordenadas": "10.382287772392937, -75.49581662021555",
+        "rutas": "A108, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cancha 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49581662021555,
+          10.382287772392937
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cll 14 Parque Campestre",
+        "coordenadas": "10.381306326631716, -75.49515142990006",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 14 Parque Campestre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49515142990006,
+          10.381306326631716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Milagro Soldadura Diaz",
+        "coordenadas": "10.381111091489416, -75.49449697177727",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Milagro Soldadura Diaz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49449697177727,
+          10.381111091489416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Taller Mañe",
+        "coordenadas": "10.380266833123732, -75.49236193267949",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Taller Mañe"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49236193267949,
+          10.380266833123732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kiosko 61-21",
+        "coordenadas": "10.380841984872065, -75.4920400679525",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kiosko 61-21"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4920400679525,
+          10.380841984872065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda El Puentecito",
+        "coordenadas": "10.380239788349227, -75.49143589899543",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda El Puentecito"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49143589899543,
+          10.380239788349227
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Institucion Educativa Fe y Alegria El Progreso",
+        "coordenadas": "10.375316655216235, -75.48821724778797",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Institucion Educativa Fe y Alegria El Progreso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48821724778797,
+          10.375316655216235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "UPA La Reina",
+        "coordenadas": "10.375406365997913, -75.48942089281844",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "UPA La Reina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48942089281844,
+          10.375406365997913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Celumax",
+        "coordenadas": "10.37543879645228, -75.48638594098705",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Celumax"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48638594098705,
+          10.37543879645228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Supergiros",
+        "coordenadas": "10.37526975248532, -75.48500393744406",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Supergiros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48500393744406,
+          10.37526975248532
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogueria Yeika",
+        "coordenadas": "10.375002095629121, -75.482834264825",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogueria Yeika"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.482834264825,
+          10.375002095629121
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 5 entre Kr 79 y 77",
+        "coordenadas": "10.374826005578747, -75.48163843724235",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 5 entre Kr 79 y 77"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48163843724235,
+          10.374826005578747
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Variedades Solo Kato",
+        "coordenadas": "10.37534018700178, -75.48074335905443",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Variedades Solo Kato"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48074335905443,
+          10.37534018700178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogueria Y Variedades Maria V",
+        "coordenadas": "10.374656963597927, -75.47926109835788",
+        "rutas": "A104, A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogueria Y Variedades Maria V"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47926109835788,
+          10.374656963597927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ferreterias y Materiales El Educador",
+        "coordenadas": "10.374473825497843, -75.47821563743241",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ferreterias y Materiales El Educador"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47821563743241,
+          10.374473825497843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Restaurante La Florida",
+        "coordenadas": "10.374297730143683, -75.47744944139136",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Restaurante La Florida"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47744944139136,
+          10.374297730143683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Cristiana El Acta Del Pacto",
+        "coordenadas": "10.373973701898882, -75.47540861750593",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Cristiana El Acta Del Pacto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47540861750593,
+          10.373973701898882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 80B entre Cl 4C y 4F",
+        "coordenadas": "10.373184849242277, -75.47896751555477",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 80B entre Cl 4C y 4F"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47896751555477,
+          10.373184849242277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A con Cl 4",
+        "coordenadas": "10.372050826204225, -75.48162411525577",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A con Cl 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48162411525577,
+          10.372050826204225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A entre Cl 3J y 3O",
+        "coordenadas": "10.370367391600288, -75.48308488510627",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A entre Cl 3J y 3O"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48308488510627,
+          10.370367391600288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 4 con Kr 80A",
+        "coordenadas": "10.371642297269192, -75.48040680594477",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 4 con Kr 80A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48040680594477,
+          10.371642297269192
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A entre Cl 3O y 4",
+        "coordenadas": "10.371614123228667, -75.4819463463626",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A entre Cl 3O y 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4819463463626,
+          10.371614123228667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A La Gitana Mz F",
+        "coordenadas": "10.36885757573364, -75.48433736081479",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A La Gitana Mz F"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48433736081479,
+          10.36885757573364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Inicio Mandela",
+        "coordenadas": "10.364731080764347, -75.48289969674008",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Inicio Mandela"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48289969674008,
+          10.364731080764347
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Final Mandela",
+        "coordenadas": "10.36477592729443, -75.48243507284617",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Final Mandela"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48243507284617,
+          10.36477592729443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Los Trupillos",
+        "coordenadas": "10.363821511254924, -75.48148452310927",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Trupillos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48148452310927,
+          10.363821511254924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Disco Black And White",
+        "coordenadas": "10.361615751860688, -75.48124847353688",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Disco Black And White"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48124847353688,
+          10.361615751860688
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Bertha Suttner",
+        "coordenadas": "10.359969347053537, -75.47970352251981",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Bertha Suttner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47970352251981,
+          10.359969347053537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Jesus Maestro",
+        "coordenadas": "10.3637265232049, -75.47625956470061",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Jesus Maestro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47625956470061,
+          10.3637265232049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Batea Mz A Lt 7",
+        "coordenadas": "10.365309590138269, -75.47702131837926",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Batea Mz A Lt 7"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47702131837926,
+          10.365309590138269
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Arroz Chino las 3 JJJ",
+        "coordenadas": "10.365423004536929, -75.47993592438414",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Arroz Chino las 3 JJJ"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47993592438414,
+          10.365423004536929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Cristiana Sendero De Salvacion",
+        "coordenadas": "10.36656281679068, -75.47713570360662",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Cristiana Sendero De Salvacion"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47713570360662,
+          10.36656281679068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Variedades",
+        "coordenadas": "10.367850361753696, -75.47552636779793",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Variedades"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47552636779793,
+          10.367850361753696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogeria MK",
+        "coordenadas": "10.369285644171022, -75.47463587599621",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogeria MK"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47463587599621,
+          10.369285644171022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Coosalud",
+        "coordenadas": "10.369697240650382, -75.47514013105726",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Coosalud"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47514013105726,
+          10.369697240650382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Punto Frio El Gavilan",
+        "coordenadas": "10.372335606323508, -75.47319820404853",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Punto Frio El Gavilan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47319820404853,
+          10.372335606323508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ferreteria y Variedades El Chico",
+        "coordenadas": "10.373950321795597, -75.47491483211714",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ferreteria y Variedades El Chico"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47491483211714,
+          10.373950321795597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Conjunto Residencial Tacarigua",
+        "coordenadas": "10.394277600934803, -75.491030215178",
+        "rutas": "X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Conjunto Residencial Tacarigua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.491030215178,
+          10.394277600934803
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Conjunto Residencial Tacarigua",
+        "coordenadas": "10.393734131392472, -75.49153447173882",
+        "rutas": "A111, X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Conjunto Residencial Tacarigua"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49153447173882,
+          10.393734131392472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Prosegur (Villa Leon)",
+        "coordenadas": "10.383838424081514, -75.50019129987399",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Prosegur (Villa Leon)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50019129987399,
+          10.383838424081514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Punta Alta Vuelta",
+        "coordenadas": "10.383643189193586, -75.4997996968632",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Punta Alta Vuelta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4997996968632,
+          10.383643189193586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cll 14 Entrada Golf",
+        "coordenadas": "10.382550942793372, -75.49707457375662",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 14 Entrada Golf"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49707457375662,
+          10.382550942793372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 17 Lt 22",
+        "coordenadas": "10.382920303838759, -75.49686536021271",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 17 Lt 22"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49686536021271,
+          10.382920303838759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Patinodromo",
+        "coordenadas": "10.379226677869363, -75.49730524425196",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Patinodromo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49730524425196,
+          10.379226677869363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Bertha Gedeon",
+        "coordenadas": "10.37814496483727, -75.49823865092492",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Bertha Gedeon"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49823865092492,
+          10.37814496483727
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Nuevo Campestre Mz G Lt 2",
+        "coordenadas": "10.378767609741926, -75.49955293483366",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Nuevo Campestre Mz G Lt 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49955293483366,
+          10.378767609741926
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hotel La Estancia",
+        "coordenadas": "10.379851296916003, -75.50196725745326",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hotel La Estancia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50196725745326,
+          10.379851296916003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Indupollo",
+        "coordenadas": "10.376922755342806, -75.49809415041231",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Indupollo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49809415041231,
+          10.376922755342806
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Institucion Educativa 20 De Julio",
+        "coordenadas": "10.375323918209036, -75.50007361909839",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Institucion Educativa 20 De Julio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50007361909839,
+          10.375323918209036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Vidrios y Auminios 1A",
+        "coordenadas": "10.373656475962491, -75.50026673823459",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Vidrios y Auminios 1A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50026673823459,
+          10.373656475962491
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Estibas El Guedo",
+        "coordenadas": "10.37276008705262, -75.50243597356906",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Estibas El Guedo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50243597356906,
+          10.37276008705262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bellavista Mz I Lt 5",
+        "coordenadas": "10.37285507082128, -75.50414722429066",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Bellavista Mz I Lt 5"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50414722429066,
+          10.37285507082128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olimpica",
+        "coordenadas": "10.376846235617835, -75.49947018260606",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Olimpica"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49947018260606,
+          10.376846235617835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Del Gordo",
+        "coordenadas": "10.380731173525017, -75.49657836434503",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Del Gordo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49657836434503,
+          10.380731173525017
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 68 Lt 1",
+        "coordenadas": "10.37996078849785, -75.49694851188207",
+        "rutas": "A108",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 68 Lt 1"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49694851188207,
+          10.37996078849785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cancha 2",
+        "coordenadas": "10.382287772392937, -75.49581662021555",
+        "rutas": "A108, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cancha 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49581662021555,
+          10.382287772392937
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cll 14 Parque Campestre",
+        "coordenadas": "10.381306326631716, -75.49515142990006",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 14 Parque Campestre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49515142990006,
+          10.381306326631716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Milagro Soldadura Diaz",
+        "coordenadas": "10.381111091489416, -75.49449697177727",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Milagro Soldadura Diaz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49449697177727,
+          10.381111091489416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Taller Mañe",
+        "coordenadas": "10.380266833123732, -75.49236193267949",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Taller Mañe"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49236193267949,
+          10.380266833123732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kiosko 61-21",
+        "coordenadas": "10.380841984872065, -75.4920400679525",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kiosko 61-21"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4920400679525,
+          10.380841984872065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda El Puentecito",
+        "coordenadas": "10.380239788349227, -75.49143589899543",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Tienda El Puentecito"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49143589899543,
+          10.380239788349227
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Institucion Educativa Fe y Alegria El Progreso",
+        "coordenadas": "10.375316655216235, -75.48821724778797",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Institucion Educativa Fe y Alegria El Progreso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48821724778797,
+          10.375316655216235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "UPA La Reina",
+        "coordenadas": "10.375406365997913, -75.48942089281844",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "UPA La Reina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48942089281844,
+          10.375406365997913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Celumax",
+        "coordenadas": "10.37543879645228, -75.48638594098705",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Celumax"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48638594098705,
+          10.37543879645228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Supergiros",
+        "coordenadas": "10.37526975248532, -75.48500393744406",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Supergiros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48500393744406,
+          10.37526975248532
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogueria Yeika",
+        "coordenadas": "10.375002095629121, -75.482834264825",
+        "rutas": "A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogueria Yeika"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.482834264825,
+          10.375002095629121
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 5 entre Kr 79 y 77",
+        "coordenadas": "10.374826005578747, -75.48163843724235",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 5 entre Kr 79 y 77"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48163843724235,
+          10.374826005578747
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Variedades Solo Kato",
+        "coordenadas": "10.37534018700178, -75.48074335905443",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Variedades Solo Kato"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48074335905443,
+          10.37534018700178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogueria Y Variedades Maria V",
+        "coordenadas": "10.374656963597927, -75.47926109835788",
+        "rutas": "A104, A107, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogueria Y Variedades Maria V"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47926109835788,
+          10.374656963597927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ferreterias y Materiales El Educador",
+        "coordenadas": "10.374473825497843, -75.47821563743241",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ferreterias y Materiales El Educador"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47821563743241,
+          10.374473825497843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Restaurante La Florida",
+        "coordenadas": "10.374297730143683, -75.47744944139136",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Restaurante La Florida"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47744944139136,
+          10.374297730143683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Cristiana El Acta Del Pacto",
+        "coordenadas": "10.373973701898882, -75.47540861750593",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Cristiana El Acta Del Pacto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47540861750593,
+          10.373973701898882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 80B entre Cl 4C y 4F",
+        "coordenadas": "10.373184849242277, -75.47896751555477",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 80B entre Cl 4C y 4F"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47896751555477,
+          10.373184849242277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A con Cl 4",
+        "coordenadas": "10.372050826204225, -75.48162411525577",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A con Cl 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48162411525577,
+          10.372050826204225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A entre Cl 3J y 3O",
+        "coordenadas": "10.370367391600288, -75.48308488510627",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A entre Cl 3J y 3O"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48308488510627,
+          10.370367391600288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 4 con Kr 80A",
+        "coordenadas": "10.371642297269192, -75.48040680594477",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cl 4 con Kr 80A"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48040680594477,
+          10.371642297269192
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A entre Cl 3O y 4",
+        "coordenadas": "10.371614123228667, -75.4819463463626",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A entre Cl 3O y 4"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4819463463626,
+          10.371614123228667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 78A La Gitana Mz F",
+        "coordenadas": "10.36885757573364, -75.48433736081479",
+        "rutas": "A107",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Kr 78A La Gitana Mz F"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48433736081479,
+          10.36885757573364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Inicio Mandela",
+        "coordenadas": "10.364731080764347, -75.48289969674008",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Inicio Mandela"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48289969674008,
+          10.364731080764347
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Final Mandela",
+        "coordenadas": "10.36477592729443, -75.48243507284617",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Final Mandela"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48243507284617,
+          10.36477592729443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Los Trupillos",
+        "coordenadas": "10.363821511254924, -75.48148452310927",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Trupillos"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48148452310927,
+          10.363821511254924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Disco Black And White",
+        "coordenadas": "10.361615751860688, -75.48124847353688",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Disco Black And White"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48124847353688,
+          10.361615751860688
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Bertha Suttner",
+        "coordenadas": "10.359969347053537, -75.47970352251981",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Bertha Suttner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47970352251981,
+          10.359969347053537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Jesus Maestro",
+        "coordenadas": "10.3637265232049, -75.47625956470061",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Jesus Maestro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47625956470061,
+          10.3637265232049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Batea Mz A Lt 7",
+        "coordenadas": "10.365309590138269, -75.47702131837926",
+        "rutas": "A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Batea Mz A Lt 7"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47702131837926,
+          10.365309590138269
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Arroz Chino las 3 JJJ",
+        "coordenadas": "10.365423004536929, -75.47993592438414",
+        "rutas": "A103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Arroz Chino las 3 JJJ"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47993592438414,
+          10.365423004536929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Cristiana Sendero De Salvacion",
+        "coordenadas": "10.36656281679068, -75.47713570360662",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Cristiana Sendero De Salvacion"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47713570360662,
+          10.36656281679068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Variedades",
+        "coordenadas": "10.367850361753696, -75.47552636779793",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Variedades"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47552636779793,
+          10.367850361753696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogeria MK",
+        "coordenadas": "10.369285644171022, -75.47463587599621",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogeria MK"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47463587599621,
+          10.369285644171022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Coosalud",
+        "coordenadas": "10.369697240650382, -75.47514013105726",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Coosalud"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47514013105726,
+          10.369697240650382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Punto Frio El Gavilan",
+        "coordenadas": "10.372335606323508, -75.47319820404853",
+        "rutas": "A103, A104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Punto Frio El Gavilan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47319820404853,
+          10.372335606323508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ferreteria y Variedades El Chico",
+        "coordenadas": "10.373950321795597, -75.47491483211714",
+        "rutas": "A104, C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Ferreteria y Variedades El Chico"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47491483211714,
+          10.373950321795597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Hogar De Bien",
+        "coordenadas": "10.374425226113333, -75.47186785543204",
+        "rutas": "A103, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Hogar De Bien"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47186785543204,
+          10.374425226113333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Algodonera",
+        "coordenadas": "10.377063569599711, -75.47153524695628",
+        "rutas": "A103, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "La Algodonera"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47153524695628,
+          10.377063569599711
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Super Mercado Precio Facil",
+        "coordenadas": "10.379891206941453, -75.48665553131916",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Super Mercado Precio Facil"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48665553131916,
+          10.379891206941453
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Calle 14 65-34",
+        "coordenadas": "10.379093762437329, -75.48975683309102",
+        "rutas": "A107, C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras, Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Calle 14 65-34"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48975683309102,
+          10.379093762437329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Los Jardines MG2 L16",
+        "coordenadas": "10.379864160635792, -75.48349119751941",
+        "rutas": "A105, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales, Alimentadoras",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Los Jardines MG2 L16"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48349119751941,
+          10.379864160635792
+        ]
+      }
+    }
+  ]
+} 
