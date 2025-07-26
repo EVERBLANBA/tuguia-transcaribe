@@ -3234,13 +3234,13 @@
         destinoCoords = [endLatLng.lat, endLatLng.lng];
       }
       
-      // === NUEVA LÓGICA INTELIGENTE: Solo si el modo de inicio es GPS ===
+      // === NUEVA LÓGICA INTELIGENTE: Funciona con GPS y direcciones escritas ===
       const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      if (startMode === 'ubicacion') {
-        // Activar navegación inteligente automática
+      if (startMode === 'ubicacion' || startMode === 'direccion') {
+        // Activar navegación inteligente automática para GPS y direcciones
         iniciarNavegacionInteligente(destinoCoords);
       } else {
-        // Mantener lógica existente para otros modos
+        // Mantener lógica existente solo para modo paradero
         iniciarSeguimientoReal(destinoCoords);
       }
     }
@@ -3252,10 +3252,28 @@
       try {
         console.log('🧠 Iniciando navegación inteligente...');
         
-        // 1. Obtener ubicación GPS actual
-        const ubicacionUsuario = await obtenerUbicacionGPS();
+        // 1. Obtener ubicación de inicio (GPS o dirección escrita)
+        const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
+        let ubicacionUsuario = null;
+        
+        if (startMode === 'ubicacion') {
+          // Usar ubicación GPS real
+          ubicacionUsuario = await obtenerUbicacionGPS();
+        } else if (startMode === 'direccion') {
+          // Usar coordenadas de la dirección escrita
+          if (window.startMarker) {
+            const startLatLng = window.startMarker.getLatLng();
+            ubicacionUsuario = {
+              lat: startLatLng.lat,
+              lng: startLatLng.lng,
+              accuracy: 50 // Simular precisión
+            };
+            console.log('✅ Usando coordenadas de dirección escrita:', ubicacionUsuario);
+          }
+        }
+        
         if (!ubicacionUsuario) {
-          console.error('❌ No se pudo obtener ubicación GPS');
+          console.error('❌ No se pudo obtener ubicación de inicio');
           iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
           return;
         }
@@ -3442,6 +3460,26 @@
         const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         
         if (transbordo) {
+          // Calcular distancia a pie para transbordo
+          let distanciaAPieTransbordo = 0;
+          if (endMode !== 'paradero') {
+            try {
+              distanciaAPieTransbordo = haversine(
+                paraderoDestino.lat, paraderoDestino.lon,
+                destinoCoords[0], destinoCoords[1]
+              );
+            } catch (e) {
+              distanciaAPieTransbordo = 0;
+            }
+          }
+          
+          let mensajeTransbordo;
+          if (endMode === 'paradero') {
+            mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`;
+          } else {
+            mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPieTransbordo)} metros para llegar a ${nombreDestino}.`;
+          }
+          
           return {
             tipo: 'con_transbordo',
             paraderoOrigen: paraderoOrigen,
@@ -3449,9 +3487,7 @@
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             ruta2: transbordo.ruta2,
-            mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
-              : `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`,
+            mensaje: mensajeTransbordo,
             pasos: [
               { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
               { accion: 'transbordar', en: transbordo.paraderoTransbordo },
