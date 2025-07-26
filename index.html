@@ -2117,13 +2117,13 @@
                   localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
                 } else {
                   console.warn('❌ No se encontraron coordenadas para origen:', direccion);
-                  localStorage.setItem('tuguia_start', direccion);
+                  localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: null }));
                   alert('No se pudo encontrar la dirección de origen. Por favor, selecciona una dirección válida de la lista o verifica el texto.');
                 }
               })
               .catch(() => {
                 console.error('❌ Error al buscar coordenadas para origen:', direccion);
-                localStorage.setItem('tuguia_start', direccion);
+                localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: null }));
                 alert('Ocurrió un error al buscar la dirección de origen. Intenta de nuevo o selecciona una dirección de la lista.');
               });
           }
@@ -2149,13 +2149,13 @@
                   localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
                 } else {
                   console.warn('❌ No se encontraron coordenadas para destino:', direccion);
-                  localStorage.setItem('tuguia_end', direccion);
+                  localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccion, coords: null }));
                   alert('No se pudo encontrar la dirección de destino. Por favor, selecciona una dirección válida de la lista o verifica el texto.');
                 }
               })
               .catch(() => {
                 console.error('❌ Error al buscar coordenadas para destino:', direccion);
-                localStorage.setItem('tuguia_end', direccion);
+                localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccion, coords: null }));
                 alert('Ocurrió un error al buscar la dirección de destino. Intenta de nuevo o selecciona una dirección de la lista.');
               });
           }
