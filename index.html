@@ -1492,7 +1492,7 @@
       <div style="background: rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 12px 20px; font-size: 1rem; color: #0a2342; font-weight: 500; margin-bottom: 8px; min-width: 220px; text-align: center;">
         ¿No sabes como llegar?
       </div>
-      <button id="yoTeLlevoBtn" onclick="ejecutarNavegacionInteligente()" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
+      <button id="yoTeLlevoBtn" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
     </div>
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
@@ -3084,10 +3084,12 @@
     });
     // Nueva función para ejecutar navegación inteligente desde botón "Yo te llevo"
     async function ejecutarNavegacionInteligente() {
-      console.log('🚀 === EJECUTANDO NAVEGACIÓN INTELIGENTE DESDE "YO TE LLEVO" ===');
-      
-      // Primero guardar puntos en localStorage
-      guardarPuntosEnLocalStorage();
+      try {
+        console.log('🚀 === EJECUTANDO NAVEGACIÓN INTELIGENTE DESDE "YO TE LLEVO" ===');
+        alert('🚀 Función ejecutarNavegacionInteligente() está funcionando!');
+        
+        // Primero guardar puntos en localStorage
+        guardarPuntosEnLocalStorage();
       
       // Obtener datos guardados
       const startMode = document.querySelector('input[name="startMode"]:checked')?.value || 'direccion';
@@ -3128,9 +3130,13 @@
           console.log('❌ No se pudieron obtener coordenadas del destino');
           alert('⚠️ No se pudieron obtener las coordenadas del destino. Por favor, verifica que hayas seleccionado un destino válido.');
         }
-      } else {
-        console.log('❌ Modo de inicio no compatible con navegación inteligente:', startMode);
-        alert('⚠️ La navegación inteligente requiere que selecciones "Mi ubicación" o "Dirección" como punto de partida.');
+              } else {
+          console.log('❌ Modo de inicio no compatible con navegación inteligente:', startMode);
+          alert('⚠️ La navegación inteligente requiere que selecciones "Mi ubicación" o "Dirección" como punto de partida.');
+        }
+      } catch (error) {
+        console.error('❌ Error en ejecutarNavegacionInteligente:', error);
+        alert('❌ Error: ' + error.message);
       }
     }
 
@@ -3219,6 +3225,22 @@
       }
     }
 
+    // =================== EVENT LISTENERS ===================
+    
+    // Event listener para el botón "¡Yo te llevo!"
+    document.addEventListener('DOMContentLoaded', function() {
+      const yoTeLlevoBtn = document.getElementById('yoTeLlevoBtn');
+      if (yoTeLlevoBtn) {
+        yoTeLlevoBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('🔘 Botón "¡Yo te llevo!" clickeado');
+          ejecutarNavegacionInteligente();
+        });
+        console.log('✅ Event listener agregado al botón "¡Yo te llevo!"');
+      } else {
+        console.error('❌ No se encontró el botón yoTeLlevoBtn');
+      }
+    });
 
     // Modificar parseCoords para aceptar objetos con coords
     function parseCoords(str) {
