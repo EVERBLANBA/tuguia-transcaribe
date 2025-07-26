@@ -393,26 +393,12 @@
         let paraderoMasCercano = null;
         let distanciaMinima = Infinity;
         
-        // Filtro más inclusivo para encontrar paraderos
-        const paraderosTranscaribe = window.rutasTranscaribe.filter(f => {
-            if (!f.geometry || f.geometry.type !== "Point" || !f.properties) return false;
-            
-            const props = f.properties;
-            
-            // Criterios de inclusión para paraderos de Transcaribe
-            const esTranscaribe = 
-                (props.network && props.network.toLowerCase().includes('transcaribe')) ||
-                (props.operator && props.operator.toLowerCase().includes('transcaribe')) ||
-                (props.name && props.name.toLowerCase().includes('transcaribe')) ||
-                (props.nombre_paradero && props.nombre_paradero.trim() !== '') ||
-                (props.highway === 'bus_stop' && props.public_transport === 'platform') ||
-                (props.rutas && props.rutas !== '') ||
-                (props.tipos_ruta && props.tipos_ruta !== '');
-            
-            return esTranscaribe;
-        });
-        
-        console.log(`🔍 Paraderos encontrados para filtrar: ${paraderosTranscaribe.length}`);
+        const paraderosTranscaribe = window.rutasTranscaribe.filter(f => 
+            f.geometry && 
+            f.geometry.type === "Point" && 
+            f.properties && 
+            f.properties.network === "Transcaribe"
+        );
         
         paraderosTranscaribe.forEach((paradero) => {
             const coords = paradero.geometry.coordinates;
@@ -442,19 +428,10 @@
     
     function obtenerTodasLasRutas(paradero) {
         let todas = [];
-        
-        // Intentar obtener rutas de diferentes propiedades
         if (paradero.rutas_troncales) todas = todas.concat(paradero.rutas_troncales);
         if (paradero.rutas_pretroncales) todas = todas.concat(paradero.rutas_pretroncales);
         if (paradero.rutas_alimentadoras) todas = todas.concat(paradero.rutas_alimentadoras);
         if (paradero.rutas_complementarias) todas = todas.concat(paradero.rutas_complementarias);
-        if (paradero.tipos_ruta) {
-            if (Array.isArray(paradero.tipos_ruta)) {
-                todas = todas.concat(paradero.tipos_ruta);
-            } else {
-                todas = todas.concat(String(paradero.tipos_ruta).split(',').map(r => r.trim()));
-            }
-        }
         if (paradero.rutas) {
             if (Array.isArray(paradero.rutas)) {
                 todas = todas.concat(paradero.rutas);
@@ -462,129 +439,24 @@
                 todas = todas.concat(String(paradero.rutas).split(',').map(r => r.trim()));
             }
         }
-        
-        const rutasFinales = [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
-        console.log(`🚌 Rutas encontradas para ${paradero.nombre}:`, rutasFinales);
-        return rutasFinales;
+        return [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
     }
     
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
         const rutasOrigen = obtenerTodasLasRutas(paraderoOrigen);
         const rutasDestino = obtenerTodasLasRutas(paraderoDestino);
-        
-        console.log('🔍 === ANÁLISIS DETALLADO DE RUTAS ===');
-        console.log('📊 Rutas origen (SonoMarcas):', rutasOrigen);
-        console.log('📊 Rutas destino (Carrera 4):', rutasDestino);
-        
         const rutasComunes = rutasOrigen.filter(ruta => rutasDestino.includes(ruta));
-        console.log('🎯 Rutas en común:', rutasComunes);
         
         if (rutasComunes.length > 0) {
-            console.log('✅ Ruta directa encontrada:', rutasComunes[0]);
             return { ruta: rutasComunes[0], todas: rutasComunes };
         }
-        
-        console.log('❌ No hay rutas en común. Necesario transbordo.');
         return null;
-    }
-    
-    // =================== FUNCIÓN DE TRANSBORDO ===================
-    
-    function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
-        if (!window.rutasTranscaribe) return null;
-        
-        console.log('🔄 === BUSCANDO TRANSBORDO ===');
-        console.log('📊 Origen:', paraderoOrigen.nombre);
-        console.log('📊 Destino:', paraderoDestino.nombre);
-        
-        // Buscar paraderos que puedan servir como transbordo
-        const paraderosTransbordo = window.rutasTranscaribe.filter(f => {
-            if (!f.geometry || f.geometry.type !== "Point" || !f.properties) return false;
-            
-            const props = f.properties;
-            
-            // Criterios de inclusión para paraderos de Transcaribe
-            const esTranscaribe = 
-                (props.network && props.network.toLowerCase().includes('transcaribe')) ||
-                (props.operator && props.operator.toLowerCase().includes('transcaribe')) ||
-                (props.name && props.name.toLowerCase().includes('transcaribe')) ||
-                (props.nombre_paradero && props.nombre_paradero.trim() !== '') ||
-                (props.highway === 'bus_stop' && props.public_transport === 'platform') ||
-                (props.rutas && props.rutas !== '') ||
-                (props.tipos_ruta && props.tipos_ruta !== '');
-            
-            return esTranscaribe;
-        });
-        
-        console.log(`🔍 Paraderos candidatos para transbordo: ${paraderosTransbordo.length}`);
-        
-        let mejorTransbordo = null;
-        let mejorScore = Infinity;
-        
-        paraderosTransbordo.forEach(paradero => {
-            const coords = paradero.geometry.coordinates;
-            const lat = coords[1];
-            const lon = coords[0];
-            
-            // Crear objeto paradero para verificar rutas
-            const paraderoTransbordo = {
-                nombre: paradero.properties.nombre_paradero || paradero.properties.name || 'Paradero',
-                lat: lat,
-                lon: lon,
-                rutas: paradero.properties.rutas || '',
-                tipos_ruta: paradero.properties.tipos_ruta || ''
-            };
-            
-            // Verificar si este paradero conecta origen y destino
-            const rutaDesdeOrigen = verificarRutaDirecta(paraderoOrigen, paraderoTransbordo);
-            const rutaHastaDestino = verificarRutaDirecta(paraderoTransbordo, paraderoDestino);
-            
-            if (rutaDesdeOrigen && rutaHastaDestino) {
-                // Calcular score basado en distancia total
-                const distOrigenTransbordo = haversine(
-                    paraderoOrigen.lat, paraderoOrigen.lon,
-                    lat, lon
-                );
-                
-                const distTransbordoDestino = haversine(
-                    lat, lon,
-                    paraderoDestino.lat, paraderoDestino.lon
-                );
-                
-                const score = distOrigenTransbordo + distTransbordoDestino;
-                
-                console.log(`🔄 Transbordo posible en ${paraderoTransbordo.nombre}:`);
-                console.log(`   - Ruta1: ${rutaDesdeOrigen.ruta} (${paraderoOrigen.nombre} → ${paraderoTransbordo.nombre})`);
-                console.log(`   - Ruta2: ${rutaHastaDestino.ruta} (${paraderoTransbordo.nombre} → ${paraderoDestino.nombre})`);
-                console.log(`   - Score: ${score.toFixed(0)}m`);
-                
-                if (score < mejorScore) {
-                    mejorScore = score;
-                    mejorTransbordo = {
-                        paraderoTransbordo: paraderoTransbordo,
-                        ruta1: rutaDesdeOrigen.ruta,
-                        ruta2: rutaHastaDestino.ruta,
-                        score: score
-                    };
-                }
-            }
-        });
-        
-        if (mejorTransbordo) {
-            console.log('✅ Mejor transbordo encontrado:', mejorTransbordo);
-        } else {
-            console.log('❌ No se encontró transbordo posible');
-        }
-        
-        return mejorTransbordo;
     }
     
     // =================== CÁLCULO DE RUTA ÓPTIMA ===================
     
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
-        console.log('🎯 === DIAGNÓSTICO CALCULAR RUTA ÓPTIMA ===');
-        console.log('📊 Paradero origen:', paraderoOrigen);
-        console.log('📊 Coordenadas destino:', destinoCoords);
+        console.log('🎯 Iniciando calcularRutaOptima');
 
         if (!destinoCoords) {
             console.error('❌ No hay coordenadas de destino');
@@ -611,20 +483,13 @@
             lng: destinoCoords[1]
         });
         
-        console.log('🎯 Paradero destino encontrado:', paraderoDestino);
-        
         if (!paraderoDestino) {
             console.error('❌ No se encontró paradero cercano al destino');
             return null;
         }
 
         // Verificar ruta directa
-        console.log('🔍 Verificando ruta directa entre:');
-        console.log('  - Origen:', paraderoOrigen.nombre, 'Rutas:', paraderoOrigen.rutas || paraderoOrigen.tipos_ruta);
-        console.log('  - Destino:', paraderoDestino.nombre, 'Rutas:', paraderoDestino.rutas || paraderoDestino.tipos_ruta);
-        
         const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
-        console.log('🎯 Resultado ruta directa:', rutaDirecta);
         
         // Calcular distancia a pie
         let distanciaAPie = await obtenerDistanciaCaminando(
@@ -659,43 +524,13 @@
                 }))
             };
         } else {
-            console.log('🔄 No hay ruta directa. Buscando transbordo...');
-            // Buscar transbordo
-            const transbordo = await encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
-            
-            if (transbordo) {
-                console.log('✅ Transbordo encontrado:', transbordo);
-                let mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} en ${paraderoOrigen.nombre} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}`;
-                
-                if (endMode !== 'paradero') {
-                    mensajeTransbordo += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
-                }
-                mensajeTransbordo += '.';
-                
-                resultado = {
-                    tipo: 'con_transbordo',
-                    paraderoOrigen: paraderoOrigen,
-                    paraderoDestino: paraderoDestino,
-                    paraderoTransbordo: transbordo.paraderoTransbordo,
-                    ruta1: transbordo.ruta1,
-                    ruta2: transbordo.ruta2,
-                    mensaje: mensajeTransbordo,
-                    pasos: [
-                        { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
-                        { accion: 'transbordar', paradero: transbordo.paraderoTransbordo },
-                        { accion: 'tomar', ruta: transbordo.ruta2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
-                    ]
-                };
-            } else {
-                console.log('❌ No se encontró transbordo posible');
-                resultado = {
-                    tipo: 'sin_ruta',
-                    paraderoOrigen: paraderoOrigen,
-                    paraderoDestino: paraderoDestino,
-                    mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
-                    pasos: []
-                };
-            }
+            resultado = {
+                tipo: 'sin_ruta',
+                paraderoOrigen: paraderoOrigen,
+                paraderoDestino: paraderoDestino,
+                mensaje: 'No se encontró una ruta directa entre los paraderos seleccionados.',
+                pasos: []
+            };
         }
 
         return resultado;
@@ -1517,95 +1352,33 @@
             }
         }
 
-        // === DIAGNÓSTICO MEJORADO DE COORDENADAS ===
-        console.log('🔍 === DIAGNÓSTICO EN YOTELLEVO.HTML ===');
-        
-        // Obtener TODOS los datos del localStorage
+        // Obtener coordenadas
         const start = localStorage.getItem('tuguia_start') || '';
         const end = localStorage.getItem('tuguia_end') || '';
-        const startMode = localStorage.getItem('tuguia_start_mode') || '';
-        const endMode = localStorage.getItem('tuguia_end_mode') || '';
-        const startCoords = localStorage.getItem('tuguia_start_coords') || '';
-        
-        console.log('📊 Datos recibidos en yotellevo.html:');
-        console.log('  - tuguia_start:', start);
-        console.log('  - tuguia_end:', end);
-        console.log('  - tuguia_start_mode:', startMode);
-        console.log('  - tuguia_end_mode:', endMode);
-        console.log('  - tuguia_start_coords:', startCoords);
         
         let startLatLng = null;
         let endLatLng = null;
         
-        // Intentar obtener coordenadas de inicio
         if (start) {
             try {
                 const startData = JSON.parse(start);
-                console.log('  - Datos de inicio parseados:', startData);
-                if (startData.coords && Array.isArray(startData.coords) && startData.coords.length === 2) {
+                if (startData.coords && Array.isArray(startData.coords)) {
                     startLatLng = { lat: startData.coords[0], lng: startData.coords[1] };
-                    console.log('✅ Coordenadas de inicio obtenidas:', startLatLng);
-                } else {
-                    console.log('❌ Coordenadas de inicio inválidas:', startData.coords);
                 }
-            } catch (e) {
-                console.log('❌ Error parseando datos de inicio:', e.message);
-            }
-        } else {
-            console.log('❌ No hay datos de inicio en localStorage');
+            } catch (e) {}
         }
         
-        // Intentar obtener coordenadas de destino
         if (end) {
             try {
                 const endData = JSON.parse(end);
-                console.log('  - Datos de destino parseados:', endData);
-                if (endData.coords && Array.isArray(endData.coords) && endData.coords.length === 2) {
+                if (endData.coords && Array.isArray(endData.coords)) {
                     endLatLng = { lat: endData.coords[0], lng: endData.coords[1] };
-                    console.log('✅ Coordenadas de destino obtenidas:', endLatLng);
-                } else {
-                    console.log('❌ Coordenadas de destino inválidas:', endData.coords);
                 }
-            } catch (e) {
-                console.log('❌ Error parseando datos de destino:', e.message);
-            }
-        } else {
-            console.log('❌ No hay datos de destino en localStorage');
+            } catch (e) {}
         }
-        
-        // Fallback: intentar usar tuguia_start_coords si está disponible
-        if (!startLatLng && startCoords) {
-            try {
-                const coords = startCoords.split(',');
-                if (coords.length === 2) {
-                    const lat = parseFloat(coords[0]);
-                    const lng = parseFloat(coords[1]);
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        startLatLng = { lat, lng };
-                        console.log('✅ Coordenadas de inicio desde tuguia_start_coords:', startLatLng);
-                    }
-                }
-            } catch (e) {
-                console.log('❌ Error obteniendo coords desde tuguia_start_coords:', e.message);
-            }
-        }
-
-        console.log('🎯 Estado final:');
-        console.log('  - Inicio válido:', startLatLng ? 'SÍ' : 'NO', startLatLng);
-        console.log('  - Destino válido:', endLatLng ? 'SÍ' : 'NO', endLatLng);
 
         if (!startLatLng || !endLatLng) {
-            const errorMsg = `
-                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;">
-                    <strong>⚠️ Error:</strong> No se pudieron obtener las coordenadas.<br>
-                    <strong>Diagnóstico:</strong><br>
-                    • Inicio válido: ${startLatLng ? 'SÍ' : 'NO'}<br>
-                    • Destino válido: ${endLatLng ? 'SÍ' : 'NO'}<br>
-                    <em>Revisa la consola (F12) para más detalles.</em><br>
-                    <br><a href="index.html" style="color: #856404; font-weight: bold;">← Regresar y seleccionar puntos nuevamente</a>
-                </div>
-            `;
-            document.getElementById('info-ruta').innerHTML = errorMsg;
+            document.getElementById('info-ruta').innerHTML = '<div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 1rem; color: #856404;"><strong>⚠️ Error:</strong> No se pudieron obtener las coordenadas. Regresa y selecciona los puntos nuevamente.</div>';
             return;
         }
 
