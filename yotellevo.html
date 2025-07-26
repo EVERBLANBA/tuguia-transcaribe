@@ -1511,7 +1511,8 @@ window.addEventListener('DOMContentLoaded', async function() {
         console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
       }
     } catch (e) {
-      console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
+      // Si falla JSON.parse, es texto plano - no hay coordenadas disponibles
+      console.warn('⚠️ Inicio guardado como texto plano (sin coordenadas):', start);
     }
   }
 
