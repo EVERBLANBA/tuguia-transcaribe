@@ -3658,8 +3658,91 @@
           if (btn) {
             btn.addEventListener('click', function() {
               console.log('🚀 Iniciando Guía Inteligente desde index.html');
-              // Guardar datos en localStorage y redirigir a yotellevo.html
+              
+              // === NUEVO SISTEMA DE DIAGNÓSTICO COMPLETO ===
+              console.log('🔍 === DIAGNÓSTICO COMPLETO DE DATOS ===');
+              
+              // 1. Verificar datos de inicio
+              const startData = localStorage.getItem('tuguia_start');
+              const startMode = localStorage.getItem('tuguia_start_mode');
+              const startCoords = localStorage.getItem('tuguia_start_coords');
+              
+              console.log('📊 Datos de INICIO:');
+              console.log('  - tuguia_start:', startData);
+              console.log('  - tuguia_start_mode:', startMode);
+              console.log('  - tuguia_start_coords:', startCoords);
+              
+              if (startData) {
+                try {
+                  const parsed = JSON.parse(startData);
+                  console.log('  - Datos parseados:', parsed);
+                  console.log('  - Tiene coords?:', parsed.coords ? 'SÍ' : 'NO');
+                  if (parsed.coords) {
+                    console.log('  - Coordenadas:', parsed.coords);
+                  }
+                } catch (e) {
+                  console.log('  - Error parseando:', e.message);
+                }
+              }
+              
+              // 2. Verificar datos de destino
+              const endData = localStorage.getItem('tuguia_end');
+              const endMode = localStorage.getItem('tuguia_end_mode');
+              
+              console.log('📊 Datos de DESTINO:');
+              console.log('  - tuguia_end:', endData);
+              console.log('  - tuguia_end_mode:', endMode);
+              
+              if (endData) {
+                try {
+                  const parsed = JSON.parse(endData);
+                  console.log('  - Datos parseados:', parsed);
+                  console.log('  - Tiene coords?:', parsed.coords ? 'SÍ' : 'NO');
+                  if (parsed.coords) {
+                    console.log('  - Coordenadas:', parsed.coords);
+                  }
+                } catch (e) {
+                  console.log('  - Error parseando:', e.message);
+                }
+              }
+              
+              // 3. Verificar que datos estén completos antes de redirigir
+              let startCoordsOk = false;
+              let endCoordsOk = false;
+              
+              if (startData) {
+                try {
+                  const parsed = JSON.parse(startData);
+                  if (parsed.coords && Array.isArray(parsed.coords) && parsed.coords.length === 2) {
+                    startCoordsOk = true;
+                  }
+                } catch (e) {}
+              }
+              
+              if (endData) {
+                try {
+                  const parsed = JSON.parse(endData);
+                  if (parsed.coords && Array.isArray(parsed.coords) && parsed.coords.length === 2) {
+                    endCoordsOk = true;
+                  }
+                } catch (e) {}
+              }
+              
+              console.log('✅ Estado de validación:');
+              console.log('  - Inicio válido:', startCoordsOk);
+              console.log('  - Destino válido:', endCoordsOk);
+              
+              if (!startCoordsOk || !endCoordsOk) {
+                alert('❌ Error: Datos incompletos detectados.\n\n' +
+                      'Inicio válido: ' + (startCoordsOk ? 'SÍ' : 'NO') + '\n' +
+                      'Destino válido: ' + (endCoordsOk ? 'SÍ' : 'NO') + '\n\n' +
+                      'Por favor revisa la consola (F12) para más detalles.');
+                return;
+              }
+              
+              // Si todo está bien, guardar coordenadas adicionales y redirigir
               localStorage.setItem('tuguia_start_coords', `${ubicacionUsuario.lat},${ubicacionUsuario.lng}`);
+              console.log('🚀 Todo validado, redirigiendo a yotellevo.html...');
               window.location.href = 'yotellevo.html';
             });
             console.log('✅ Event listener agregado al botón Guía Inteligente');
