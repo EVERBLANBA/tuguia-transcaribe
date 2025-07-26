@@ -218,7 +218,6 @@
           
         }
     </style>
-    <link rel="stylesheet" href="mobile-optimizations.css" />
 </head>
 <body>
   <header>
@@ -291,13 +290,6 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
-    
-    <!-- Scripts para segundo plano y optimización móvil -->
-    <script src="utils.js"></script>
-    <script src="state-manager.js"></script>
-    <script src="error-handler.js"></script>
-    <script src="background-manager.js"></script>
-    <script src="mobile-optimization.js"></script>
     <script>
     // =================== LÓGICA DE NAVEGACIÓN INTELIGENTE ===================
     
@@ -801,12 +793,6 @@
     function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {
       if (isIntelligentTrackingActive) return;
       
-      // Iniciar tracking en segundo plano para móviles
-      if (window.BackgroundManager && window.BackgroundManager.isMobile.isLikelyMobile) {
-        console.log('📱 Iniciando tracking en segundo plano para móvil...');
-        window.BackgroundManager.startBackgroundLocationTracking();
-      }
-      
       isIntelligentTrackingActive = true;
       intelligentTrackingDistance = 0;
       intelligentTrackingAlarmaActivada = false;
@@ -995,12 +981,6 @@
     if (intelligentTrackingWatchId) {
         navigator.geolocation.clearWatch(intelligentTrackingWatchId);
         intelligentTrackingWatchId = null;
-    }
-    
-    // Detener tracking en segundo plano
-    if (window.BackgroundManager) {
-        console.log('📱 Deteniendo tracking en segundo plano...');
-        window.BackgroundManager.stopBackgroundTracking();
     }
     
     isIntelligentTrackingActive = false;
@@ -1789,27 +1769,4 @@ window.addEventListener('DOMContentLoaded', async function() {
     if (end && endMode === 'paradero') {
       try {
         const obj = typeof end === 'string' ? JSON.parse(end) : end;
-        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 Paradero: ${obj.nombre}</span>`;
-      } catch(e) {}
-    } else if (end) {
-      try {
-        const obj = typeof end === 'string' ? JSON.parse(end) : end;
-        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 ${obj.nombre}</span>`;
-      } catch(e) {}
-    }
-    if (paraderosDestino.length === 0) {
-      html += '<b style="display:block;margin-top:2em;">No hay paraderos de Transcaribe cercanos a tu punto destino.</b><br>Puedes considerar ampliar el radio de búsqueda o seleccionar otro destino.';
-    } else {
-      html += '<b style="display:block;margin-top:2em;">Paraderos cercanos a tu punto destino:</b>' + (chipDestino ? `<div>${chipDestino}</div>` : '') + '<ul>' + paraderosDestino.map((p, idx) => {
-        let liStyle = idx === 0 ? 'background:#e6ffe6;border-left:5px solid #1ca12d;padding:0.5em 0.5em 0.5em 1em;margin-bottom:0.5em;' : '';
-        return `<li style="${liStyle}"><b>${p.nombre}</b> (${p.dist.toFixed(0)} m) <br>Rutas: ${(Array.isArray(p.rutas) && p.rutas.length ? p.rutas.join(', ') : 'Sin rutas')}</li>`;
-      }).join('') + '</ul>';
-    }
-    document.getElementById('info-paraderos').innerHTML = html;
-  }
-
-  procesarInformacion();
-});
-  </script>
-</body>
-</html> 
+        chipDestino = `<span style="display:inline-block;background:#fffbe6;color:#b36b00;font-weight:600;border-radius:13px;padding:2px 8px;font-size:0.82em;box-shadow:0 1px 4px #ff980022;margin-bottom:3px;">🎯 Paradero: ${obj.nombre}</span>`
