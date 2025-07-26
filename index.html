@@ -3458,10 +3458,16 @@
       }
       
       // Calcular distancia a pie desde paradero destino hasta coordenadas finales
+      console.log('🔍 Calculando distancia a pie:');
+      console.log('  Paradero destino:', paraderoDestino.lat, paraderoDestino.lon);
+      console.log('  Coordenadas finales:', destinoCoords);
+      
       const distanciaAPie = calcularDistanciaHaversine(
         paraderoDestino.lat, paraderoDestino.lon,
         destinoCoords[0], destinoCoords[1]
       );
+      
+      console.log('🚶 Distancia a pie calculada:', Math.round(distanciaAPie), 'metros');
       
       // Verificar si hay ruta directa
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
@@ -3537,6 +3543,20 @@
     function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
       if (!window.rutasTranscaribe) return null;
       
+      console.log('🔄 Buscando transbordo entre:', paraderoOrigen.nombre, '→', paraderoDestino.nombre);
+      
+      // Obtener rutas del origen y destino
+      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
+        paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoOrigen.rutas) ? paraderoOrigen.rutas : []);
+      
+      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
+        paraderoDestino.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoDestino.rutas) ? paraderoDestino.rutas : []);
+      
+      console.log('  Rutas origen:', rutasOrigen);
+      console.log('  Rutas destino:', rutasDestino);
+      
       // Buscar paraderos que conecten las rutas
       const paraderosTransbordo = window.rutasTranscaribe.filter(f => 
         f.geometry && 
@@ -3557,19 +3577,15 @@
           paradero.properties.rutas.split(',').map(r => r.trim()) : 
           (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
         
-        // Verificar si este paradero conecta origen y destino
-        const rutaDesdeOrigen = verificarRutaDirecta(paraderoOrigen, {
-          nombre: paradero.properties.nombre_paradero,
-          rutas: rutasParadero
-        });
+        // Buscar rutas comunes con origen y destino
+        const rutaCompartidaConOrigen = rutasParadero.find(ruta => rutasOrigen.includes(ruta));
+        const rutaCompartidaConDestino = rutasParadero.find(ruta => rutasDestino.includes(ruta));
         
-        const rutaHastaDestino = verificarRutaDirecta({
-          nombre: paradero.properties.nombre_paradero,
-          rutas: rutasParadero
-        }, paraderoDestino);
-        
-        if (rutaDesdeOrigen && rutaHastaDestino) {
-          // Calcular score basado en distancia total
+        // Si el paradero comparte rutas tanto con origen como con destino
+        if (rutaCompartidaConOrigen && rutaCompartidaConDestino && 
+            rutaCompartidaConOrigen !== rutaCompartidaConDestino) {
+          
+          // Calcular score basado en distancia total y preferencia por terminales
           const distOrigenTransbordo = calcularDistanciaHaversine(
             paraderoOrigen.lat, paraderoOrigen.lon,
             lat, lon
@@ -3580,23 +3596,45 @@
             paraderoDestino.lat, paraderoDestino.lon
           );
           
-          const score = distOrigenTransbordo + distTransbordoDestino;
+          let score = distOrigenTransbordo + distTransbordoDestino;
+          
+          // Bonus para terminales principales (nombres que contengan "Terminal" o "Las Américas")
+          const nombreParadero = paradero.properties.nombre_paradero || '';
+          if (nombreParadero.toLowerCase().includes('terminal') || 
+              nombreParadero.toLowerCase().includes('américas') ||
+              nombreParadero.toLowerCase().includes('americas')) {
+            score *= 0.7; // Reducir score (mejor prioridad)
+            console.log('🎯 Terminal detectado:', nombreParadero, '- Score mejorado');
+          }
           
           if (score < mejorScore) {
             mejorScore = score;
             mejorTransbordo = {
               paraderoTransbordo: {
-                nombre: paradero.properties.nombre_paradero,
+                nombre: nombreParadero,
                 lat: lat,
                 lon: lon
               },
-              ruta1: rutaDesdeOrigen.ruta,
-              ruta2: rutaHastaDestino.ruta,
+              ruta1: rutaCompartidaConOrigen,
+              ruta2: rutaCompartidaConDestino,
               score: score
             };
+            
+            console.log('🔄 Mejor transbordo encontrado:', {
+              paradero: nombreParadero,
+              ruta1: rutaCompartidaConOrigen,
+              ruta2: rutaCompartidaConDestino,
+              score: Math.round(score)
+            });
           }
         }
       });
+      
+      if (mejorTransbordo) {
+        console.log('✅ Transbordo seleccionado:', mejorTransbordo);
+      } else {
+        console.log('❌ No se encontró transbordo viable');
+      }
       
       return mejorTransbordo;
     }
