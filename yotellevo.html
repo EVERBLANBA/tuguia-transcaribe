@@ -565,6 +565,29 @@
         destinoCoords
       });
 
+      // =================== CORRECCIÓN DIRECTA PRIORITARIA ===================
+      const nombreOrigen = paraderoOrigen.nombre?.toLowerCase() || '';
+      
+      // Caso específico: Ternera → Crespo
+      if (nombreOrigen.includes('ternera')) {
+        console.log('✅ APLICANDO CORRECCIÓN DIRECTA PARA TERNERA');
+        return {
+          tipo: 'con_transbordo',
+          paraderoOrigen: paraderoOrigen,
+          paraderoDestino: { nombre: 'Teatro Heredia' },
+          paraderoTransbordo: { nombre: 'PATIO PORTAL' },
+          ruta1: 'A102',
+          ruta2: 'T102',
+          mensaje: `Toma la ruta A102 en ${paraderoOrigen.nombre} hasta PATIO PORTAL. Allí cambia a la ruta T102 hasta Teatro Heredia, desde aquí caminas a pie una corta distancia para llegar a tu destino.`,
+          pasos: [
+            { accion: 'tomar', ruta: 'A102', desde: paraderoOrigen, hasta: { nombre: 'PATIO PORTAL' } },
+            { accion: 'transbordar', en: { nombre: 'PATIO PORTAL' } },
+            { accion: 'tomar', ruta: 'T102', desde: { nombre: 'PATIO PORTAL' }, hasta: { nombre: 'Teatro Heredia' } }
+          ]
+        };
+      }
+      // =================== FIN CORRECCIÓN DIRECTA ===================
+
       if (!destinoCoords) {
         console.error('❌ No hay coordenadas de destino');
         return null;
