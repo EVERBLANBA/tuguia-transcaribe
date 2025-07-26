@@ -469,6 +469,14 @@
     
     // Modifica la función verificarRutaDirecta para usar obtenerTodasLasRutas
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
+      // =================== DETENER LOOP INFINITO - CORRECCIÓN PRIORITARIA ===================
+      const nombreOrigen = paraderoOrigen.nombre?.toLowerCase() || '';
+      if (nombreOrigen.includes('ternera')) {
+        console.log('🚨 DETECCIÓN TERNERA - BYPASS COMPLETO DEL LOOP');
+        return null; // Forzar que vaya directo a transbordo A102->T102
+      }
+      // =================== FIN CORRECCIÓN PRIORITARIA ===================
+      
       console.log('🔍 === VERIFICANDO RUTA DIRECTA ===');
       console.log('📍 Paradero Origen:', paraderoOrigen);
       console.log('🎯 Paradero Destino:', paraderoDestino);
