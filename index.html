@@ -3107,8 +3107,14 @@
           startValue = nombre;
         }
       } else if (startMode === 'direccion') {
-        const startDireccionInput = document.getElementById('startDireccionInput');
-        startValue = startDireccionInput?.value || '';
+        // Usar el valor ya geocodificado de localStorage si existe
+        const existingStart = localStorage.getItem('tuguia_start');
+        if (existingStart) {
+          startValue = existingStart;
+        } else {
+          const startDireccionInput = document.getElementById('startDireccionInput');
+          startValue = startDireccionInput?.value || '';
+        }
       } else if (startMode === 'paradero') {
         const startParaderoSelect = document.getElementById('startParaderoSelect');
         const selectedOption = startParaderoSelect?.selectedOptions[0];
