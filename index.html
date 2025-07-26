@@ -2106,8 +2106,8 @@
           if (this.value.trim() && startMode === 'direccion') {
             const direccion = this.value.trim();
             console.log('🔍 Buscando coordenadas para origen:', direccion);
-            // Geocodificar la dirección usando Nominatim
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion + ', Cartagena, Colombia')}&limit=1`)
+            // Geocodificar la dirección usando Nominatim (búsqueda más amplia)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}&limit=1`)
               .then(res => res.json())
               .then(data => {
                 if (data.length > 0) {
@@ -2138,8 +2138,8 @@
           if (this.value.trim() && endMode === 'direccion') {
             const direccion = this.value.trim();
             console.log('🔍 Buscando coordenadas para destino:', direccion);
-            // Geocodificar la dirección usando Nominatim
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion + ', Cartagena, Colombia')}&limit=1`)
+            // Geocodificar la dirección usando Nominatim (búsqueda más amplia)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}&limit=1`)
               .then(res => res.json())
               .then(data => {
                 if (data.length > 0) {
