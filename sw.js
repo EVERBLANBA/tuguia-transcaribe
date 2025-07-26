@@ -1,28 +1,29 @@
 // =================== SERVICE WORKER PARA SEGUNDO PLANO ===================
 
-const CACHE_NAME = 'tuguia-v2';
-const CACHE_VERSION = '2.0.0';
+const CACHE_NAME = 'tuguia-v3';
+const CACHE_VERSION = '3.0.0';
 
 // Archivos críticos para funcionalidad offline
 const STATIC_CACHE_FILES = [
-    '/',
-    '/index.html',
-    '/yotellevo.html',
-    '/utils.js',
-    '/state-manager.js', 
-    '/error-handler.js',
-    '/logoagapai-ok2.png',
-    '/pin-morado.png',
-    '/pin-verde-destino.png',
-    '/BUS.jpeg',
-    '/bus-station.png'
+    './',
+    './index.html',
+    './yotellevo.html',
+    './utils.js',
+    './state-manager.js',
+    './error-handler.js',
+    './background-manager.js',
+    './mobile-optimization.js',
+    './logoagapai-ok2.png',
+    './pin-morado.png',
+    './pin-verde-destino.png',
+    './BUS.jpeg',
+    './bus-station.png'
 ];
 
 // Archivos de datos que se pueden cachear
 const DATA_CACHE_FILES = [
-    '/rutas_transcaribe.geojson',
-    '/paraderos.json',
-    '/manuales.geojson'
+    './rutas_transcaribe.geojson',
+    './paraderos.json'
 ];
 
 // URLs de APIs externas para cache
@@ -38,20 +39,36 @@ self.addEventListener('install', (event) => {
     
     event.waitUntil(
         Promise.all([
-            // Cache de archivos estáticos
-            caches.open(CACHE_NAME + '-static').then((cache) => {
+            // Cache de archivos estáticos (con manejo de errores)
+            caches.open(CACHE_NAME + '-static').then(async (cache) => {
                 console.log('📦 Cacheando archivos estáticos...');
-                return cache.addAll(STATIC_CACHE_FILES);
+                for (const file of STATIC_CACHE_FILES) {
+                    try {
+                        await cache.add(file);
+                        console.log(`✅ Cacheado: ${file}`);
+                    } catch (error) {
+                        console.warn(`⚠️ No se pudo cachear: ${file}`, error.message);
+                    }
+                }
             }),
-            // Cache de datos
-            caches.open(CACHE_NAME + '-data').then((cache) => {
+            // Cache de datos (con manejo de errores)
+            caches.open(CACHE_NAME + '-data').then(async (cache) => {
                 console.log('📊 Cacheando archivos de datos...');
-                return cache.addAll(DATA_CACHE_FILES);
+                for (const file of DATA_CACHE_FILES) {
+                    try {
+                        await cache.add(file);
+                        console.log(`✅ Cacheado: ${file}`);
+                    } catch (error) {
+                        console.warn(`⚠️ No se pudo cachear: ${file}`, error.message);
+                    }
+                }
             })
         ]).then(() => {
             console.log('✅ Service Worker instalado correctamente');
             // Forzar activación inmediata
             return self.skipWaiting();
+        }).catch((error) => {
+            console.error('❌ Error instalando Service Worker:', error);
         })
     );
 });
