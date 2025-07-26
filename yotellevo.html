@@ -218,6 +218,7 @@
           
         }
     </style>
+    <link rel="stylesheet" href="mobile-optimizations.css" />
 </head>
 <body>
   <header>
@@ -290,6 +291,13 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+    
+    <!-- Scripts para segundo plano y optimización móvil -->
+    <script src="utils.js"></script>
+    <script src="state-manager.js"></script>
+    <script src="error-handler.js"></script>
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
     <script>
     // =================== LÓGICA DE NAVEGACIÓN INTELIGENTE ===================
     
@@ -793,6 +801,12 @@
     function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {
       if (isIntelligentTrackingActive) return;
       
+      // Iniciar tracking en segundo plano para móviles
+      if (window.BackgroundManager && window.BackgroundManager.isMobile.isLikelyMobile) {
+        console.log('📱 Iniciando tracking en segundo plano para móvil...');
+        window.BackgroundManager.startBackgroundLocationTracking();
+      }
+      
       isIntelligentTrackingActive = true;
       intelligentTrackingDistance = 0;
       intelligentTrackingAlarmaActivada = false;
@@ -981,6 +995,12 @@
     if (intelligentTrackingWatchId) {
         navigator.geolocation.clearWatch(intelligentTrackingWatchId);
         intelligentTrackingWatchId = null;
+    }
+    
+    // Detener tracking en segundo plano
+    if (window.BackgroundManager) {
+        console.log('📱 Deteniendo tracking en segundo plano...');
+        window.BackgroundManager.stopBackgroundTracking();
     }
     
     isIntelligentTrackingActive = false;

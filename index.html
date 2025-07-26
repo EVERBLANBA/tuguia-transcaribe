@@ -6,6 +6,7 @@
     <title>Mi Guia - Te lleva</title>
     <script src="https://unpkg.com/@mapbox/polyline@1.1.1/src/polyline.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="mobile-optimizations.css" />
     <link rel="icon" type="image/png" href="logoagapai-ok2.png" />
     <style>
         body {
@@ -1361,6 +1362,13 @@
         }
     </style>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUadVPYtXGXPX1vWMR5nc3lgSrW-FzUls&libraries=places"></script>
+    
+    <!-- Scripts para segundo plano y optimización móvil -->
+    <script src="utils.js"></script>
+    <script src="state-manager.js"></script>
+    <script src="error-handler.js"></script>
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
 </head>
 <body>
    
