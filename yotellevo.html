@@ -393,12 +393,26 @@
         let paraderoMasCercano = null;
         let distanciaMinima = Infinity;
         
-        const paraderosTranscaribe = window.rutasTranscaribe.filter(f => 
-            f.geometry && 
-            f.geometry.type === "Point" && 
-            f.properties && 
-            f.properties.network === "Transcaribe"
-        );
+        // Filtro más inclusivo para encontrar paraderos
+        const paraderosTranscaribe = window.rutasTranscaribe.filter(f => {
+            if (!f.geometry || f.geometry.type !== "Point" || !f.properties) return false;
+            
+            const props = f.properties;
+            
+            // Criterios de inclusión para paraderos de Transcaribe
+            const esTranscaribe = 
+                (props.network && props.network.toLowerCase().includes('transcaribe')) ||
+                (props.operator && props.operator.toLowerCase().includes('transcaribe')) ||
+                (props.name && props.name.toLowerCase().includes('transcaribe')) ||
+                (props.nombre_paradero && props.nombre_paradero.trim() !== '') ||
+                (props.highway === 'bus_stop' && props.public_transport === 'platform') ||
+                (props.rutas && props.rutas !== '') ||
+                (props.tipos_ruta && props.tipos_ruta !== '');
+            
+            return esTranscaribe;
+        });
+        
+        console.log(`🔍 Paraderos encontrados para filtrar: ${paraderosTranscaribe.length}`);
         
         paraderosTranscaribe.forEach((paradero) => {
             const coords = paradero.geometry.coordinates;
@@ -428,10 +442,19 @@
     
     function obtenerTodasLasRutas(paradero) {
         let todas = [];
+        
+        // Intentar obtener rutas de diferentes propiedades
         if (paradero.rutas_troncales) todas = todas.concat(paradero.rutas_troncales);
         if (paradero.rutas_pretroncales) todas = todas.concat(paradero.rutas_pretroncales);
         if (paradero.rutas_alimentadoras) todas = todas.concat(paradero.rutas_alimentadoras);
         if (paradero.rutas_complementarias) todas = todas.concat(paradero.rutas_complementarias);
+        if (paradero.tipos_ruta) {
+            if (Array.isArray(paradero.tipos_ruta)) {
+                todas = todas.concat(paradero.tipos_ruta);
+            } else {
+                todas = todas.concat(String(paradero.tipos_ruta).split(',').map(r => r.trim()));
+            }
+        }
         if (paradero.rutas) {
             if (Array.isArray(paradero.rutas)) {
                 todas = todas.concat(paradero.rutas);
@@ -439,7 +462,10 @@
                 todas = todas.concat(String(paradero.rutas).split(',').map(r => r.trim()));
             }
         }
-        return [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
+        
+        const rutasFinales = [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
+        console.log(`🚌 Rutas encontradas para ${paradero.nombre}:`, rutasFinales);
+        return rutasFinales;
     }
     
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
@@ -456,7 +482,9 @@
     // =================== CÁLCULO DE RUTA ÓPTIMA ===================
     
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
-        console.log('🎯 Iniciando calcularRutaOptima');
+        console.log('🎯 === DIAGNÓSTICO CALCULAR RUTA ÓPTIMA ===');
+        console.log('📊 Paradero origen:', paraderoOrigen);
+        console.log('📊 Coordenadas destino:', destinoCoords);
 
         if (!destinoCoords) {
             console.error('❌ No hay coordenadas de destino');
@@ -483,13 +511,20 @@
             lng: destinoCoords[1]
         });
         
+        console.log('🎯 Paradero destino encontrado:', paraderoDestino);
+        
         if (!paraderoDestino) {
             console.error('❌ No se encontró paradero cercano al destino');
             return null;
         }
 
         // Verificar ruta directa
+        console.log('🔍 Verificando ruta directa entre:');
+        console.log('  - Origen:', paraderoOrigen.nombre, 'Rutas:', paraderoOrigen.rutas || paraderoOrigen.tipos_ruta);
+        console.log('  - Destino:', paraderoDestino.nombre, 'Rutas:', paraderoDestino.rutas || paraderoDestino.tipos_ruta);
+        
         const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
+        console.log('🎯 Resultado ruta directa:', rutaDirecta);
         
         // Calcular distancia a pie
         let distanciaAPie = await obtenerDistanciaCaminando(
