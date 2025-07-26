@@ -3462,12 +3462,53 @@
       console.log('  Paradero destino:', paraderoDestino.lat, paraderoDestino.lon);
       console.log('  Coordenadas finales:', destinoCoords);
       
-      const distanciaAPie = calcularDistanciaHaversine(
-        paraderoDestino.lat, paraderoDestino.lon,
-        destinoCoords[0], destinoCoords[1]
-      );
+      // VALIDACIÓN INTELIGENTE DE COORDENADAS
+      let latDestino = paraderoDestino.lat;
+      let lonDestino = paraderoDestino.lon;
+      let latFinal = destinoCoords[0];
+      let lonFinal = destinoCoords[1];
       
-      console.log('🚶 Distancia a pie calculada:', Math.round(distanciaAPie), 'metros');
+      // Verificar si las coordenadas están en rango válido para Cartagena
+      const validarCoordenada = (lat, lon, nombre) => {
+        const esLatValida = lat >= 10.0 && lat <= 11.0;  // Cartagena está entre 10-11°N
+        const esLonValida = lon >= -76.0 && lon <= -75.0; // Cartagena está entre -76 a -75°W
+        
+        if (!esLatValida || !esLonValida) {
+          console.warn(`⚠️ Coordenada sospechosa en ${nombre}: lat=${lat}, lon=${lon}`);
+          return false;
+        }
+        return true;
+      };
+      
+      const destinoValido = validarCoordenada(latDestino, lonDestino, 'paradero destino');
+      const finalValido = validarCoordenada(latFinal, lonFinal, 'coordenadas finales');
+      
+      let distanciaAPie = 0;
+      
+      if (destinoValido && finalValido) {
+        distanciaAPie = calcularDistanciaHaversine(latDestino, lonDestino, latFinal, lonFinal);
+        console.log('🚶 Distancia a pie calculada:', Math.round(distanciaAPie), 'metros');
+        
+        // Validar que la distancia sea razonable (máximo 10km en una ciudad)
+        if (distanciaAPie > 10000) {
+          console.error('❌ Distancia a pie sospechosa:', distanciaAPie, 'metros');
+          console.log('🔍 Verificando si hay intercambio de lat/lon...');
+          
+          // Probar intercambiando lat/lon en caso de error de formato
+          const distanciaAlternativa = calcularDistanciaHaversine(lonDestino, latDestino, lonFinal, latFinal);
+          if (distanciaAlternativa < distanciaAPie && distanciaAlternativa < 10000) {
+            console.log('✅ Corrección aplicada: intercambio lat/lon detectado');
+            distanciaAPie = distanciaAlternativa;
+          } else {
+            // Si sigue siendo muy grande, usar una distancia por defecto razonable
+            distanciaAPie = 500; // 500 metros por defecto
+            console.log('🔧 Usando distancia por defecto:', distanciaAPie, 'metros');
+          }
+        }
+      } else {
+        console.error('❌ Coordenadas inválidas, usando distancia por defecto');
+        distanciaAPie = 500; // 500 metros por defecto
+      }
       
       // Verificar si hay ruta directa
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
@@ -3539,104 +3580,163 @@
       return null;
     }
     
-    // Función para encontrar mejor transbordo
+    // Función para encontrar mejor transbordo - VERSIÓN INTELIGENTE
     function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
       if (!window.rutasTranscaribe) return null;
       
-      console.log('🔄 Buscando transbordo entre:', paraderoOrigen.nombre, '→', paraderoDestino.nombre);
+      console.log('🧠 ANÁLISIS INTELIGENTE DE TRANSBORDO');
+      console.log('  Origen:', paraderoOrigen.nombre, '→ Destino:', paraderoDestino.nombre);
       
-      // Obtener rutas del origen y destino
-      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
-        paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
-        (Array.isArray(paraderoOrigen.rutas) ? paraderoOrigen.rutas : []);
+      // Obtener rutas del origen y destino de manera robusta
+      const rutasOrigen = extraerRutasDeParadero(paraderoOrigen);
+      const rutasDestino = extraerRutasDeParadero(paraderoDestino);
       
-      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
-        paraderoDestino.rutas.split(',').map(r => r.trim()) : 
-        (Array.isArray(paraderoDestino.rutas) ? paraderoDestino.rutas : []);
+      console.log('  🚌 Rutas origen:', rutasOrigen);
+      console.log('  🏁 Rutas destino:', rutasDestino);
       
-      console.log('  Rutas origen:', rutasOrigen);
-      console.log('  Rutas destino:', rutasDestino);
-      
-      // Buscar paraderos que conecten las rutas
-      const paraderosTransbordo = window.rutasTranscaribe.filter(f => 
+      // 1. ANÁLISIS DE PROXIMIDAD GEOGRÁFICA: Buscar paraderos intermedios
+      const paraderosDisponibles = window.rutasTranscaribe.filter(f => 
         f.geometry && 
         f.geometry.type === "Point" && 
         f.properties && 
         f.properties.network === "Transcaribe"
       );
       
-      let mejorTransbordo = null;
-      let mejorScore = Infinity;
+      let mejoresTransbordos = [];
       
-      paraderosTransbordo.forEach(paradero => {
-        const coords = paradero.geometry.coordinates;
-        const lat = coords[1];
-        const lon = coords[0];
+      paraderosDisponibles.forEach(paradero => {
+        const rutasParadero = extraerRutasDeParadero(paradero.properties);
         
-        const rutasParadero = typeof paradero.properties.rutas === 'string' ? 
-          paradero.properties.rutas.split(',').map(r => r.trim()) : 
-          (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
+        // 2. ANÁLISIS DE CONECTIVIDAD: Buscar rutas que conecten origen y destino
+        const rutasCompartidasConOrigen = rutasParadero.filter(ruta => rutasOrigen.includes(ruta));
+        const rutasCompartidasConDestino = rutasParadero.filter(ruta => rutasDestino.includes(ruta));
         
-        // Buscar rutas comunes con origen y destino
-        const rutaCompartidaConOrigen = rutasParadero.find(ruta => rutasOrigen.includes(ruta));
-        const rutaCompartidaConDestino = rutasParadero.find(ruta => rutasDestino.includes(ruta));
-        
-        // Si el paradero comparte rutas tanto con origen como con destino
-        if (rutaCompartidaConOrigen && rutaCompartidaConDestino && 
-            rutaCompartidaConOrigen !== rutaCompartidaConDestino) {
+        // Si hay al menos una ruta común con cada extremo
+        if (rutasCompartidasConOrigen.length > 0 && rutasCompartidasConDestino.length > 0) {
+          const coords = paradero.geometry.coordinates;
+          const lat = coords[1];
+          const lon = coords[0];
           
-          // Calcular score basado en distancia total y preferencia por terminales
+          // 3. ANÁLISIS DE DISTANCIA GEOGRÁFICA: Calcular eficiencia del recorrido
           const distOrigenTransbordo = calcularDistanciaHaversine(
-            paraderoOrigen.lat, paraderoOrigen.lon,
-            lat, lon
+            paraderoOrigen.lat, paraderoOrigen.lon, lat, lon
           );
           
           const distTransbordoDestino = calcularDistanciaHaversine(
-            lat, lon,
+            lat, lon, paraderoDestino.lat, paraderoDestino.lon
+          );
+          
+          const distanciaDirecta = calcularDistanciaHaversine(
+            paraderoOrigen.lat, paraderoOrigen.lon,
             paraderoDestino.lat, paraderoDestino.lon
           );
           
-          let score = distOrigenTransbordo + distTransbordoDestino;
+          // 4. ANÁLISIS DE EFICIENCIA: Calcular factor de eficiencia del transbordo
+          const distanciaTotal = distOrigenTransbordo + distTransbordoDestino;
+          const factorEficiencia = distanciaDirecta / distanciaTotal; // Closer to 1 = more efficient
           
-          // Bonus para terminales principales (nombres que contengan "Terminal" o "Las Américas")
-          const nombreParadero = paradero.properties.nombre_paradero || '';
-          if (nombreParadero.toLowerCase().includes('terminal') || 
-              nombreParadero.toLowerCase().includes('américas') ||
-              nombreParadero.toLowerCase().includes('americas')) {
-            score *= 0.7; // Reducir score (mejor prioridad)
-            console.log('🎯 Terminal detectado:', nombreParadero, '- Score mejorado');
-          }
+          // 5. SELECCIÓN INTELIGENTE DE RUTAS: Elegir la mejor combinación
+          let mejorRuta1 = null;
+          let mejorRuta2 = null;
+          let mejorScore = 0;
           
-          if (score < mejorScore) {
-            mejorScore = score;
-            mejorTransbordo = {
+          // Evaluar todas las combinaciones posibles
+          rutasCompartidasConOrigen.forEach(ruta1 => {
+            rutasCompartidasConDestino.forEach(ruta2 => {
+              if (ruta1 !== ruta2) { // Evitar loops (misma ruta)
+                // Score basado en tipo de ruta (Troncales > Pretroncales > Alimentadoras > Complementarias)
+                const scoreRuta1 = calcularScoreRuta(ruta1);
+                const scoreRuta2 = calcularScoreRuta(ruta2);
+                const scoreCombo = scoreRuta1 + scoreRuta2 + factorEficiencia;
+                
+                if (scoreCombo > mejorScore) {
+                  mejorScore = scoreCombo;
+                  mejorRuta1 = ruta1;
+                  mejorRuta2 = ruta2;
+                }
+              }
+            });
+          });
+          
+          if (mejorRuta1 && mejorRuta2) {
+            mejoresTransbordos.push({
               paraderoTransbordo: {
-                nombre: nombreParadero,
+                nombre: paradero.properties.nombre_paradero || 'Paradero',
                 lat: lat,
                 lon: lon
               },
-              ruta1: rutaCompartidaConOrigen,
-              ruta2: rutaCompartidaConDestino,
-              score: score
-            };
-            
-            console.log('🔄 Mejor transbordo encontrado:', {
-              paradero: nombreParadero,
-              ruta1: rutaCompartidaConOrigen,
-              ruta2: rutaCompartidaConDestino,
-              score: Math.round(score)
+              ruta1: mejorRuta1,
+              ruta2: mejorRuta2,
+              distanciaTotal: distanciaTotal,
+              factorEficiencia: factorEficiencia,
+              score: mejorScore,
+              distOrigenTransbordo: distOrigenTransbordo,
+              distTransbordoDestino: distTransbordoDestino
             });
           }
         }
       });
       
-      if (mejorTransbordo) {
-        console.log('✅ Transbordo seleccionado:', mejorTransbordo);
-      } else {
-        console.log('❌ No se encontró transbordo viable');
+      // 6. SELECCIÓN DEL MEJOR TRANSBORDO: Ordenar por score y eficiencia
+      if (mejoresTransbordos.length === 0) {
+        console.log('❌ No se encontraron transbordos viables');
+        return null;
       }
       
+      mejoresTransbordos.sort((a, b) => {
+        // Priorizar por eficiencia y luego por score
+        const diffEficiencia = b.factorEficiencia - a.factorEficiencia;
+        if (Math.abs(diffEficiencia) > 0.1) return diffEficiencia;
+        return b.score - a.score;
+      });
+      
+      const mejorTransbordo = mejoresTransbordos[0];
+      
+      console.log('🎯 RESULTADO DEL ANÁLISIS:');
+      console.log('  🏆 Mejor transbordo:', mejorTransbordo.paraderoTransbordo.nombre);
+      console.log('  🛤️  Ruta 1:', mejorTransbordo.ruta1, '→ Ruta 2:', mejorTransbordo.ruta2);
+      console.log('  📏 Distancia total:', Math.round(mejorTransbordo.distanciaTotal), 'm');
+      console.log('  📊 Factor eficiencia:', mejorTransbordo.factorEficiencia.toFixed(2));
+      console.log('  ⭐ Score:', mejorTransbordo.score.toFixed(2));
+      
       return mejorTransbordo;
+    }
+    
+    // Función auxiliar para extraer rutas de manera robusta
+    function extraerRutasDeParadero(propiedades) {
+      if (!propiedades) return [];
+      
+      let rutas = propiedades.rutas || [];
+      
+      // Manejar diferentes formatos
+      if (typeof rutas === 'string') {
+        rutas = rutas.split(',').map(r => r.trim());
+      } else if (!Array.isArray(rutas)) {
+        rutas = [];
+      }
+      
+      return rutas.filter(ruta => ruta && ruta.length > 0);
+    }
+    
+    // Función auxiliar para calcular score de ruta basado en tipo
+    function calcularScoreRuta(ruta) {
+      if (!ruta) return 0;
+      
+      const codigoRuta = ruta.toUpperCase();
+      
+      // Troncales (T) = score más alto
+      if (codigoRuta.startsWith('T')) return 4;
+      
+      // Pretroncales (X) = score alto  
+      if (codigoRuta.startsWith('X')) return 3;
+      
+      // Alimentadoras (A) = score medio
+      if (codigoRuta.startsWith('A')) return 2;
+      
+      // Complementarias (C) = score bajo
+      if (codigoRuta.startsWith('C')) return 1;
+      
+      return 1; // Default
     }
     
     // Función para mostrar instrucciones inteligentes
