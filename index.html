@@ -1492,7 +1492,9 @@
       <div style="background: rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 12px 20px; font-size: 1rem; color: #0a2342; font-weight: 500; margin-bottom: 8px; min-width: 220px; text-align: center;">
         ¿No sabes como llegar?
       </div>
-      <button id="yoTeLlevoBtn" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
+      <a href="yotellevo.html" style="text-decoration: none;" onclick="guardarPuntosEnLocalStorage()">
+        <button id="yoTeLlevoBtn" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
+      </a>
     </div>
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
@@ -2116,6 +2118,8 @@
                   const lon = parseFloat(data[0].lon);
                   console.log('✅ Coordenadas encontradas para origen:', [lat, lon]);
                   localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
+                  // Verificar si ambos puntos están completos para activar navegación automática
+                  verificarPuntosCompletos();
                 } else {
                   console.warn('❌ No se encontraron coordenadas para origen:', direccion);
                   localStorage.setItem('tuguia_start', direccion);
@@ -2148,6 +2152,8 @@
                   const lon = parseFloat(data[0].lon);
                   console.log('✅ Coordenadas encontradas para destino:', [lat, lon]);
                   localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
+                  // Verificar si ambos puntos están completos para activar navegación automática
+                  verificarPuntosCompletos();
                 } else {
                   console.warn('❌ No se encontraron coordenadas para destino:', direccion);
                   localStorage.setItem('tuguia_end', direccion);
@@ -3082,18 +3088,7 @@
         });
       }
     });
-        // Función simple para el botón "Yo te llevo"
-    function ejecutarYoTeLlevo() {
-      console.log('🚀 Botón Yo te llevo clickeado');
-      
-      // Usar la función existente de seguimiento automático que YA FUNCIONA
-      const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      if (startMode === 'ubicacion' || startMode === 'direccion') {
-        iniciarSeguimientoAutomatico();
-      } else {
-        alert('⚠️ Selecciona "Mi ubicación" o "Dirección" como punto de partida.');
-      }
-    }
+        
 
     function guardarPuntosEnLocalStorage() {
       console.log('💾 Guardando puntos en localStorage...');
@@ -3180,16 +3175,51 @@
       }
     }
 
+    // =================== FUNCIÓN PARA VERIFICAR PUNTOS COMPLETOS ===================
+    
+    function verificarPuntosCompletos() {
+      const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
+      const endMode = document.querySelector('input[name="endMode"]:checked')?.value;
+      
+      // Solo activar para direcciones escritas
+      if (startMode === 'direccion' && endMode === 'direccion') {
+        const start = localStorage.getItem('tuguia_start');
+        const end = localStorage.getItem('tuguia_end');
+        
+        let startCompleto = false;
+        let endCompleto = false;
+        
+        // Verificar si el inicio tiene coordenadas
+        try {
+          const startData = JSON.parse(start);
+          if (startData.coords && Array.isArray(startData.coords)) {
+            startCompleto = true;
+          }
+        } catch (e) {}
+        
+        // Verificar si el destino tiene coordenadas  
+        try {
+          const endData = JSON.parse(end);
+          if (endData.coords && Array.isArray(endData.coords)) {
+            endCompleto = true;
+          }
+        } catch (e) {}
+        
+        console.log('🔍 Verificando puntos completos:', { startCompleto, endCompleto });
+        
+        // Si ambos están completos, activar navegación inteligente
+        if (startCompleto && endCompleto) {
+          console.log('✅ Ambos puntos completos - Activando navegación inteligente automática');
+          setTimeout(() => {
+            iniciarSeguimientoAutomatico();
+          }, 500); // Pequeño delay para asegurar que todo esté listo
+        }
+      }
+    }
+
     // =================== EVENT LISTENERS ===================
     
-    // Event listener para el botón "¡Yo te llevo!"
-    document.addEventListener('DOMContentLoaded', function() {
-      const yoTeLlevoBtn = document.getElementById('yoTeLlevoBtn');
-      if (yoTeLlevoBtn) {
-        yoTeLlevoBtn.addEventListener('click', ejecutarYoTeLlevo);
-        console.log('✅ Event listener agregado al botón "¡Yo te llevo!"');
-      }
-    });
+
 
     // Modificar parseCoords para aceptar objetos con coords
     function parseCoords(str) {
