@@ -3230,16 +3230,32 @@
 
     // Función que se activa automáticamente después de la simulación
     function iniciarSeguimientoAutomatico() {
-      // Obtener coordenadas del destino si existe
+      // Obtener coordenadas del destino desde endMarker o localStorage
       let destinoCoords = null;
+      
       if (window.endMarker) {
         const endLatLng = window.endMarker.getLatLng();
         destinoCoords = [endLatLng.lat, endLatLng.lng];
+      } else {
+        // Intentar obtener desde localStorage
+        const endData = localStorage.getItem('tuguia_end');
+        if (endData) {
+          try {
+            const endObj = JSON.parse(endData);
+            if (endObj.coords && Array.isArray(endObj.coords) && endObj.coords.length === 2) {
+              destinoCoords = endObj.coords;
+            }
+          } catch (e) {
+            console.warn('⚠️ No se pudieron extraer coordenadas de destino desde localStorage');
+          }
+        }
       }
       
-      // === NUEVA LÓGICA INTELIGENTE: Solo si el modo de inicio es GPS ===
+      console.log('🎯 Coordenadas de destino obtenidas:', destinoCoords);
+      
+      // === NUEVA LÓGICA INTELIGENTE: Para direcciones escritas y GPS ===
       const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      if (startMode === 'ubicacion') {
+      if (startMode === 'ubicacion' || startMode === 'direccion') {
         // Activar navegación inteligente automática
         iniciarNavegacionInteligente(destinoCoords);
       } else {
@@ -3255,13 +3271,49 @@
       try {
         console.log('🧠 Iniciando navegación inteligente...');
         
-        // 1. Obtener ubicación GPS actual
-        const ubicacionUsuario = await obtenerUbicacionGPS();
+        // 1. Obtener ubicación según el modo de inicio
+        let ubicacionUsuario = null;
+        const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
+        
+        if (startMode === 'direccion') {
+          // Si el modo es dirección, usar coordenadas del startMarker o localStorage
+          if (window.startMarker) {
+            const startLatLng = window.startMarker.getLatLng();
+            ubicacionUsuario = {
+              lat: startLatLng.lat,
+              lng: startLatLng.lng,
+              accuracy: 0
+            };
+          } else {
+            // Intentar obtener desde localStorage
+            const startData = localStorage.getItem('tuguia_start');
+            if (startData) {
+              try {
+                const startObj = JSON.parse(startData);
+                if (startObj.coords && Array.isArray(startObj.coords) && startObj.coords.length === 2) {
+                  ubicacionUsuario = {
+                    lat: startObj.coords[0],
+                    lng: startObj.coords[1],
+                    accuracy: 0
+                  };
+                }
+              } catch (e) {
+                console.warn('⚠️ No se pudieron extraer coordenadas de inicio desde localStorage');
+              }
+            }
+          }
+        } else {
+          // Para modo ubicación, usar GPS real
+          ubicacionUsuario = await obtenerUbicacionGPS();
+        }
+        
         if (!ubicacionUsuario) {
-          console.error('❌ No se pudo obtener ubicación GPS');
+          console.error('❌ No se pudo obtener ubicación del usuario');
           iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
           return;
         }
+        
+        console.log('📍 Ubicación del usuario obtenida:', ubicacionUsuario);
         
         // 2. Encontrar paradero más cercano automáticamente
         const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
@@ -3395,6 +3447,22 @@
         return null;
       }
       
+      // Obtener el nombre del destino desde localStorage
+      const endData = localStorage.getItem('tuguia_end');
+      let nombreDestino = 'destino';
+      try {
+        const endObj = JSON.parse(endData);
+        nombreDestino = endObj.nombre || 'destino';
+      } catch (e) {
+        nombreDestino = endData || 'destino';
+      }
+      
+      // Calcular distancia a pie desde paradero destino hasta coordenadas finales
+      const distanciaAPie = calcularDistanciaHaversine(
+        paraderoDestino.lat, paraderoDestino.lon,
+        destinoCoords[0], destinoCoords[1]
+      );
+      
       // Verificar si hay ruta directa
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       
@@ -3404,8 +3472,8 @@
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.ruta,
-          mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+          mensaje: (distanciaAPie > 100)
+            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`
             : `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`,
           pasos: [
             { accion: 'tomar', ruta: rutaDirecta.ruta, desde: paraderoOrigen, hasta: paraderoDestino }
@@ -3423,8 +3491,8 @@
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             ruta2: transbordo.ruta2,
-            mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+            mensaje: (distanciaAPie > 100)
+              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`
               : `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`,
             pasos: [
               { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
