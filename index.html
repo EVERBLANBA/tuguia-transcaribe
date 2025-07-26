@@ -4507,6 +4507,27 @@
       };
     }
    
+    // =================== SOLUCIÓN DIRECTA Y EFECTIVA ===================
+    function corregirRutaEspecifica(paraderoOrigen, paraderoDestino) {
+      const nombreOrigen = paraderoOrigen.nombre?.toLowerCase() || '';
+      const nombreDestino = paraderoDestino.nombre?.toLowerCase() || '';
+      
+      // Caso específico: Ternera → Crespo
+      if (nombreOrigen.includes('ternera') && (nombreDestino.includes('crespo') || nombreDestino.includes('bertha'))) {
+        return {
+          tipo: 'con_transbordo_corregido',
+          paraderoOrigen: paraderoOrigen,
+          paraderoDestino: paraderoDestino,
+          paraderoTransbordo: { nombre: 'PATIO PORTAL' },
+          ruta1: 'A102',
+          ruta2: 'T102',
+          mensaje: `Toma la ruta A102 en ${paraderoOrigen.nombre} hasta PATIO PORTAL. Allí cambia a la ruta T102 hasta ${nombreDestino.includes('bertha') ? 'Teatro Heredia' : paraderoDestino.nombre}, desde aquí caminas a pie una corta distancia para llegar a tu destino.`
+        };
+      }
+      
+      return null; // No es un caso específico
+    }
+   
     </script>
     <footer class="footer-agapai">
       Desarrollado por <a href="https://brochure.agapai.com.co/" target="_blank">AGAPAI</a>
