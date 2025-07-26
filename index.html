@@ -6,6 +6,7 @@
     <title>Mi Guia - Te lleva</title>
     <script src="https://unpkg.com/@mapbox/polyline@1.1.1/src/polyline.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="mobile-optimizations.css" />
     <link rel="icon" type="image/png" href="logoagapai-ok2.png" />
     <style>
         body {
@@ -1361,6 +1362,13 @@
         }
     </style>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUadVPYtXGXPX1vWMR5nc3lgSrW-FzUls&libraries=places"></script>
+    
+    <!-- Scripts para segundo plano y optimización móvil -->
+    <script src="utils.js"></script>
+    <script src="state-manager.js"></script>
+    <script src="error-handler.js"></script>
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
 </head>
 <body>
    
@@ -1488,7 +1496,7 @@
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
     
-    <button class="map-selection-toggle" id="toggleMapSelection"> Mostrar selección en mapa (origen/destino)</button>
+    <button class="map-selection-toggle" id="toggleMapSelection">��️ Mostrar selección en mapa (origen/destino)</button>
     <div class="map-selection-controls" id="mapSelectionControls" style="display: none !important;">
         <h4>Selecciona en el mapa</h4>
         <div class="map-selection-buttons">
@@ -2324,7 +2332,7 @@
       paraderos.forEach(stop => {
         const marker = L.marker([stop.lat, stop.lon], {
           icon: L.icon({
-            iconUrl: 'bus-parking.png',
+            iconUrl: 'BUS.jpeg',
             iconSize: [32, 32],
             iconAnchor: [16, 32]
           })
@@ -2550,8 +2558,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -2633,8 +2639,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           endDireccionInput.value = direccionCorta;
           endSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.endMarker) map.removeLayer(window.endMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/447/447031.png', iconSize: [32,32], iconAnchor: [16,32] })
@@ -2927,8 +2931,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -3086,7 +3088,6 @@
       const endMode = document.querySelector('input[name="endMode"]:checked')?.value || 'direccion';
       let startValue = '';
       let endValue = '';
-
       // Procesar punto de partida según el modo
       if (startMode === 'ubicacion') {
         const startUbicacionInput = document.getElementById('startUbicacionInput');
@@ -3100,37 +3101,10 @@
             coords = parts;
           }
         }
-        // SIEMPRE guardar como objeto con nombre y coords
         if (coords) {
           startValue = JSON.stringify({ nombre, coords });
-        } else if (window.startMarker) {
-          // Si no hay coords en localStorage pero hay marcador, usar esas coords
-          const startLatLng = window.startMarker.getLatLng();
-          startValue = JSON.stringify({
-            nombre,
-            coords: [startLatLng.lat, startLatLng.lng]
-          });
         } else {
-          // Si no hay coords ni marcador, intentar obtener la ubicación actual
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              startValue = JSON.stringify({
-                nombre: 'Mi ubicación actual',
-                coords: [pos.coords.latitude, pos.coords.longitude]
-              });
-              localStorage.setItem('tuguia_start', startValue);
-              localStorage.setItem('tuguia_start_mode', startMode);
-            },
-            (err) => {
-              console.error('Error obteniendo ubicación:', err);
-              startValue = JSON.stringify({
-                nombre: 'Ubicación no disponible',
-                coords: null
-              });
-              localStorage.setItem('tuguia_start', startValue);
-              localStorage.setItem('tuguia_start_mode', startMode);
-            }
-          );
+          startValue = nombre;
         }
       } else if (startMode === 'direccion') {
         const startDireccionInput = document.getElementById('startDireccionInput');
@@ -3145,7 +3119,6 @@
           startValue = '';
         }
       }
-
       // Procesar punto destino según el modo
       if (endMode === 'direccion') {
         const endDireccionInput = document.getElementById('endDireccionInput');
@@ -3160,18 +3133,8 @@
         } catch (e) {}
         if (isObjWithCoords) {
           endValue = endLS;
-        } else if (window.endMarker) {
-          // Si no hay coords en localStorage pero hay marcador, usar esas coords
-          const endLatLng = window.endMarker.getLatLng();
-          endValue = JSON.stringify({
-            nombre,
-            coords: [endLatLng.lat, endLatLng.lng]
-          });
         } else {
-          endValue = JSON.stringify({
-            nombre,
-            coords: null
-          });
+          endValue = nombre;
         }
       } else if (endMode === 'paradero') {
         const endParaderoSelect = document.getElementById('endParaderoSelect');
@@ -3183,30 +3146,22 @@
           endValue = '';
         }
       }
-
-      // Si tenemos marcadores en el mapa y no hay valores, usar sus coordenadas
+      // Si tenemos marcadores en el mapa, usar sus coordenadas
       if (window.startMarker && !startValue) {
         const startLatLng = window.startMarker.getLatLng();
-        startValue = JSON.stringify({
-          nombre: 'Punto seleccionado en mapa',
-          coords: [startLatLng.lat, startLatLng.lng]
-        });
+        startValue = `${startLatLng.lat}, ${startLatLng.lng}`;
       }
       if (window.endMarker && !endValue) {
         const endLatLng = window.endMarker.getLatLng();
-        endValue = JSON.stringify({
-          nombre: 'Punto seleccionado en mapa',
-          coords: [endLatLng.lat, endLatLng.lng]
-        });
+        endValue = `${endLatLng.lat}, ${endLatLng.lng}`;
       }
-
       // Guardar en localStorage
+      localStorage.setItem('tuguia_start', startValue);
+      localStorage.setItem('tuguia_end', endValue);
       if (startValue) {
-        localStorage.setItem('tuguia_start', startValue);
         localStorage.setItem('tuguia_start_mode', startMode);
       }
       if (endValue) {
-        localStorage.setItem('tuguia_end', endValue);
         localStorage.setItem('tuguia_end_mode', endMode);
       }
     }
