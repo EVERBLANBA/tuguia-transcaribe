@@ -1479,9 +1479,6 @@
         </div>
     </div>
     
-    <!-- Panel Tu Guía Inteligente -->
-    <div id="panel-guia-inteligente" style="max-width: 800px; margin: 1rem auto; padding: 0 1rem;"></div>
-    
     <div class="controls" style="justify-content: center; gap: 1rem;">
         <button id="startRoute" class="btn-primary">Iniciar recorrido</button>
         <button id="clearRoute" class="btn-secondary">Limpiar ruta</button>
@@ -2118,8 +2115,6 @@
                   const lon = parseFloat(data[0].lon);
                   console.log('✅ Coordenadas encontradas para origen:', [lat, lon]);
                   localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
-                  // Verificar si ambos puntos están completos para activar navegación automática
-                  verificarPuntosCompletos();
                 } else {
                   console.warn('❌ No se encontraron coordenadas para origen:', direccion);
                   localStorage.setItem('tuguia_start', direccion);
@@ -2152,8 +2147,6 @@
                   const lon = parseFloat(data[0].lon);
                   console.log('✅ Coordenadas encontradas para destino:', [lat, lon]);
                   localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccion, coords: [lat, lon] }));
-                  // Verificar si ambos puntos están completos para activar navegación automática
-                  verificarPuntosCompletos();
                 } else {
                   console.warn('❌ No se encontraron coordenadas para destino:', direccion);
                   localStorage.setItem('tuguia_end', direccion);
@@ -3088,8 +3081,6 @@
         });
       }
     });
-        
-
     function guardarPuntosEnLocalStorage() {
       console.log('💾 Guardando puntos en localStorage...');
       // Obtener el modo seleccionado para el punto de partida
@@ -3175,51 +3166,6 @@
       }
     }
 
-    // =================== FUNCIÓN PARA VERIFICAR PUNTOS COMPLETOS ===================
-    
-    function verificarPuntosCompletos() {
-      const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      const endMode = document.querySelector('input[name="endMode"]:checked')?.value;
-      
-      // Solo activar para direcciones escritas
-      if (startMode === 'direccion' && endMode === 'direccion') {
-        const start = localStorage.getItem('tuguia_start');
-        const end = localStorage.getItem('tuguia_end');
-        
-        let startCompleto = false;
-        let endCompleto = false;
-        
-        // Verificar si el inicio tiene coordenadas
-        try {
-          const startData = JSON.parse(start);
-          if (startData.coords && Array.isArray(startData.coords)) {
-            startCompleto = true;
-          }
-        } catch (e) {}
-        
-        // Verificar si el destino tiene coordenadas  
-        try {
-          const endData = JSON.parse(end);
-          if (endData.coords && Array.isArray(endData.coords)) {
-            endCompleto = true;
-          }
-        } catch (e) {}
-        
-        console.log('🔍 Verificando puntos completos:', { startCompleto, endCompleto });
-        
-        // Si ambos están completos, activar navegación inteligente
-        if (startCompleto && endCompleto) {
-          console.log('✅ Ambos puntos completos - Activando navegación inteligente automática');
-          setTimeout(() => {
-            iniciarSeguimientoAutomatico();
-          }, 500); // Pequeño delay para asegurar que todo esté listo
-        }
-      }
-    }
-
-    // =================== EVENT LISTENERS ===================
-    
-
 
     // Modificar parseCoords para aceptar objetos con coords
     function parseCoords(str) {
@@ -3285,13 +3231,13 @@
         destinoCoords = [endLatLng.lat, endLatLng.lng];
       }
       
-      // === NUEVA LÓGICA INTELIGENTE: Funciona con GPS y direcciones escritas ===
+      // === NUEVA LÓGICA INTELIGENTE: Solo si el modo de inicio es GPS ===
       const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      if (startMode === 'ubicacion' || startMode === 'direccion') {
-        // Activar navegación inteligente automática para GPS y direcciones
+      if (startMode === 'ubicacion') {
+        // Activar navegación inteligente automática
         iniciarNavegacionInteligente(destinoCoords);
       } else {
-        // Mantener lógica existente solo para modo paradero
+        // Mantener lógica existente para otros modos
         iniciarSeguimientoReal(destinoCoords);
       }
     }
@@ -3303,28 +3249,10 @@
       try {
         console.log('🧠 Iniciando navegación inteligente...');
         
-        // 1. Obtener ubicación de inicio (GPS o dirección escrita)
-        const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-        let ubicacionUsuario = null;
-        
-        if (startMode === 'ubicacion') {
-          // Usar ubicación GPS real
-          ubicacionUsuario = await obtenerUbicacionGPS();
-        } else if (startMode === 'direccion') {
-          // Usar coordenadas de la dirección escrita
-          if (window.startMarker) {
-            const startLatLng = window.startMarker.getLatLng();
-            ubicacionUsuario = {
-              lat: startLatLng.lat,
-              lng: startLatLng.lng,
-              accuracy: 50 // Simular precisión
-            };
-            console.log('✅ Usando coordenadas de dirección escrita:', ubicacionUsuario);
-          }
-        }
-        
+        // 1. Obtener ubicación GPS actual
+        const ubicacionUsuario = await obtenerUbicacionGPS();
         if (!ubicacionUsuario) {
-          console.error('❌ No se pudo obtener ubicación de inicio');
+          console.error('❌ No se pudo obtener ubicación GPS');
           iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
           return;
         }
@@ -3347,6 +3275,9 @@
         
         // 4. Mostrar instrucciones inteligentes
         mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario);
+        
+        // 5. Iniciar seguimiento inteligente
+        iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario);
         
       } catch (error) {
         console.error('❌ Error en navegación inteligente:', error);
@@ -3462,46 +3393,14 @@
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       
       if (rutaDirecta) {
-        // Obtener información del destino final
-        const endMode = localStorage.getItem('tuguia_end_mode') || '';
-        const endData = localStorage.getItem('tuguia_end') || '';
-        
-        let nombreDestino = 'destino';
-        try {
-          if (endData) {
-            const datos = JSON.parse(endData);
-            nombreDestino = datos.nombre || 'destino';
-          }
-        } catch (e) {
-          nombreDestino = 'destino';
-        }
-        
-        // Calcular distancia a pie si no es un paradero como destino
-        let distanciaAPie = 0;
-        if (endMode !== 'paradero') {
-          try {
-            distanciaAPie = haversine(
-              paraderoDestino.lat, paraderoDestino.lon,
-              destinoCoords[0], destinoCoords[1]
-            );
-          } catch (e) {
-            distanciaAPie = 0;
-          }
-        }
-        
-        let mensaje;
-        if (endMode === 'paradero') {
-          mensaje = `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`;
-        } else {
-          mensaje = `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`;
-        }
-        
         return {
           tipo: 'directa',
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.ruta,
-          mensaje: mensaje,
+          mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
+            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+            : `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`,
           pasos: [
             { accion: 'tomar', ruta: rutaDirecta.ruta, desde: paraderoOrigen, hasta: paraderoDestino }
           ]
@@ -3511,40 +3410,6 @@
         const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         
         if (transbordo) {
-          // Obtener información del destino final para transbordo
-          const endMode = localStorage.getItem('tuguia_end_mode') || '';
-          const endData = localStorage.getItem('tuguia_end') || '';
-          
-          let nombreDestino = 'destino';
-          try {
-            if (endData) {
-              const datos = JSON.parse(endData);
-              nombreDestino = datos.nombre || 'destino';
-            }
-          } catch (e) {
-            nombreDestino = 'destino';
-          }
-          
-          // Calcular distancia a pie para transbordo
-          let distanciaAPieTransbordo = 0;
-          if (endMode !== 'paradero') {
-            try {
-              distanciaAPieTransbordo = haversine(
-                paraderoDestino.lat, paraderoDestino.lon,
-                destinoCoords[0], destinoCoords[1]
-              );
-            } catch (e) {
-              distanciaAPieTransbordo = 0;
-            }
-          }
-          
-          let mensajeTransbordo;
-          if (endMode === 'paradero') {
-            mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`;
-          } else {
-            mensajeTransbordo = `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPieTransbordo)} metros para llegar a ${nombreDestino}.`;
-          }
-          
           return {
             tipo: 'con_transbordo',
             paraderoOrigen: paraderoOrigen,
@@ -3552,7 +3417,9 @@
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             ruta2: transbordo.ruta2,
-            mensaje: mensajeTransbordo,
+            mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
+              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+              : `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`,
             pasos: [
               { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
               { accion: 'transbordar', en: transbordo.paraderoTransbordo },
@@ -3662,157 +3529,24 @@
     
     // Función para mostrar instrucciones inteligentes
     function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario) {
-      // Filtrar nombre de ubicación para eliminar irrelevantes
-      let textoPartida = 'Mi ubicación actual';
-      try {
-        // Si hay datos en localStorage de inicio, intentar extraer nombre limpio
-        const startData = localStorage.getItem('tuguia_start');
-        if (startData) {
-          const datos = JSON.parse(startData);
-          if (datos.nombre) {
-            const irrelevantes = [
-              'Cartagena de indias', 'Dique', 'Bolívar', 'Bolivar', 'Cartagena',
-              'Colombia', '130003', 'Provincia de Cartagena', 'Provincia', 'Barrio'
-            ];
-            if (datos.nombre.includes(',')) {
-              textoPartida = datos.nombre
-                .split(',')
-                .map(part => part.trim())
-                .filter(part => !irrelevantes.map(x => x.toLowerCase()).includes(part.toLowerCase()))
-                .join(', ');
-            } else {
-              textoPartida = datos.nombre;
-            }
-            if (!textoPartida || textoPartida === '') {
-              textoPartida = 'Punto seleccionado';
-            }
-          }
-        }
-      } catch (e) {
-        textoPartida = 'Mi ubicación actual';
-      }
-      
       let instruccionesHTML = `
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 800px;">
-          <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">🧠 Tu Guía Inteligente</h3>
-          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-            <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${textoPartida}</span>
+        <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
+          <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #764ba2;">🧠 Tu Guía Inteligente</h3>
+          <div style="margin-bottom: 1rem; color: #222;">
+            <strong>📍 Tu ubicación:</strong> ${ubicacionUsuario.lat.toFixed(6)}, ${ubicacionUsuario.lng.toFixed(6)}
           </div>
-          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-            <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
+          <div style="margin-bottom: 1rem; color: #222;">
+            <strong>🚌 Paradero más cercano:</strong> ${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)
           </div>
-          <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
-            <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
-            <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
-          </div>
-          <div style="text-align: center;">
-            <button id="btnIniciarGuiaInteligente" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: inline-flex; align-items: center; gap: 8px;">
-              <span style='font-size:1.2em;'>🚀</span> Iniciar Guía Inteligente
-            </button>
+          <div style="background: #ffe9b3; color: #b26a00; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>📋 Instrucciones:</strong><br>
+            ${rutaOptima.mensaje}
           </div>
         </div>
       `;
-      
       const panelGuia = document.getElementById('panel-guia-inteligente');
       if (panelGuia) {
         panelGuia.innerHTML = instruccionesHTML;
-        
-        // Agregar funcionalidad al botón
-        setTimeout(() => {
-          const btn = document.getElementById('btnIniciarGuiaInteligente');
-          if (btn) {
-            btn.addEventListener('click', function() {
-              console.log('🚀 Iniciando Guía Inteligente desde index.html');
-              
-              // === NUEVO SISTEMA DE DIAGNÓSTICO COMPLETO ===
-              console.log('🔍 === DIAGNÓSTICO COMPLETO DE DATOS ===');
-              
-              // 1. Verificar datos de inicio
-              const startData = localStorage.getItem('tuguia_start');
-              const startMode = localStorage.getItem('tuguia_start_mode');
-              const startCoords = localStorage.getItem('tuguia_start_coords');
-              
-              console.log('📊 Datos de INICIO:');
-              console.log('  - tuguia_start:', startData);
-              console.log('  - tuguia_start_mode:', startMode);
-              console.log('  - tuguia_start_coords:', startCoords);
-              
-              if (startData) {
-                try {
-                  const parsed = JSON.parse(startData);
-                  console.log('  - Datos parseados:', parsed);
-                  console.log('  - Tiene coords?:', parsed.coords ? 'SÍ' : 'NO');
-                  if (parsed.coords) {
-                    console.log('  - Coordenadas:', parsed.coords);
-                  }
-                } catch (e) {
-                  console.log('  - Error parseando:', e.message);
-                }
-              }
-              
-              // 2. Verificar datos de destino
-              const endData = localStorage.getItem('tuguia_end');
-              const endMode = localStorage.getItem('tuguia_end_mode');
-              
-              console.log('📊 Datos de DESTINO:');
-              console.log('  - tuguia_end:', endData);
-              console.log('  - tuguia_end_mode:', endMode);
-              
-              if (endData) {
-                try {
-                  const parsed = JSON.parse(endData);
-                  console.log('  - Datos parseados:', parsed);
-                  console.log('  - Tiene coords?:', parsed.coords ? 'SÍ' : 'NO');
-                  if (parsed.coords) {
-                    console.log('  - Coordenadas:', parsed.coords);
-                  }
-                } catch (e) {
-                  console.log('  - Error parseando:', e.message);
-                }
-              }
-              
-              // 3. Verificar que datos estén completos antes de redirigir
-              let startCoordsOk = false;
-              let endCoordsOk = false;
-              
-              if (startData) {
-                try {
-                  const parsed = JSON.parse(startData);
-                  if (parsed.coords && Array.isArray(parsed.coords) && parsed.coords.length === 2) {
-                    startCoordsOk = true;
-                  }
-                } catch (e) {}
-              }
-              
-              if (endData) {
-                try {
-                  const parsed = JSON.parse(endData);
-                  if (parsed.coords && Array.isArray(parsed.coords) && parsed.coords.length === 2) {
-                    endCoordsOk = true;
-                  }
-                } catch (e) {}
-              }
-              
-              console.log('✅ Estado de validación:');
-              console.log('  - Inicio válido:', startCoordsOk);
-              console.log('  - Destino válido:', endCoordsOk);
-              
-              if (!startCoordsOk || !endCoordsOk) {
-                alert('❌ Error: Datos incompletos detectados.\n\n' +
-                      'Inicio válido: ' + (startCoordsOk ? 'SÍ' : 'NO') + '\n' +
-                      'Destino válido: ' + (endCoordsOk ? 'SÍ' : 'NO') + '\n\n' +
-                      'Por favor revisa la consola (F12) para más detalles.');
-                return;
-              }
-              
-              // Si todo está bien, guardar coordenadas adicionales y redirigir
-              localStorage.setItem('tuguia_start_coords', `${ubicacionUsuario.lat},${ubicacionUsuario.lng}`);
-              console.log('🚀 Todo validado, redirigiendo a yotellevo.html...');
-              window.location.href = 'yotellevo.html';
-            });
-            console.log('✅ Event listener agregado al botón Guía Inteligente');
-          }
-        }, 100);
       }
     }
     
