@@ -1492,9 +1492,7 @@
       <div style="background: rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 12px 20px; font-size: 1rem; color: #0a2342; font-weight: 500; margin-bottom: 8px; min-width: 220px; text-align: center;">
         ¿No sabes como llegar?
       </div>
-      <a href="yotellevo.html" style="text-decoration: none;" onclick="guardarPuntosEnLocalStorage()">
-        <button id="yoTeLlevoBtn" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
-      </a>
+      <button id="yoTeLlevoBtn" onclick="ejecutarNavegacionInteligente()" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
     </div>
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
@@ -3084,6 +3082,58 @@
         });
       }
     });
+    // Nueva función para ejecutar navegación inteligente desde botón "Yo te llevo"
+    async function ejecutarNavegacionInteligente() {
+      console.log('🚀 === EJECUTANDO NAVEGACIÓN INTELIGENTE DESDE "YO TE LLEVO" ===');
+      
+      // Primero guardar puntos en localStorage
+      guardarPuntosEnLocalStorage();
+      
+      // Obtener datos guardados
+      const startMode = document.querySelector('input[name="startMode"]:checked')?.value || 'direccion';
+      const endMode = document.querySelector('input[name="endMode"]:checked')?.value || 'direccion';
+      
+      console.log('📊 Modos detectados:', { startMode, endMode });
+      
+      // Verificar que tenemos datos suficientes
+      const start = localStorage.getItem('tuguia_start');
+      const end = localStorage.getItem('tuguia_end');
+      
+      if (!start || !end) {
+        alert('⚠️ Por favor, completa tanto el punto de partida como el destino antes de continuar.');
+        return;
+      }
+      
+      console.log('📊 Datos guardados:', { start, end });
+      
+      // Ejecutar la navegación inteligente según el modo de inicio
+      if (startMode === 'ubicacion' || startMode === 'direccion') {
+        console.log('✅ Iniciando navegación inteligente automática...');
+        
+        // Obtener coordenadas de destino para iniciar la navegación
+        let destinoCoords = null;
+        try {
+          const endData = JSON.parse(end);
+          if (endData.coords && Array.isArray(endData.coords)) {
+            destinoCoords = endData.coords;
+          }
+        } catch (e) {
+          console.log('❌ Error obteniendo coordenadas de destino:', e);
+        }
+        
+        if (destinoCoords) {
+          console.log('🎯 Coordenadas destino:', destinoCoords);
+          iniciarNavegacionInteligente(destinoCoords);
+        } else {
+          console.log('❌ No se pudieron obtener coordenadas del destino');
+          alert('⚠️ No se pudieron obtener las coordenadas del destino. Por favor, verifica que hayas seleccionado un destino válido.');
+        }
+      } else {
+        console.log('❌ Modo de inicio no compatible con navegación inteligente:', startMode);
+        alert('⚠️ La navegación inteligente requiere que selecciones "Mi ubicación" o "Dirección" como punto de partida.');
+      }
+    }
+
     function guardarPuntosEnLocalStorage() {
       console.log('💾 Guardando puntos en localStorage...');
       // Obtener el modo seleccionado para el punto de partida
