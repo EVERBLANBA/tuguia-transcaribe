@@ -6,6 +6,7 @@
     <title>Mi Guia - Te lleva</title>
     <script src="https://unpkg.com/@mapbox/polyline@1.1.1/src/polyline.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="mobile-optimizations.css" />
     <link rel="icon" type="image/png" href="logoagapai-ok2.png" />
     <style>
         body {
@@ -1361,6 +1362,13 @@
         }
     </style>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUadVPYtXGXPX1vWMR5nc3lgSrW-FzUls&libraries=places"></script>
+    
+    <!-- Scripts para segundo plano y optimización móvil -->
+    <script src="utils.js"></script>
+    <script src="state-manager.js"></script>
+    <script src="error-handler.js"></script>
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
 </head>
 <body>
    
@@ -2098,8 +2106,8 @@
           if (this.value.trim() && startMode === 'direccion') {
             const direccion = this.value.trim();
             console.log('🔍 Buscando coordenadas para origen:', direccion);
-            // Geocodificar la dirección usando Nominatim
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion + ', Cartagena, Colombia')}&limit=1`)
+            // Geocodificar la dirección usando Nominatim (búsqueda más amplia)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}&limit=1`)
               .then(res => res.json())
               .then(data => {
                 if (data.length > 0) {
@@ -2130,8 +2138,8 @@
           if (this.value.trim() && endMode === 'direccion') {
             const direccion = this.value.trim();
             console.log('🔍 Buscando coordenadas para destino:', direccion);
-            // Geocodificar la dirección usando Nominatim
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion + ', Cartagena, Colombia')}&limit=1`)
+            // Geocodificar la dirección usando Nominatim (búsqueda más amplia)
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}&limit=1`)
               .then(res => res.json())
               .then(data => {
                 if (data.length > 0) {
@@ -2550,8 +2558,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -2633,8 +2639,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           endDireccionInput.value = direccionCorta;
           endSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_end', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.endMarker) map.removeLayer(window.endMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/447/447031.png', iconSize: [32,32], iconAnchor: [16,32] })
@@ -2927,8 +2931,6 @@
           const direccionCorta = formatearDireccionParaPopup(item.display_name);
           startInput.value = direccionCorta;
           startSuggestions.style.display = 'none';
-          // Guardar en localStorage el objeto con nombre y coords
-          localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccionCorta, coords: [parseFloat(item.lat), parseFloat(item.lon)] }));
           if (window.startMarker) map.removeLayer(window.startMarker);
           const marker = L.marker([item.lat, item.lon], {
             icon: L.icon({ iconUrl: 'pin-morado.png', iconSize: [32,44], iconAnchor: [16,44] })
@@ -3105,8 +3107,14 @@
           startValue = nombre;
         }
       } else if (startMode === 'direccion') {
-        const startDireccionInput = document.getElementById('startDireccionInput');
-        startValue = startDireccionInput?.value || '';
+        // Usar el valor ya geocodificado de localStorage si existe
+        const existingStart = localStorage.getItem('tuguia_start');
+        if (existingStart) {
+          startValue = existingStart;
+        } else {
+          const startDireccionInput = document.getElementById('startDireccionInput');
+          startValue = startDireccionInput?.value || '';
+        }
       } else if (startMode === 'paradero') {
         const startParaderoSelect = document.getElementById('startParaderoSelect');
         const selectedOption = startParaderoSelect?.selectedOptions[0];
@@ -3222,16 +3230,32 @@
 
     // Función que se activa automáticamente después de la simulación
     function iniciarSeguimientoAutomatico() {
-      // Obtener coordenadas del destino si existe
+      // Obtener coordenadas del destino desde endMarker o localStorage
       let destinoCoords = null;
+      
       if (window.endMarker) {
         const endLatLng = window.endMarker.getLatLng();
         destinoCoords = [endLatLng.lat, endLatLng.lng];
+      } else {
+        // Intentar obtener desde localStorage
+        const endData = localStorage.getItem('tuguia_end');
+        if (endData) {
+          try {
+            const endObj = JSON.parse(endData);
+            if (endObj.coords && Array.isArray(endObj.coords) && endObj.coords.length === 2) {
+              destinoCoords = endObj.coords;
+            }
+          } catch (e) {
+            console.warn('⚠️ No se pudieron extraer coordenadas de destino desde localStorage');
+          }
+        }
       }
       
-      // === NUEVA LÓGICA INTELIGENTE: Solo si el modo de inicio es GPS ===
+      console.log('🎯 Coordenadas de destino obtenidas:', destinoCoords);
+      
+      // === NUEVA LÓGICA INTELIGENTE: Para direcciones escritas y GPS ===
       const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
-      if (startMode === 'ubicacion') {
+      if (startMode === 'ubicacion' || startMode === 'direccion') {
         // Activar navegación inteligente automática
         iniciarNavegacionInteligente(destinoCoords);
       } else {
@@ -3247,13 +3271,49 @@
       try {
         console.log('🧠 Iniciando navegación inteligente...');
         
-        // 1. Obtener ubicación GPS actual
-        const ubicacionUsuario = await obtenerUbicacionGPS();
+        // 1. Obtener ubicación según el modo de inicio
+        let ubicacionUsuario = null;
+        const startMode = document.querySelector('input[name="startMode"]:checked')?.value;
+        
+        if (startMode === 'direccion') {
+          // Si el modo es dirección, usar coordenadas del startMarker o localStorage
+          if (window.startMarker) {
+            const startLatLng = window.startMarker.getLatLng();
+            ubicacionUsuario = {
+              lat: startLatLng.lat,
+              lng: startLatLng.lng,
+              accuracy: 0
+            };
+          } else {
+            // Intentar obtener desde localStorage
+            const startData = localStorage.getItem('tuguia_start');
+            if (startData) {
+              try {
+                const startObj = JSON.parse(startData);
+                if (startObj.coords && Array.isArray(startObj.coords) && startObj.coords.length === 2) {
+                  ubicacionUsuario = {
+                    lat: startObj.coords[0],
+                    lng: startObj.coords[1],
+                    accuracy: 0
+                  };
+                }
+              } catch (e) {
+                console.warn('⚠️ No se pudieron extraer coordenadas de inicio desde localStorage');
+              }
+            }
+          }
+        } else {
+          // Para modo ubicación, usar GPS real
+          ubicacionUsuario = await obtenerUbicacionGPS();
+        }
+        
         if (!ubicacionUsuario) {
-          console.error('❌ No se pudo obtener ubicación GPS');
+          console.error('❌ No se pudo obtener ubicación del usuario');
           iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
           return;
         }
+        
+        console.log('📍 Ubicación del usuario obtenida:', ubicacionUsuario);
         
         // 2. Encontrar paradero más cercano automáticamente
         const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
@@ -3387,6 +3447,22 @@
         return null;
       }
       
+      // Obtener el nombre del destino desde localStorage
+      const endData = localStorage.getItem('tuguia_end');
+      let nombreDestino = 'destino';
+      try {
+        const endObj = JSON.parse(endData);
+        nombreDestino = endObj.nombre || 'destino';
+      } catch (e) {
+        nombreDestino = endData || 'destino';
+      }
+      
+      // Calcular distancia a pie desde paradero destino hasta coordenadas finales
+      const distanciaAPie = calcularDistanciaHaversine(
+        paraderoDestino.lat, paraderoDestino.lon,
+        destinoCoords[0], destinoCoords[1]
+      );
+      
       // Verificar si hay ruta directa
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       
@@ -3396,8 +3472,8 @@
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.ruta,
-          mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+          mensaje: (distanciaAPie > 100)
+            ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`
             : `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`,
           pasos: [
             { accion: 'tomar', ruta: rutaDirecta.ruta, desde: paraderoOrigen, hasta: paraderoDestino }
@@ -3415,8 +3491,8 @@
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             ruta2: transbordo.ruta2,
-            mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
-              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
+            mensaje: (distanciaAPie > 100)
+              ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}.`
               : `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`,
             pasos: [
               { accion: 'tomar', ruta: transbordo.ruta1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
