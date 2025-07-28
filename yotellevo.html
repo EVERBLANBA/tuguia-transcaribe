@@ -858,102 +858,51 @@
     
     // Función para calcular ruta óptima
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
-      console.log('🎯 Iniciando calcularRutaOptima con:', {
-        paraderoOrigen,
-        destinoCoords
-      });
-
       if (!destinoCoords) {
-        console.error('❌ No hay coordenadas de destino');
         return null;
       }
 
-      // Obtener el modo de destino y datos
+      // Obtener datos del destino
       const endMode = localStorage.getItem('tuguia_end_mode') || '';
       const endData = localStorage.getItem('tuguia_end') || '';
-      console.log('🔍 Datos del destino:', {
-        endMode,
-        endData,
-        rawEndData: localStorage.getItem('tuguia_end')
-      });
-
+      
       // Extraer nombre del destino
-      let nombreDestino = '';
+      let nombreDestino = 'destino';
       try {
         if (endData) {
-          console.log('🔍 Intentando extraer nombre del destino de:', endData);
           const datos = JSON.parse(endData);
-          console.log('🔍 Datos parseados:', datos);
-          
           if (datos.nombre) {
             nombreDestino = datos.nombre;
-            console.log('✅ Nombre extraído de datos.nombre:', nombreDestino);
           } else if (datos.display_name) {
-            console.log('🔍 Intentando extraer de display_name:', datos.display_name);
             const partes = datos.display_name.split(',');
             nombreDestino = partes[0].trim();
-            console.log('🔍 Primera parte:', nombreDestino);
-            
-            if (nombreDestino.match(/^(Calle|Carrera|Cra\.|Cra|Cl\.|Cl|Av\.|Avenida)/i)) {
-              console.log('🔍 Parece una dirección, buscando barrio...');
-              for (let parte of partes) {
-                parte = parte.trim();
-                console.log('🔍 Analizando parte:', parte);
-                if (!parte.match(/^(Calle|Carrera|Cra\.|Cra|Cl\.|Cl|Av\.|Avenida)/i) &&
-                    !parte.match(/^(Cartagena|Colombia|Bolívar)/i)) {
-                  nombreDestino = parte;
-                  console.log('✅ Encontrado posible barrio:', nombreDestino);
-                  break;
-                }
-              }
-            }
           }
         }
       } catch (e) {
-        console.warn('⚠️ Error extrayendo nombre del destino:', e);
-      }
-
-      console.log('🏁 Nombre final del destino:', nombreDestino);
-
-      // Si no se pudo extraer un nombre, usar un valor por defecto
-      if (!nombreDestino) {
-        nombreDestino = endMode === 'paradero' ? 'paradero seleccionado' : 'destino';
-        console.log('ℹ️ Usando nombre por defecto:', nombreDestino);
+        // Usar nombre por defecto
       }
 
       // Buscar paradero más cercano al destino
-      console.log('🔍 Buscando paradero cercano al destino...');
       const paraderoDestino = await encontrarParaderoMasCercano({
         lat: destinoCoords[0],
         lng: destinoCoords[1]
       });
-      
-      console.log('🚏 Paradero destino encontrado:', paraderoDestino);
 
       if (!paraderoDestino) {
-        console.error('❌ No se encontró paradero cercano al destino');
         return null;
       }
 
       // Verificar si hay ruta directa
-      console.log('🔍 Verificando ruta directa entre paraderos:', {
-        origen: paraderoOrigen.nombre,
-        destino: paraderoDestino.nombre
-      });
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
-      console.log('🟢 Resultado de verificarRutaDirecta:', rutaDirecta);
 
       // Calcular distancia a pie
-      console.log('🚶 Calculando distancia a pie al destino...');
       let distanciaAPie = await obtenerDistanciaCaminando(
         [paraderoDestino.lat, paraderoDestino.lon],
         destinoCoords
       );
-      console.log('📏 Distancia a pie calculada:', distanciaAPie);
 
       let resultado;
       if (rutaDirecta && rutaDirecta.todas && rutaDirecta.todas.length > 0) {
-        console.log('✅ Generando instrucciones para ruta directa');
         let rutasTexto = rutaDirecta.todas.length === 1 ? 
           `la ruta ${rutaDirecta.todas[0]}` : 
           `las rutas ${rutaDirecta.todas.join(', ')}`;
@@ -979,149 +928,57 @@
           }))
         };
       } else {
-        console.log('🔄 Buscando ruta con transbordo...');
-        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
-        console.log('🔄 Resultado de búsqueda de transbordo:', transbordo);
-
-        if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
-          // NUEVO: Validar eficiencia del transbordo
-          const transbordoEsEficiente = validarEficienciaTransbordo(transbordo, paraderoOrigen, paraderoDestino);
-          
-          if (transbordoEsEficiente) {
-            console.log('✅ Generando instrucciones para ruta con transbordo optimizado');
+        // Buscar paraderos conectores reales
+        const paraderosConectores = buscarParaderosConectoresReales(paraderoOrigen, paraderoDestino);
+        
+        if (paraderosConectores.length > 0) {
+          // Evaluar cada paradero conector por eficiencia
+          for (const paraderoConector of paraderosConectores) {
+            const esEficiente = evaluarTransbordoEficiente(paraderoConector, paraderoOrigen, paraderoDestino);
             
-            // NUEVO: Información detallada del transbordo
-            const distOrigen = Math.round(transbordo.distOrigenTransbordo);
-            const distDestino = Math.round(transbordo.distTransbordoDestino);
-            const distTotal = Math.round(transbordo.distanciaTotal);
-            const eficiencia = transbordo.factorEficiencia;
-            
-            let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? 
-              `las rutas ${transbordo.rutas1.join(', ')}` : 
-              `la ruta ${transbordo.ruta1}`;
-            
-            let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? 
-              `las rutas ${transbordo.rutas2.join(', ')}` : 
-              `la ruta ${transbordo.ruta2}`;
-
-            // NUEVO: Mensaje mejorado con información de eficiencia
-            let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre} (${distOrigen}m). ` +
-                         `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre} (${distDestino}m)`;
-
-            if (endMode !== 'paradero') {
-              mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
-            }
-            mensaje += '.';
-
-            // NUEVO: Agregar información sobre la optimización si es muy eficiente
-            if (eficiencia > 0.7) {
-              mensaje += ` (Transbordo optimizado: ${Math.round(eficiencia * 100)}% de eficiencia)`;
-            }
-
-            resultado = {
-              tipo: 'con_transbordo',
-              paraderoOrigen: paraderoOrigen,
-              paraderoDestino: paraderoDestino,
-              paraderoTransbordo: transbordo.paraderoTransbordo,
-              ruta1: transbordo.ruta1,
-              rutas1: transbordo.rutas1,
-              ruta2: transbordo.ruta2,
-              rutas2: transbordo.rutas2,
-              mensaje: mensaje,
-              // NUEVO: Información adicional para debugging
-              infoTransbordo: {
-                distOrigenTransbordo: distOrigen,
-                distTransbordoDestino: distDestino,
-                distanciaTotal: distTotal,
-                factorEficiencia: eficiencia,
-                factorBalance: transbordo.factorBalance
-              },
-              pasos: [
-                { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
-                { accion: 'transbordar', en: transbordo.paraderoTransbordo },
-                { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
-              ]
-            };
-          } else {
-            console.log('❌ Transbordo no es eficiente, buscando alternativas...');
-            resultado = {
-              tipo: 'sin_ruta',
-              paraderoOrigen: paraderoOrigen,
-              paraderoDestino: paraderoDestino,
-              mensaje: 'No se encontró una ruta de transbordo eficiente entre los paraderos seleccionados. Considera usar otro medio de transporte.',
-              pasos: []
-            };
-          }
-        } else {
-          console.log('❌ No se encontró ruta directa ni con transbordo');
-          
-          // NUEVO: Buscar paraderos conectores reales
-          const paraderosConectores = buscarParaderosConectoresReales(paraderoOrigen, paraderoDestino);
-          
-          if (paraderosConectores.length > 0) {
-            console.log('🔍 Evaluando paraderos conectores encontrados...');
-            
-            // Evaluar cada paradero conector por eficiencia
-            for (const paraderoConector of paraderosConectores) {
-              const esEficiente = evaluarTransbordoEficiente(paraderoConector, paraderoOrigen, paraderoDestino);
+            if (esEficiente) {
+              let mensaje = `Toma la ruta ${paraderoConector.rutasOrigen[0]} hasta ${paraderoConector.nombre} (${Math.round(paraderoConector.distOrigen)}m). ` +
+                           `Allí cambia a la ruta ${paraderoConector.rutasDestino[0]} hasta ${paraderoDestino.nombre} (${Math.round(paraderoConector.distDestino)}m)`;
               
-              if (esEficiente) {
-                console.log('✅ Transbordo eficiente encontrado:', paraderoConector.nombre);
-                
-                let mensaje = `Toma la ruta ${paraderoConector.rutasOrigen[0]} hasta ${paraderoConector.nombre} (${Math.round(paraderoConector.distOrigen)}m). ` +
-                             `Allí cambia a la ruta ${paraderoConector.rutasDestino[0]} hasta ${paraderoDestino.nombre} (${Math.round(paraderoConector.distDestino)}m)`;
-                
-                if (endMode !== 'paradero') {
-                  mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
-                }
-                mensaje += '.';
-                
-                resultado = {
-                  tipo: 'con_transbordo_real',
-                  paraderoOrigen: paraderoOrigen,
-                  paraderoDestino: paraderoDestino,
-                  paraderoTransbordo: paraderoConector,
-                  ruta1: paraderoConector.rutasOrigen[0],
-                  rutas1: paraderoConector.rutasOrigen,
-                  ruta2: paraderoConector.rutasDestino[0],
-                  rutas2: paraderoConector.rutasDestino,
-                  mensaje: mensaje,
-                  eficiencia: paraderoConector.eficiencia,
-                  pasos: [
-                    { accion: 'tomar', rutas: paraderoConector.rutasOrigen, desde: paraderoOrigen, hasta: paraderoConector },
-                    { accion: 'transbordar', en: paraderoConector },
-                    { accion: 'tomar', rutas: paraderoConector.rutasDestino, desde: paraderoConector, hasta: paraderoDestino }
-                  ]
-                };
-                break; // Usar el primer transbordo eficiente encontrado
+              if (endMode !== 'paradero') {
+                mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
               }
-            }
-            
-            // Si no se encontró transbordo eficiente
-            if (!resultado) {
-              console.log('❌ No se encontró transbordo eficiente');
+              mensaje += '.';
+              
               resultado = {
-                tipo: 'sin_ruta',
+                tipo: 'con_transbordo_real',
                 paraderoOrigen: paraderoOrigen,
                 paraderoDestino: paraderoDestino,
-                mensaje: 'No se encontró una ruta eficiente entre los paraderos seleccionados. Considera caminar o usar otro medio de transporte.',
-                pasos: []
+                paraderoTransbordo: paraderoConector,
+                ruta1: paraderoConector.rutasOrigen[0],
+                rutas1: paraderoConector.rutasOrigen,
+                ruta2: paraderoConector.rutasDestino[0],
+                rutas2: paraderoConector.rutasDestino,
+                mensaje: mensaje,
+                eficiencia: paraderoConector.eficiencia,
+                pasos: [
+                  { accion: 'tomar', rutas: paraderoConector.rutasOrigen, desde: paraderoOrigen, hasta: paraderoConector },
+                  { accion: 'transbordar', en: paraderoConector },
+                  { accion: 'tomar', rutas: paraderoConector.rutasDestino, desde: paraderoConector, hasta: paraderoDestino }
+                ]
               };
+              break;
             }
-          } else {
-            console.log('❌ No se encontraron paraderos conectores');
-            resultado = {
-              tipo: 'sin_ruta',
-              paraderoOrigen: paraderoOrigen,
-              paraderoDestino: paraderoDestino,
-              mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
-              pasos: []
-            };
           }
+        }
+        
+        // Si no se encontró transbordo eficiente
+        if (!resultado) {
+          resultado = {
+            tipo: 'sin_ruta',
+            paraderoOrigen: paraderoOrigen,
+            paraderoDestino: paraderoDestino,
+            mensaje: 'No se encontró una ruta eficiente entre los paraderos seleccionados. Considera caminar o usar otro medio de transporte.',
+            pasos: []
+          };
         }
       }
 
-      console.log('🏁 Resultado final de calcularRutaOptima:', resultado);
       return resultado;
     }
     
@@ -1149,17 +1006,32 @@
         </div>
       `;
       const panelGuia = document.getElementById('panel-guia-inteligente');
+      
       if (panelGuia) {
         panelGuia.innerHTML = instruccionesHTML;
+        
         // Asociar funcionalidad al botón
         const btn = document.getElementById('btnIniciarSeguimiento');
+        
         if (btn) {
           btn.addEventListener('click', function() {
             iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
           });
         }
+      } else {
+        // Fallback: mostrar en info-ruta si no existe panel-guia-inteligente
+        const infoRuta = document.getElementById('info-ruta');
+        if (infoRuta) {
+          infoRuta.innerHTML = instruccionesHTML;
+          
+          const btn = document.getElementById('btnIniciarSeguimiento');
+          if (btn) {
+            btn.addEventListener('click', function() {
+              iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
+            });
+          }
+        }
       }
-      console.log('📋 Instrucciones inteligentes mostradas:', rutaOptima.mensaje);
     }
     
     // Función para iniciar seguimiento inteligente
