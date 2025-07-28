@@ -3108,7 +3108,20 @@
         }
       } else if (startMode === 'direccion') {
         const startDireccionInput = document.getElementById('startDireccionInput');
-        startValue = startDireccionInput?.value || '';
+        const nombre = startDireccionInput?.value || '';
+        let startLS = localStorage.getItem('tuguia_start');
+        let isObjWithCoords = false;
+        try {
+          const obj = JSON.parse(startLS);
+          if (obj && Array.isArray(obj.coords) && obj.coords.length === 2 && obj.coords.every(Number.isFinite)) {
+            isObjWithCoords = true;
+          }
+        } catch (e) {}
+        if (isObjWithCoords) {
+          startValue = startLS;
+        } else {
+          startValue = nombre;
+        }
       } else if (startMode === 'paradero') {
         const startParaderoSelect = document.getElementById('startParaderoSelect');
         const selectedOption = startParaderoSelect?.selectedOptions[0];
