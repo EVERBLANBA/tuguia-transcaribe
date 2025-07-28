@@ -258,7 +258,7 @@
       "properties": {
         "nombre_paradero": "Terrazas de Granada Eje 6(VUELTA)",
         "coordenadas": "10.39240005512381, -75.47178885315691",
-        "rutas": "A101, A102",
+        "rutas": "A102, A101",
         "network": "Transcaribe",
         "tipos_ruta": "Complementarias",
         "fuente": "csv_2025",
