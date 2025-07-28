@@ -932,43 +932,35 @@
         const paraderosConectores = buscarParaderosConectoresReales(paraderoOrigen, paraderoDestino);
         
         if (paraderosConectores.length > 0) {
-          // Evaluar cada paradero conector por eficiencia
-          for (const paraderoConector of paraderosConectores) {
-            const esEficiente = evaluarTransbordoEficiente(paraderoConector, paraderoOrigen, paraderoDestino);
-            
-            if (esEficiente) {
-              let mensaje = `Toma la ruta ${paraderoConector.rutasOrigen[0]} hasta ${paraderoConector.nombre} (${Math.round(paraderoConector.distOrigen)}m). ` +
-                           `Allí cambia a la ruta ${paraderoConector.rutasDestino[0]} hasta ${paraderoDestino.nombre} (${Math.round(paraderoConector.distDestino)}m)`;
-              
-              if (endMode !== 'paradero') {
-                mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
-              }
-              mensaje += '.';
-              
-              resultado = {
-                tipo: 'con_transbordo_real',
-                paraderoOrigen: paraderoOrigen,
-                paraderoDestino: paraderoDestino,
-                paraderoTransbordo: paraderoConector,
-                ruta1: paraderoConector.rutasOrigen[0],
-                rutas1: paraderoConector.rutasOrigen,
-                ruta2: paraderoConector.rutasDestino[0],
-                rutas2: paraderoConector.rutasDestino,
-                mensaje: mensaje,
-                eficiencia: paraderoConector.eficiencia,
-                pasos: [
-                  { accion: 'tomar', rutas: paraderoConector.rutasOrigen, desde: paraderoOrigen, hasta: paraderoConector },
-                  { accion: 'transbordar', en: paraderoConector },
-                  { accion: 'tomar', rutas: paraderoConector.rutasDestino, desde: paraderoConector, hasta: paraderoDestino }
-                ]
-              };
-              break;
-            }
+          // Usar el primer paradero conector encontrado (el más eficiente)
+          const paraderoConector = paraderosConectores[0];
+          
+          let mensaje = `Toma la ruta ${paraderoConector.rutasOrigen[0]} hasta ${paraderoConector.nombre} (${Math.round(paraderoConector.distOrigen)}m). ` +
+                       `Allí cambia a la ruta ${paraderoConector.rutasDestino[0]} hasta ${paraderoDestino.nombre} (${Math.round(paraderoConector.distDestino)}m)`;
+          
+          if (endMode !== 'paradero') {
+            mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
           }
-        }
-        
-        // Si no se encontró transbordo eficiente
-        if (!resultado) {
+          mensaje += '.';
+          
+          resultado = {
+            tipo: 'con_transbordo_real',
+            paraderoOrigen: paraderoOrigen,
+            paraderoDestino: paraderoDestino,
+            paraderoTransbordo: paraderoConector,
+            ruta1: paraderoConector.rutasOrigen[0],
+            rutas1: paraderoConector.rutasOrigen,
+            ruta2: paraderoConector.rutasDestino[0],
+            rutas2: paraderoConector.rutasDestino,
+            mensaje: mensaje,
+            eficiencia: paraderoConector.eficiencia,
+            pasos: [
+              { accion: 'tomar', rutas: paraderoConector.rutasOrigen, desde: paraderoOrigen, hasta: paraderoConector },
+              { accion: 'transbordar', en: paraderoConector },
+              { accion: 'tomar', rutas: paraderoConector.rutasDestino, desde: paraderoConector, hasta: paraderoDestino }
+            ]
+          };
+        } else {
           resultado = {
             tipo: 'sin_ruta',
             paraderoOrigen: paraderoOrigen,
