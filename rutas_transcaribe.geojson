@@ -296,28 +296,7 @@
         ]
       }
     },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre_paradero": "PATIO PORTAL-(Terrazas de Granada)",
-        "coordenadas": "10.393233658120819, -75.47087753023332",
-        "rutas": "T101,T102,T103,T100E,X102,X103,A101,A102,A114,A117,C016",
-        "network": "Transcaribe",
-	      "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-      	"name": "Patio Portal",
-        "es_exclusivo": true
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-        -75.47087753023332,
-         10.393233658120819
-        ]
-      }
-    },
-    {
+     {
       "type": "Feature",
       "properties": {
         "nombre_paradero": "LOS ANGELES",
