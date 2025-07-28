@@ -243,10 +243,7 @@
             <!-- Reemplaza el enlace por un botón funcional para volver a la guía -->
             <button id="volverAGuiaBtn" class="main-btn">Volver a Tu Guía</button>
             
-            <!-- NUEVO: Botón para ejecutar prueba de diagnóstico -->
-            <button id="btnPruebaDiagnostico" style="background: #6c757d; color: white; border: none; border-radius: 10px; padding: 0.5rem 1rem; margin-top: 1rem; font-size: 0.9rem; cursor: pointer;">
-                🔍 Ejecutar Prueba de Diagnóstico
-            </button>
+
         </div>
         
         <!-- CONTENEDOR MAPA PARADEROS CERCANOS AL PUNTO DE PARTIDA -->
@@ -683,9 +680,111 @@
         console.log('   - No hay paraderos que conecten las rutas');
         console.log('   - Las rutas no están correctamente mapeadas en el GeoJSON');
         console.log('   - Problema en la función verificarRutaDirecta');
+        
+        // NUEVO: Buscar paraderos estratégicos como PATIO PORTAL
+        console.log('🎯 === BUSCANDO PARADEROS ESTRATÉGICOS ===');
+        const paraderoEstrategico = buscarParaderoEstrategico(paraderoOrigen, paraderoDestino);
+        
+        if (paraderoEstrategico) {
+          console.log('🎯 Paradero estratégico encontrado:', paraderoEstrategico.nombre);
+          console.log('   Rutas disponibles:', paraderoEstrategico.rutas.join(', '));
+          console.log('   Tipo de conexión: Estratégica (a través de rutas pretroncales)');
+          
+          return {
+            paraderoTransbordo: {
+              nombre: paraderoEstrategico.nombre,
+              lat: paraderoEstrategico.lat,
+              lon: paraderoEstrategico.lon
+            },
+            ruta1: 'A102', // Ruta desde Terrazas de Granada
+            rutas1: ['A102'],
+            ruta2: 'X102', // Ruta pretroncal hacia Los Jardines
+            rutas2: ['X102', 'X103'],
+            score: 1000, // Score especial para paraderos estratégicos
+            distOrigenTransbordo: 0,
+            distTransbordoDestino: 0,
+            distanciaTotal: 0,
+            factorEficiencia: 1,
+            factorBalance: 0,
+            esEstrategico: true
+          };
+        }
       }
       
       return mejorTransbordo;
+    }
+    
+    // NUEVA FUNCIÓN: Buscar paradero estratégico (es_exclusivo: true)
+    function buscarParaderoEstrategico(paraderoOrigen, paraderoDestino) {
+      console.log('🎯 === BUSCANDO PARADERO ESTRATÉGICO ===');
+      
+      // Buscar todos los paraderos estratégicos (es_exclusivo: true)
+      const paraderosEstrategicos = window.rutasTranscaribe.filter(p => 
+        p.properties && p.properties.es_exclusivo === true
+      );
+      
+      console.log('🔍 Paraderos estratégicos encontrados:', paraderosEstrategicos.length);
+      
+      // Obtener rutas de origen y destino
+      let rutasOrigen = [];
+      let rutasDestino = [];
+      
+      // Manejar diferentes formatos de rutas
+      if (paraderoOrigen.rutas) {
+        if (Array.isArray(paraderoOrigen.rutas)) {
+          rutasOrigen = paraderoOrigen.rutas;
+        } else if (typeof paraderoOrigen.rutas === 'string') {
+          rutasOrigen = paraderoOrigen.rutas.split(',').map(r => r.trim()).filter(Boolean);
+        }
+      }
+      
+      if (paraderoDestino.rutas) {
+        if (Array.isArray(paraderoDestino.rutas)) {
+          rutasDestino = paraderoDestino.rutas;
+        } else if (typeof paraderoDestino.rutas === 'string') {
+          rutasDestino = paraderoDestino.rutas.split(',').map(r => r.trim()).filter(Boolean);
+        }
+      }
+      
+      console.log('🔍 Rutas origen procesadas:', rutasOrigen);
+      console.log('🔍 Rutas destino procesadas:', rutasDestino);
+      
+      // Evaluar cada paradero estratégico
+      for (const paraderoEstrategico of paraderosEstrategicos) {
+        console.log('🔍 Evaluando paradero estratégico:', paraderoEstrategico.properties.nombre_paradero);
+        
+        // Obtener rutas del paradero estratégico
+        let rutasEstrategico = [];
+        if (typeof paraderoEstrategico.properties.rutas === 'string') {
+          rutasEstrategico = paraderoEstrategico.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+        } else if (Array.isArray(paraderoEstrategico.properties.rutas)) {
+          rutasEstrategico = paraderoEstrategico.properties.rutas;
+        }
+        
+        console.log('🔍 Rutas del paradero estratégico:', rutasEstrategico);
+        
+        const puedeConectarOrigen = rutasOrigen.some(ruta => rutasEstrategico.includes(ruta));
+        const tieneRutasPretroncales = rutasEstrategico.some(ruta => ruta.startsWith('X'));
+        
+        console.log('🔍 Puede conectar origen:', puedeConectarOrigen);
+        console.log('🔍 Tiene rutas pretroncales:', tieneRutasPretroncales);
+        
+        // Un paradero es estratégico si conecta con origen y tiene rutas pretroncales
+        if (puedeConectarOrigen && tieneRutasPretroncales) {
+          console.log('✅ Paradero estratégico encontrado:', paraderoEstrategico.properties.nombre_paradero);
+          
+          return {
+            nombre: paraderoEstrategico.properties.nombre_paradero,
+            rutas: rutasEstrategico,
+            lat: paraderoEstrategico.geometry.coordinates[1],
+            lon: paraderoEstrategico.geometry.coordinates[0],
+            tipo: 'Estratégico'
+          };
+        }
+      }
+      
+      console.log('❌ No se encontró paradero estratégico válido');
+      return null;
     }
     
     // NUEVA FUNCIÓN: Validar eficiencia del transbordo
@@ -934,13 +1033,47 @@
           }
         } else {
           console.log('❌ No se encontró ruta directa ni con transbordo');
-          resultado = {
-            tipo: 'sin_ruta',
-            paraderoOrigen: paraderoOrigen,
-            paraderoDestino: paraderoDestino,
-            mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
-            pasos: []
-          };
+          
+          // NUEVO: Verificar si hay paraderos estratégicos disponibles
+          const paraderoEstrategico = buscarParaderoEstrategico(paraderoOrigen, paraderoDestino);
+          
+          if (paraderoEstrategico) {
+            console.log('🎯 Usando paradero estratégico como solución alternativa');
+            
+            let mensaje = `Toma la ruta A102 hasta ${paraderoEstrategico.nombre}. ` +
+                         `Allí cambia a las rutas X102/X103 hasta ${paraderoDestino.nombre}`;
+            
+            if (endMode !== 'paradero') {
+              mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
+            }
+            mensaje += '. (Conexión estratégica a través de rutas pretroncales)';
+            
+            resultado = {
+              tipo: 'con_transbordo_estrategico',
+              paraderoOrigen: paraderoOrigen,
+              paraderoDestino: paraderoDestino,
+              paraderoTransbordo: paraderoEstrategico,
+              ruta1: 'A102',
+              rutas1: ['A102'],
+              ruta2: 'X102',
+              rutas2: ['X102', 'X103'],
+              mensaje: mensaje,
+              esEstrategico: true,
+              pasos: [
+                { accion: 'tomar', rutas: ['A102'], desde: paraderoOrigen, hasta: paraderoEstrategico },
+                { accion: 'transbordar', en: paraderoEstrategico },
+                { accion: 'tomar', rutas: ['X102', 'X103'], desde: paraderoEstrategico, hasta: paraderoDestino }
+              ]
+            };
+          } else {
+            resultado = {
+              tipo: 'sin_ruta',
+              paraderoOrigen: paraderoOrigen,
+              paraderoDestino: paraderoDestino,
+              mensaje: 'No se encontró una ruta directa ni con transbordo entre los paraderos seleccionados.',
+              pasos: []
+            };
+          }
         }
       }
 
@@ -1558,14 +1691,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // NUEVO: Event listener para el botón de prueba de diagnóstico
-  const btnPrueba = document.getElementById('btnPruebaDiagnostico');
-  if (btnPrueba) {
-    btnPrueba.addEventListener('click', function() {
-      console.log('🔍 Botón de prueba de diagnóstico clickeado');
-      window.ejecutarPruebaConexion();
-    });
-  }
+
 });
 </script>
 <script>
@@ -1644,6 +1770,312 @@ function detenerAlarmaProximidad() {
   }
   if (navigator.vibrate) navigator.vibrate(0); // Detener vibración
 }
+
+// NUEVA FUNCIÓN: Probar conexión entre paraderos específicos
+function probarConexionParaderos() {
+  console.log('🧪 === PRUEBA DE CONEXIÓN ENTRE PARADEROS ===');
+  
+  if (!window.rutasTranscaribe) {
+    console.error('❌ No hay datos de paraderos disponibles');
+    return;
+  }
+  
+  // Buscar los paraderos específicos mencionados
+  const paradero1 = window.rutasTranscaribe.find(f => 
+    f.properties && f.properties.nombre_paradero && 
+    f.properties.nombre_paradero.toLowerCase().includes('terrazas de granada')
+  );
+  
+  const paradero2 = window.rutasTranscaribe.find(f => 
+    f.properties && f.properties.nombre_paradero && 
+    f.properties.nombre_paradero.toLowerCase().includes('los jardines')
+  );
+  
+  console.log('🔍 Paradero 1 encontrado:', paradero1 ? paradero1.properties.nombre_paradero : 'No encontrado');
+  console.log('🔍 Paradero 2 encontrado:', paradero2 ? paradero2.properties.nombre_paradero : 'No encontrado');
+  
+  if (paradero1 && paradero2) {
+    console.log('🔍 Rutas paradero 1:', paradero1.properties.rutas);
+    console.log('🔍 Rutas paradero 2:', paradero2.properties.rutas);
+    
+    // Extraer rutas de cada paradero
+    let rutas1 = [];
+    let rutas2 = [];
+    
+    if (paradero1.properties.rutas) {
+      if (typeof paradero1.properties.rutas === 'string') {
+        rutas1 = paradero1.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+      } else if (Array.isArray(paradero1.properties.rutas)) {
+        rutas1 = paradero1.properties.rutas;
+      }
+    }
+    
+    if (paradero2.properties.rutas) {
+      if (typeof paradero2.properties.rutas === 'string') {
+        rutas2 = paradero2.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+      } else if (Array.isArray(paradero2.properties.rutas)) {
+        rutas2 = paradero2.properties.rutas;
+      }
+    }
+    
+    console.log('🚌 Rutas paradero 1 (procesadas):', rutas1);
+    console.log('🚌 Rutas paradero 2 (procesadas):', rutas2);
+    
+    // Buscar paraderos que conecten estas rutas
+    const paraderosConectores = buscarParaderosConectores(rutas1, rutas2);
+    
+    if (paraderosConectores.length > 0) {
+      console.log('✅ Se encontraron paraderos conectores:', paraderosConectores.length);
+      paraderosConectores.forEach((conector, index) => {
+        const tipoConector = conector.esEstrategico ? '🎯 ESTRATÉGICO' : '🔗 DIRECTO';
+        console.log(`   ${index + 1}. ${conector.nombre} - ${tipoConector} - Rutas: ${conector.rutas.join(', ')}`);
+        if (conector.esEstrategico) {
+          console.log(`      Conecta rutas grupo 1: ${conector.conectaRutas1}`);
+          console.log(`      Conecta rutas grupo 2: ${conector.conectaRutas2}`);
+        }
+      });
+      
+      // NUEVO: Analizar si hay solución de transbordo
+      const conectoresDirectos = paraderosConectores.filter(c => !c.esEstrategico);
+      const conectoresEstrategicos = paraderosConectores.filter(c => c.esEstrategico);
+      
+      if (conectoresDirectos.length > 0) {
+        console.log('✅ SOLUCIÓN DIRECTA: Hay paraderos que conectan ambas rutas directamente');
+      } else if (conectoresEstrategicos.length > 0) {
+        console.log('🎯 SOLUCIÓN ESTRATÉGICA: Se puede usar PATIO PORTAL como punto de conexión');
+        console.log('   Ruta sugerida:');
+        console.log('   1. Terrazas de Granada → PATIO PORTAL (Ruta A102)');
+        console.log('   2. PATIO PORTAL → Los Jardines (Rutas X102/X103)');
+        console.log('   ⚠️ Nota: Esta es una conexión indirecta a través de rutas pretroncales');
+        console.log('   💡 El sistema debería considerar esta opción como transbordo válido');
+      }
+    } else {
+      console.log('❌ No se encontraron paraderos que conecten estas rutas');
+      console.log('🔍 Esto explica por qué no se encuentra transbordo');
+      
+      // NUEVO: Análisis detallado de qué paraderos tienen cada grupo de rutas
+      console.log('🔍 === ANÁLISIS DETALLADO ===');
+      
+      const paraderosConRutas1 = buscarParaderosConRutas(rutas1);
+      const paraderosConRutas2 = buscarParaderosConRutas(rutas2);
+      
+      console.log(`📊 Paraderos con rutas ${rutas1.join(', ')}: ${paraderosConRutas1.length}`);
+      console.log(`📊 Paraderos con rutas ${rutas2.join(', ')}: ${paraderosConRutas2.length}`);
+      
+      if (paraderosConRutas1.length > 0) {
+        console.log('🔍 Paraderos con rutas del grupo 1:');
+        paraderosConRutas1.slice(0, 5).forEach((p, i) => {
+          console.log(`   ${i + 1}. ${p.nombre} - Rutas: ${p.rutas.join(', ')} - Tipo: ${p.tipos_ruta}`);
+        });
+      }
+      
+      if (paraderosConRutas2.length > 0) {
+        console.log('🔍 Paraderos con rutas del grupo 2:');
+        paraderosConRutas2.slice(0, 5).forEach((p, i) => {
+          console.log(`   ${i + 1}. ${p.nombre} - Rutas: ${p.rutas.join(', ')} - Tipo: ${p.tipos_ruta}`);
+        });
+      }
+      
+      // NUEVO: Buscar paraderos que conecten complementarias con pretroncales
+      console.log('🔍 === BUSCANDO CONECTORES COMPLEMENTARIAS-PRETRONCALES ===');
+      const conectoresComplementarias = buscarParaderosConectoresComplementarias();
+      
+      if (conectoresComplementarias.length > 0) {
+        console.log('✅ Paraderos que conectan complementarias con pretroncales:');
+        conectoresComplementarias.slice(0, 10).forEach((conector, i) => {
+          console.log(`   ${i + 1}. ${conector.nombre} - Rutas: ${conector.rutas.join(', ')} - Tipo: ${conector.tipos_ruta}`);
+        });
+      } else {
+        console.log('❌ No se encontraron paraderos que conecten complementarias con pretroncales');
+      }
+    }
+  }
+}
+
+// NUEVA FUNCIÓN: Buscar paraderos que conecten rutas específicas
+function buscarParaderosConectores(rutas1, rutas2) {
+  console.log('🔍 === BUSCANDO PARADEROS CONECTORES ===');
+  console.log('🚌 Rutas grupo 1:', rutas1);
+  console.log('🚌 Rutas grupo 2:', rutas2);
+  
+  if (!window.rutasTranscaribe) {
+    console.error('❌ No hay datos de paraderos disponibles');
+    return [];
+  }
+  
+  const conectores = [];
+  
+  window.rutasTranscaribe.forEach(paradero => {
+    if (paradero.properties && paradero.properties.rutas) {
+      // Manejar tanto strings como arrays
+      let rutasParadero = [];
+      if (typeof paradero.properties.rutas === 'string') {
+        rutasParadero = paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+      } else if (Array.isArray(paradero.properties.rutas)) {
+        rutasParadero = paradero.properties.rutas;
+      }
+      
+      // Verificar si este paradero tiene rutas de ambos grupos
+      const tieneRutas1 = rutas1.some(ruta => rutasParadero.includes(ruta));
+      const tieneRutas2 = rutas2.some(ruta => rutasParadero.includes(ruta));
+      
+      if (tieneRutas1 && tieneRutas2) {
+        conectores.push({
+          nombre: paradero.properties.nombre_paradero,
+          rutas: rutasParadero,
+          tipos_ruta: paradero.properties.tipos_ruta || 'No especificado'
+        });
+        console.log(`✅ Paradero conector encontrado: ${paradero.properties.nombre_paradero} - Rutas: ${rutasParadero.join(', ')}`);
+      }
+    }
+  });
+  
+  // NUEVO: Buscar paraderos estratégicos como PATIO PORTAL
+  console.log('🔍 === BUSCANDO PARADEROS ESTRATÉGICOS ===');
+  const paraderosEstrategicos = buscarParaderosEstrategicos(rutas1, rutas2);
+  conectores.push(...paraderosEstrategicos);
+  
+  console.log(`🔍 Se encontraron ${conectores.length} paraderos conectores (incluyendo estratégicos)`);
+  return conectores;
+}
+
+// NUEVA FUNCIÓN: Buscar paraderos estratégicos (es_exclusivo: true)
+function buscarParaderosEstrategicos(rutas1, rutas2) {
+  const paraderosEstrategicos = [];
+  
+  // Buscar todos los paraderos estratégicos (es_exclusivo: true)
+  const paraderosEstrategicosData = window.rutasTranscaribe.filter(p => 
+    p.properties && p.properties.es_exclusivo === true
+  );
+  
+  console.log('🔍 Paraderos estratégicos encontrados:', paraderosEstrategicosData.length);
+  
+  paraderosEstrategicosData.forEach(paradero => {
+    let rutasParadero = [];
+    if (typeof paradero.properties.rutas === 'string') {
+      rutasParadero = paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+    } else if (Array.isArray(paradero.properties.rutas)) {
+      rutasParadero = paradero.properties.rutas;
+    }
+    
+    // Verificar si este paradero estratégico puede conectar las rutas
+    const tieneRutas1 = rutas1.some(ruta => rutasParadero.includes(ruta));
+    const tieneRutas2 = rutas2.some(ruta => rutasParadero.includes(ruta));
+    
+    // Verificar conexiones indirectas a través de rutas pretroncales
+    const tieneRutasPretroncales = rutasParadero.some(ruta => ruta.startsWith('X'));
+    const puedeConectarIndirectamente = tieneRutas1 && tieneRutasPretroncales;
+    
+    // Un paradero es estratégico si tiene al menos una ruta de cada grupo O puede conectar indirectamente
+    if (tieneRutas1 && (tieneRutas2 || puedeConectarIndirectamente)) {
+      paraderosEstrategicos.push({
+        nombre: paradero.properties.nombre_paradero,
+        rutas: rutasParadero,
+        tipos_ruta: paradero.properties.tipos_ruta || 'Estratégico',
+        esEstrategico: true,
+        conectaRutas1: tieneRutas1,
+        conectaRutas2: tieneRutas2,
+        tieneRutasPretroncales: tieneRutasPretroncales,
+        puedeConectarIndirectamente: puedeConectarIndirectamente
+      });
+      
+      console.log(`🎯 Paradero estratégico encontrado: ${paradero.properties.nombre_paradero}`);
+      console.log(`   Rutas: ${rutasParadero.join(', ')}`);
+      console.log(`   Conecta rutas grupo 1: ${tieneRutas1}`);
+      console.log(`   Conecta rutas grupo 2: ${tieneRutas2}`);
+      console.log(`   Tiene rutas pretroncales: ${tieneRutasPretroncales}`);
+      console.log(`   Puede conectar indirectamente: ${puedeConectarIndirectamente}`);
+    }
+  });
+  
+  return paraderosEstrategicos;
+}
+
+// NUEVA FUNCIÓN: Buscar paraderos con rutas específicas
+function buscarParaderosConRutas(rutasBuscadas) {
+  console.log('🔍 === BUSCANDO PARADEROS CON RUTAS ===');
+  console.log('🚌 Rutas buscadas:', rutasBuscadas);
+  
+  if (!window.rutasTranscaribe) {
+    console.error('❌ No hay datos de paraderos disponibles');
+    return [];
+  }
+  
+  const paraderosEncontrados = [];
+  
+  window.rutasTranscaribe.forEach(paradero => {
+    if (paradero.properties && paradero.properties.rutas) {
+      // Manejar tanto strings como arrays
+      let rutasParadero = [];
+      if (typeof paradero.properties.rutas === 'string') {
+        rutasParadero = paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+      } else if (Array.isArray(paradero.properties.rutas)) {
+        rutasParadero = paradero.properties.rutas;
+      }
+      
+      // Verificar si este paradero tiene alguna de las rutas buscadas
+      const tieneRutasBuscadas = rutasBuscadas.some(ruta => rutasParadero.includes(ruta));
+      
+      if (tieneRutasBuscadas) {
+        paraderosEncontrados.push({
+          nombre: paradero.properties.nombre_paradero,
+          rutas: rutasParadero,
+          tipos_ruta: paradero.properties.tipos_ruta || 'No especificado'
+        });
+      }
+    }
+  });
+  
+  console.log(`🔍 Se encontraron ${paraderosEncontrados.length} paraderos con las rutas buscadas`);
+  return paraderosEncontrados;
+}
+
+// NUEVA FUNCIÓN: Buscar paraderos que conecten complementarias con pretroncales/troncales
+function buscarParaderosConectoresComplementarias() {
+  console.log('🔍 === BUSCANDO CONECTORES COMPLEMENTARIAS-PRETRONCALES ===');
+  
+  if (!window.rutasTranscaribe) {
+    console.error('❌ No hay datos de paraderos disponibles');
+    return [];
+  }
+  
+  const conectores = [];
+  
+  window.rutasTranscaribe.forEach(paradero => {
+    if (paradero.properties && paradero.properties.rutas && paradero.properties.tipos_ruta) {
+      // Manejar tanto strings como arrays
+      let rutasParadero = [];
+      if (typeof paradero.properties.rutas === 'string') {
+        rutasParadero = paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean);
+      } else if (Array.isArray(paradero.properties.rutas)) {
+        rutasParadero = paradero.properties.rutas;
+      }
+      
+      const tiposRuta = (paradero.properties.tipos_ruta || '').toString().toLowerCase();
+      
+      // Verificar si tiene rutas complementarias (A-routes) y pretroncales/troncales (T/X-routes)
+      const tieneComplementarias = rutasParadero.some(ruta => ruta.startsWith('A'));
+      const tienePretroncales = rutasParadero.some(ruta => ruta.startsWith('T') || ruta.startsWith('X'));
+      
+      if (tieneComplementarias && tienePretroncales) {
+        conectores.push({
+          nombre: paradero.properties.nombre_paradero,
+          rutas: rutasParadero,
+          tipos_ruta: paradero.properties.tipos_ruta
+        });
+      }
+    }
+  });
+  
+  console.log(`🔍 Se encontraron ${conectores.length} paraderos conectores complementarias-pretroncales`);
+  return conectores;
+}
+
+// Función global para ejecutar la prueba desde la consola
+window.ejecutarPruebaConexion = function() {
+  console.log('🧪 Ejecutando prueba de conexión desde consola...');
+  probarConexionParaderos();
+};
 
 // Inicializar la aplicación cuando el DOM esté listo
 window.addEventListener('DOMContentLoaded', async function() {
@@ -1996,229 +2428,5 @@ window.addEventListener('DOMContentLoaded', async function() {
   procesarInformacion();
 });
   </script>
-    // NUEVA FUNCIÓN: Probar conexión entre paraderos específicos
-    function probarConexionParaderos() {
-      console.log('🧪 === PRUEBA DE CONEXIÓN ENTRE PARADEROS ===');
-      
-      if (!window.rutasTranscaribe) {
-        console.error('❌ No hay datos de paraderos disponibles');
-        return;
-      }
-      
-      // Buscar los paraderos específicos mencionados
-      const paradero1 = window.rutasTranscaribe.find(f => 
-        f.properties && f.properties.nombre_paradero && 
-        f.properties.nombre_paradero.toLowerCase().includes('terrazas de granada')
-      );
-      
-      const paradero2 = window.rutasTranscaribe.find(f => 
-        f.properties && f.properties.nombre_paradero && 
-        f.properties.nombre_paradero.toLowerCase().includes('los jardines')
-      );
-      
-      console.log('🔍 Paradero 1 encontrado:', paradero1 ? paradero1.properties.nombre_paradero : 'No encontrado');
-      console.log('🔍 Paradero 2 encontrado:', paradero2 ? paradero2.properties.nombre_paradero : 'No encontrado');
-      
-      if (paradero1 && paradero2) {
-        console.log('🔍 Rutas paradero 1:', paradero1.properties.rutas);
-        console.log('🔍 Rutas paradero 2:', paradero2.properties.rutas);
-        
-        // Extraer rutas de cada paradero
-        const rutas1 = paradero1.properties.rutas ? 
-          paradero1.properties.rutas.split(',').map(r => r.trim()).filter(Boolean) : [];
-        const rutas2 = paradero2.properties.rutas ? 
-          paradero2.properties.rutas.split(',').map(r => r.trim()).filter(Boolean) : [];
-        
-        console.log('🚌 Rutas paradero 1 (procesadas):', rutas1);
-        console.log('🚌 Rutas paradero 2 (procesadas):', rutas2);
-        
-        // Buscar paraderos que conecten estas rutas
-        const paraderosConectores = buscarParaderosConectores(rutas1, rutas2);
-        
-        if (paraderosConectores.length > 0) {
-          console.log('✅ Se encontraron paraderos conectores:', paraderosConectores.length);
-          paraderosConectores.forEach((conector, index) => {
-            console.log(`   ${index + 1}. ${conector.nombre} - Rutas: ${conector.rutas.join(', ')}`);
-          });
-        } else {
-          console.log('❌ No se encontraron paraderos que conecten estas rutas');
-          console.log('🔍 Esto explica por qué no se encuentra transbordo');
-          
-          // NUEVO: Análisis detallado de qué paraderos tienen cada grupo de rutas
-          console.log('🔍 === ANÁLISIS DETALLADO ===');
-          
-          const paraderosConRutas1 = buscarParaderosConRutas(rutas1);
-          const paraderosConRutas2 = buscarParaderosConRutas(rutas2);
-          
-          console.log(`📊 Paraderos con rutas ${rutas1.join(', ')}: ${paraderosConRutas1.length}`);
-          console.log(`📊 Paraderos con rutas ${rutas2.join(', ')}: ${paraderosConRutas2.length}`);
-          
-          if (paraderosConRutas1.length > 0) {
-            console.log('🔍 Paraderos con rutas del grupo 1:');
-            paraderosConRutas1.slice(0, 5).forEach((p, i) => {
-              console.log(`   ${i + 1}. ${p.nombre} - Rutas: ${p.rutas.join(', ')} - Tipo: ${p.tipos_ruta}`);
-            });
-          }
-          
-          if (paraderosConRutas2.length > 0) {
-            console.log('🔍 Paraderos con rutas del grupo 2:');
-            paraderosConRutas2.slice(0, 5).forEach((p, i) => {
-              console.log(`   ${i + 1}. ${p.nombre} - Rutas: ${p.rutas.join(', ')} - Tipo: ${p.tipos_ruta}`);
-            });
-          }
-          
-          // NUEVO: Buscar paraderos que conecten complementarias con pretroncales
-          console.log('🔍 === BUSCANDO CONECTORES COMPLEMENTARIAS-PRETRONCALES ===');
-          const conectoresComplementarias = buscarParaderosConectoresComplementarias();
-          
-          if (conectoresComplementarias.length > 0) {
-            console.log('✅ Paraderos que conectan complementarias con pretroncales:');
-            conectoresComplementarias.slice(0, 10).forEach((conector, i) => {
-              console.log(`   ${i + 1}. ${conector.nombre} - Rutas: ${conector.rutas.join(', ')} - Tipo: ${conector.tipos_ruta}`);
-            });
-          } else {
-            console.log('❌ No se encontraron paraderos que conecten complementarias con pretroncales');
-          }
-        }
-      }
-    }
-    
-    // NUEVA FUNCIÓN: Validar eficiencia del transbordo
-
-    // NUEVA FUNCIÓN: Buscar paraderos que conecten rutas específicas
-    function buscarParaderosConectores(rutas1, rutas2) {
-      console.log('🔍 === BUSCANDO PARADEROS CONECTORES ===');
-      console.log('🚌 Rutas grupo 1:', rutas1);
-      console.log('🚌 Rutas grupo 2:', rutas2);
-      
-      if (!window.rutasTranscaribe) {
-        console.error('❌ No hay datos de paraderos disponibles');
-        return [];
-      }
-      
-      const paraderosConectores = [];
-      
-      window.rutasTranscaribe.forEach((paradero, index) => {
-        if (paradero.geometry && paradero.geometry.type === "Point" && paradero.properties) {
-          const rutasParadero = paradero.properties.rutas ? 
-            paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean) : [];
-          
-          // Verificar si tiene rutas del grupo 1 Y del grupo 2
-          const tieneRutas1 = rutas1.some(ruta => rutasParadero.includes(ruta));
-          const tieneRutas2 = rutas2.some(ruta => rutasParadero.includes(ruta));
-          
-          if (tieneRutas1 && tieneRutas2) {
-            paraderosConectores.push({
-              nombre: paradero.properties.nombre_paradero,
-              rutas: rutasParadero,
-              lat: paradero.geometry.coordinates[1],
-              lon: paradero.geometry.coordinates[0]
-            });
-            console.log(`✅ Paradero conector encontrado: ${paradero.properties.nombre_paradero} - Rutas: ${rutasParadero.join(', ')}`);
-          }
-        }
-      });
-      
-      console.log(`📊 Total de paraderos conectores encontrados: ${paraderosConectores.length}`);
-      return paraderosConectores;
-    }
-    
-    // NUEVA FUNCIÓN: Buscar paraderos que tengan rutas específicas
-    function buscarParaderosConRutas(rutasBuscadas) {
-      console.log('🔍 === BUSCANDO PARADEROS CON RUTAS ESPECÍFICAS ===');
-      console.log('🚌 Rutas buscadas:', rutasBuscadas);
-      
-      if (!window.rutasTranscaribe) {
-        console.error('❌ No hay datos de paraderos disponibles');
-        return [];
-      }
-      
-      const paraderosEncontrados = [];
-      
-      window.rutasTranscaribe.forEach((paradero, index) => {
-        if (paradero.geometry && paradero.geometry.type === "Point" && paradero.properties) {
-          const rutasParadero = paradero.properties.rutas ? 
-            paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean) : [];
-          
-          // Verificar si tiene alguna de las rutas buscadas
-          const tieneRutasBuscadas = rutasBuscadas.some(ruta => rutasParadero.includes(ruta));
-          
-          if (tieneRutasBuscadas) {
-            paraderosEncontrados.push({
-              nombre: paradero.properties.nombre_paradero,
-              rutas: rutasParadero,
-              lat: paradero.geometry.coordinates[1],
-              lon: paradero.geometry.coordinates[0],
-              tipos_ruta: paradero.properties.tipos_ruta || ''
-            });
-          }
-        }
-      });
-      
-      console.log(`📊 Total de paraderos con rutas ${rutasBuscadas.join(', ')}: ${paraderosEncontrados.length}`);
-      return paraderosEncontrados;
-    }
-    
-    // NUEVA FUNCIÓN: Buscar paraderos que conecten rutas específicas
-    // NUEVA FUNCIÓN: Buscar paraderos que conecten rutas complementarias con pretroncales
-    function buscarParaderosConectoresComplementarias() {
-      console.log('🔍 === BUSCANDO PARADEROS CONECTORES COMPLEMENTARIAS-PRETRONCALES ===');
-      
-      if (!window.rutasTranscaribe) {
-        console.error('❌ No hay datos de paraderos disponibles');
-        return [];
-      }
-      
-      const paraderosConectores = [];
-      
-      window.rutasTranscaribe.forEach((paradero, index) => {
-        if (paradero.geometry && paradero.geometry.type === "Point" && paradero.properties) {
-          const rutasParadero = paradero.properties.rutas ? 
-            paradero.properties.rutas.split(',').map(r => r.trim()).filter(Boolean) : [];
-          const tiposRuta = paradero.properties.tipos_ruta || '';
-          
-          // Buscar paraderos que tengan tanto rutas complementarias como pretroncales
-          const tieneComplementarias = rutasParadero.some(ruta => ruta.startsWith('A'));
-          const tienePretroncales = rutasParadero.some(ruta => ruta.startsWith('T') || ruta.startsWith('X'));
-          
-          if (tieneComplementarias && tienePretroncales) {
-            paraderosConectores.push({
-              nombre: paradero.properties.nombre_paradero,
-              rutas: rutasParadero,
-              tipos_ruta: tiposRuta,
-              lat: paradero.geometry.coordinates[1],
-              lon: paradero.geometry.coordinates[0]
-            });
-            console.log(`✅ Paradero conector encontrado: ${paradero.properties.nombre_paradero}`);
-            console.log(`   Rutas: ${rutasParadero.join(', ')}`);
-            console.log(`   Tipos: ${tiposRuta}`);
-          }
-        }
-      });
-      
-      console.log(`📊 Total de paraderos conectores complementarias-pretroncales: ${paraderosConectores.length}`);
-      return paraderosConectores;
-    }
-    
-    // NUEVA FUNCIÓN: Buscar paraderos que tengan rutas específicas
-
-    // NUEVA FUNCIÓN: Ejecutar prueba manualmente (disponible globalmente)
-    window.ejecutarPruebaConexion = function() {
-      console.log('🧪 === EJECUTANDO PRUEBA MANUAL ===');
-      if (window.rutasTranscaribe && window.rutasTranscaribe.length > 0) {
-        probarConexionParaderos();
-      } else {
-        console.log('⏳ Esperando a que se carguen los datos...');
-        setTimeout(() => {
-          if (window.rutasTranscaribe && window.rutasTranscaribe.length > 0) {
-            probarConexionParaderos();
-          } else {
-            console.error('❌ No se pudieron cargar los datos de paraderos');
-          }
-        }, 3000);
-      }
-    };
-    
-    // NUEVA FUNCIÓN: Buscar paraderos que conecten rutas complementarias con pretroncales
 </body>
 </html> 
