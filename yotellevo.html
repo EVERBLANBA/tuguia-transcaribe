@@ -484,6 +484,10 @@
     function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
       if (!window.rutasTranscaribe) return null;
       
+      console.log('🔄 === BUSCANDO MEJOR TRANSBORDO ===');
+      console.log('📍 Paradero Origen:', paraderoOrigen.nombre);
+      console.log('🎯 Paradero Destino:', paraderoDestino.nombre);
+      
       // Buscar paraderos que conecten las rutas
       const paraderosTransbordo = window.rutasTranscaribe.filter(f => 
         f.geometry && 
@@ -492,10 +496,13 @@
         f.properties.network === "Transcaribe"
       );
       
+      console.log('🔍 Total de paraderos a evaluar:', paraderosTransbordo.length);
+      
       let mejorTransbordo = null;
       let mejorScore = Infinity;
+      let transbordosEncontrados = [];
       
-      paraderosTransbordo.forEach(paradero => {
+      paraderosTransbordo.forEach((paradero, index) => {
         const coords = paradero.geometry.coordinates;
         const lat = coords[1];
         const lon = coords[0];
@@ -516,7 +523,7 @@
         }, paraderoDestino);
         
         if (rutaDesdeOrigen && rutaHastaDestino) {
-          // Calcular score basado en distancia total
+          // Calcular distancias
           const distOrigenTransbordo = haversine(
             paraderoOrigen.lat, paraderoOrigen.lon,
             lat, lon
@@ -527,27 +534,135 @@
             paraderoDestino.lat, paraderoDestino.lon
           );
           
-          const score = distOrigenTransbordo + distTransbordoDestino;
+          // NUEVO: Score mejorado que considera múltiples factores
+          const distanciaTotal = distOrigenTransbordo + distTransbordoDestino;
+          
+          // Factor de eficiencia: preferir transbordos más centrales
+          const factorEficiencia = Math.min(distOrigenTransbordo, distTransbordoDestino) / Math.max(distOrigenTransbordo, distTransbordoDestino);
+          
+          // Factor de distancia: penalizar transbordos muy largos
+          const factorDistancia = distanciaTotal > 5000 ? 1.5 : 1.0; // Penalizar si > 5km
+          
+          // Factor de balance: preferir transbordos equilibrados
+          const factorBalance = Math.abs(distOrigenTransbordo - distTransbordoDestino) / distanciaTotal;
+          const factorBalanceScore = 1 + factorBalance * 0.3; // Penalizar desbalance
+          
+          // Score final mejorado
+          const score = distanciaTotal * factorDistancia * factorBalanceScore / factorEficiencia;
+          
+          const transbordoInfo = {
+            paraderoTransbordo: {
+              nombre: paradero.properties.nombre_paradero,
+              lat: lat,
+              lon: lon
+            },
+            ruta1: rutaDesdeOrigen.ruta,
+            rutas1: rutaDesdeOrigen.todas,
+            ruta2: rutaHastaDestino.ruta,
+            rutas2: rutaHastaDestino.todas,
+            score: score,
+            distOrigenTransbordo: distOrigenTransbordo,
+            distTransbordoDestino: distTransbordoDestino,
+            distanciaTotal: distanciaTotal,
+            factorEficiencia: factorEficiencia,
+            factorBalance: factorBalance
+          };
+          
+          transbordosEncontrados.push(transbordoInfo);
           
           if (score < mejorScore) {
             mejorScore = score;
-            mejorTransbordo = {
-              paraderoTransbordo: {
-                nombre: paradero.properties.nombre_paradero,
-                lat: lat,
-                lon: lon
-              },
-              ruta1: rutaDesdeOrigen.ruta,
-              rutas1: rutaDesdeOrigen.todas,
-              ruta2: rutaHastaDestino.ruta,
-              rutas2: rutaHastaDestino.todas,
-              score: score
-            };
+            mejorTransbordo = transbordoInfo;
+          }
+          
+          // Log cada 50 paraderos para debugging
+          if (index % 50 === 0) {
+            console.log(`🔍 Evaluando paradero ${index + 1}/${paraderosTransbordo.length}: ${paradero.properties.nombre_paradero}`);
           }
         }
       });
       
+      // NUEVO: Ordenar todos los transbordos encontrados por score
+      transbordosEncontrados.sort((a, b) => a.score - b.score);
+      
+      console.log('🔄 Transbordos encontrados:', transbordosEncontrados.length);
+      if (transbordosEncontrados.length > 0) {
+        console.log('🏆 Mejor transbordo:', {
+          paradero: mejorTransbordo.paraderoTransbordo.nombre,
+          score: mejorTransbordo.score,
+          distOrigen: Math.round(mejorTransbordo.distOrigenTransbordo),
+          distDestino: Math.round(mejorTransbordo.distTransbordoDestino),
+          total: Math.round(mejorTransbordo.distanciaTotal),
+          eficiencia: mejorTransbordo.factorEficiencia.toFixed(2),
+          balance: mejorTransbordo.factorBalance.toFixed(2)
+        });
+        
+        // Mostrar top 3 transbordos
+        if (transbordosEncontrados.length > 1) {
+          console.log('🥈 Segundo mejor:', {
+            paradero: transbordosEncontrados[1].paraderoTransbordo.nombre,
+            score: transbordosEncontrados[1].score,
+            total: Math.round(transbordosEncontrados[1].distanciaTotal)
+          });
+        }
+        if (transbordosEncontrados.length > 2) {
+          console.log('🥉 Tercer mejor:', {
+            paradero: transbordosEncontrados[2].paraderoTransbordo.nombre,
+            score: transbordosEncontrados[2].score,
+            total: Math.round(transbordosEncontrados[2].distanciaTotal)
+          });
+        }
+      }
+      
       return mejorTransbordo;
+    }
+    
+    // NUEVA FUNCIÓN: Validar eficiencia del transbordo
+    function validarEficienciaTransbordo(transbordo, paraderoOrigen, paraderoDestino) {
+      if (!transbordo) return false;
+      
+      console.log('🔍 === VALIDANDO EFICIENCIA DEL TRANSBORDO ===');
+      
+      // Calcular distancia directa entre origen y destino
+      const distanciaDirecta = haversine(
+        paraderoOrigen.lat, paraderoOrigen.lon,
+        paraderoDestino.lat, paraderoDestino.lon
+      );
+      
+      console.log('📏 Distancia directa origen-destino:', Math.round(distanciaDirecta), 'm');
+      console.log('📏 Distancia total del transbordo:', Math.round(transbordo.distanciaTotal), 'm');
+      
+      // Criterios de validación
+      const criterios = {
+        // El transbordo no debe ser más de 2.5 veces la distancia directa
+        factorDistancia: transbordo.distanciaTotal <= distanciaDirecta * 2.5,
+        
+        // El transbordo debe tener buena eficiencia (> 0.3)
+        factorEficiencia: transbordo.factorEficiencia > 0.3,
+        
+        // El transbordo no debe ser extremadamente desbalanceado
+        factorBalance: transbordo.factorBalance < 0.8,
+        
+        // La distancia total no debe ser excesiva (> 10km)
+        distanciaMaxima: transbordo.distanciaTotal <= 10000
+      };
+      
+      console.log('✅ Criterios de validación:', criterios);
+      
+      // Todos los criterios deben cumplirse
+      const esValido = Object.values(criterios).every(criterio => criterio);
+      
+      if (esValido) {
+        console.log('✅ Transbordo validado como eficiente');
+      } else {
+        console.log('❌ Transbordo no cumple criterios de eficiencia');
+        console.log('❌ Criterios fallidos:', Object.entries(criterios)
+          .filter(([key, value]) => !value)
+          .map(([key]) => key)
+        );
+      }
+      
+      return esValido;
     }
     
     // Función para calcular ruta óptima
@@ -678,39 +793,74 @@
         console.log('🔄 Resultado de búsqueda de transbordo:', transbordo);
 
         if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
-          console.log('✅ Generando instrucciones para ruta con transbordo');
-          let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? 
-            `las rutas ${transbordo.rutas1.join(', ')}` : 
-            `la ruta ${transbordo.ruta1}`;
+          // NUEVO: Validar eficiencia del transbordo
+          const transbordoEsEficiente = validarEficienciaTransbordo(transbordo, paraderoOrigen, paraderoDestino);
           
-          let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? 
-            `las rutas ${transbordo.rutas2.join(', ')}` : 
-            `la ruta ${transbordo.ruta2}`;
+          if (transbordoEsEficiente) {
+            console.log('✅ Generando instrucciones para ruta con transbordo optimizado');
+            
+            // NUEVO: Información detallada del transbordo
+            const distOrigen = Math.round(transbordo.distOrigenTransbordo);
+            const distDestino = Math.round(transbordo.distTransbordoDestino);
+            const distTotal = Math.round(transbordo.distanciaTotal);
+            const eficiencia = transbordo.factorEficiencia;
+            
+            let rutas1Texto = transbordo.rutas1 && transbordo.rutas1.length > 1 ? 
+              `las rutas ${transbordo.rutas1.join(', ')}` : 
+              `la ruta ${transbordo.ruta1}`;
+            
+            let rutas2Texto = transbordo.rutas2 && transbordo.rutas2.length > 1 ? 
+              `las rutas ${transbordo.rutas2.join(', ')}` : 
+              `la ruta ${transbordo.ruta2}`;
 
-          let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. ` +
-                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}`;
+            // NUEVO: Mensaje mejorado con información de eficiencia
+            let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre} (${distOrigen}m). ` +
+                         `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre} (${distDestino}m)`;
 
-          if (endMode !== 'paradero') {
-            mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
+            if (endMode !== 'paradero') {
+              mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
+            }
+            mensaje += '.';
+
+            // NUEVO: Agregar información sobre la optimización si es muy eficiente
+            if (eficiencia > 0.7) {
+              mensaje += ` (Transbordo optimizado: ${Math.round(eficiencia * 100)}% de eficiencia)`;
+            }
+
+            resultado = {
+              tipo: 'con_transbordo',
+              paraderoOrigen: paraderoOrigen,
+              paraderoDestino: paraderoDestino,
+              paraderoTransbordo: transbordo.paraderoTransbordo,
+              ruta1: transbordo.ruta1,
+              rutas1: transbordo.rutas1,
+              ruta2: transbordo.ruta2,
+              rutas2: transbordo.rutas2,
+              mensaje: mensaje,
+              // NUEVO: Información adicional para debugging
+              infoTransbordo: {
+                distOrigenTransbordo: distOrigen,
+                distTransbordoDestino: distDestino,
+                distanciaTotal: distTotal,
+                factorEficiencia: eficiencia,
+                factorBalance: transbordo.factorBalance
+              },
+              pasos: [
+                { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
+                { accion: 'transbordar', en: transbordo.paraderoTransbordo },
+                { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
+              ]
+            };
+          } else {
+            console.log('❌ Transbordo no es eficiente, buscando alternativas...');
+            resultado = {
+              tipo: 'sin_ruta',
+              paraderoOrigen: paraderoOrigen,
+              paraderoDestino: paraderoDestino,
+              mensaje: 'No se encontró una ruta de transbordo eficiente entre los paraderos seleccionados. Considera usar otro medio de transporte.',
+              pasos: []
+            };
           }
-          mensaje += '.';
-
-          resultado = {
-            tipo: 'con_transbordo',
-            paraderoOrigen: paraderoOrigen,
-            paraderoDestino: paraderoDestino,
-            paraderoTransbordo: transbordo.paraderoTransbordo,
-            ruta1: transbordo.ruta1,
-            rutas1: transbordo.rutas1,
-            ruta2: transbordo.ruta2,
-            rutas2: transbordo.rutas2,
-            mensaje: mensaje,
-            pasos: [
-              { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
-              { accion: 'transbordar', en: transbordo.paraderoTransbordo },
-              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
-            ]
-          };
         } else {
           console.log('❌ No se encontró ruta directa ni con transbordo');
           resultado = {
