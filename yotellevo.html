@@ -316,13 +316,43 @@
     // Cargar datos de paraderos al inicio
     window.rutasTranscaribe = [];
     fetch('rutas_transcaribe.geojson')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('✅ Datos de paraderos cargados:', data.features.length);
             window.rutasTranscaribe = data.features;
+            
+            // NUEVO: Validar y reparar datos después de cargar
+            console.log('🔧 Validando datos cargados...');
+            const datosValidos = validarYRepararDatosGeoJSON();
+            if (datosValidos) {
+                console.log('✅ Datos del GeoJSON validados correctamente');
+            } else {
+                console.warn('⚠️ Algunos datos del GeoJSON pueden tener problemas');
+            }
         })
         .catch(error => {
             console.error('❌ Error cargando datos de paraderos:', error);
+            // NUEVO: Mostrar error en la interfaz si falla la carga
+            const panelGuia = document.getElementById('panel-guia-inteligente');
+            if (panelGuia) {
+                panelGuia.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(220,53,69,0.10); color: #fff; max-width: 420px;">
+                        <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">⚠️ Error de Carga</h3>
+                        <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
+                            <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>❌</span> Problema:</strong>
+                            <div style='margin-top:0.5em;'>No se pudieron cargar los datos de paraderos. Verifica tu conexión a internet.</div>
+                        </div>
+                        <button onclick="window.location.reload()" style="background: #fff; color: #dc3545; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,255,255,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
+                            <span style='font-size:1.2em;'>🔄</span> Reintentar
+                        </button>
+                    </div>
+                `;
+            }
         });
     
     // Utilidad para calcular distancia entre dos puntos (Haversine)
@@ -442,21 +472,66 @@
     
     // Función para obtener todas las rutas de un paradero
     function obtenerTodasLasRutas(paradero) {
+      console.log('🔍 === OBTENIENDO TODAS LAS RUTAS ===');
+      console.log('📍 Paradero:', paradero.nombre);
+      console.log('🔍 Datos del paradero:', paradero);
+      
       // Unifica todos los campos de rutas si existen, si no, usa rutas
       let todas = [];
-      if (paradero.rutas_troncales) todas = todas.concat(paradero.rutas_troncales);
-      if (paradero.rutas_pretroncales) todas = todas.concat(paradero.rutas_pretroncales);
-      if (paradero.rutas_alimentadoras) todas = todas.concat(paradero.rutas_alimentadoras);
-      if (paradero.rutas_complementarias) todas = todas.concat(paradero.rutas_complementarias);
-      if (paradero.rutas) {
-        if (Array.isArray(paradero.rutas)) {
-          todas = todas.concat(paradero.rutas);
-        } else {
-          todas = todas.concat(String(paradero.rutas).split(',').map(r => r.trim()));
+      
+      // NUEVO: Manejo más robusto de diferentes campos de rutas
+      const camposRutas = [
+        'rutas',
+        'rutas_troncales', 
+        'rutas_pretroncales',
+        'rutas_alimentadoras',
+        'rutas_complementarias',
+        'tipos_ruta'
+      ];
+      
+      camposRutas.forEach(campo => {
+        if (paradero[campo]) {
+          let rutasCampo = [];
+          
+          if (typeof paradero[campo] === 'string') {
+            // Si es string, dividir por comas
+            rutasCampo = paradero[campo].split(',').map(r => r.trim());
+          } else if (Array.isArray(paradero[campo])) {
+            // Si es array, usar directamente
+            rutasCampo = paradero[campo];
+          }
+          
+          // Agregar a la lista total
+          todas = todas.concat(rutasCampo);
+          console.log(`🔍 Campo ${campo}:`, rutasCampo);
         }
+      });
+      
+      // NUEVO: También verificar propiedades anidadas
+      if (paradero.properties) {
+        camposRutas.forEach(campo => {
+          if (paradero.properties[campo]) {
+            let rutasCampo = [];
+            
+            if (typeof paradero.properties[campo] === 'string') {
+              rutasCampo = paradero.properties[campo].split(',').map(r => r.trim());
+            } else if (Array.isArray(paradero.properties[campo])) {
+              rutasCampo = paradero.properties[campo];
+            }
+            
+            todas = todas.concat(rutasCampo);
+            console.log(`🔍 Propiedad ${campo}:`, rutasCampo);
+          }
+        });
       }
+      
       // Normaliza y elimina duplicados
-      return [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
+      const rutasNormalizadas = [...new Set(todas.map(r => r.trim().toUpperCase()).filter(Boolean))];
+      
+      console.log('🚌 Todas las rutas encontradas:', todas);
+      console.log('🚌 Rutas normalizadas:', rutasNormalizadas);
+      
+      return rutasNormalizadas;
     }
     
     // Modifica la función verificarRutaDirecta para usar obtenerTodasLasRutas
@@ -464,14 +539,21 @@
       console.log('🔍 === VERIFICANDO RUTA DIRECTA ===');
       console.log('📍 Paradero Origen:', paraderoOrigen);
       console.log('🎯 Paradero Destino:', paraderoDestino);
+      
+      // NUEVO: Logging detallado de las rutas
+      console.log('🔍 Rutas del paradero origen:', paraderoOrigen.rutas);
+      console.log('🔍 Rutas del paradero destino:', paraderoDestino.rutas);
+      
       // Unifica todas las rutas posibles SOLO para la comparación directa
       const rutasOrigen = obtenerTodasLasRutas(paraderoOrigen);
       const rutasDestino = obtenerTodasLasRutas(paraderoDestino);
       console.log('🚌 Rutas Origen (procesadas):', rutasOrigen);
       console.log('🚌 Rutas Destino (procesadas):', rutasDestino);
+      
       // Buscar intersección
       const rutasComunes = rutasOrigen.filter(ruta => rutasDestino.includes(ruta));
       console.log('🟢 Rutas comunes (intersección):', rutasComunes);
+      
       if (rutasComunes.length > 0) {
         console.log('✅ Ruta directa encontrada:', rutasComunes[0]);
         return { ruta: rutasComunes[0], todas: rutasComunes };
@@ -488,6 +570,10 @@
       console.log('📍 Paradero Origen:', paraderoOrigen.nombre);
       console.log('🎯 Paradero Destino:', paraderoDestino.nombre);
       
+      // NUEVO: Logging detallado de rutas
+      console.log('🔍 Rutas paradero origen:', paraderoOrigen.rutas);
+      console.log('🔍 Rutas paradero destino:', paraderoDestino.rutas);
+      
       // Buscar paraderos que conecten las rutas
       const paraderosTransbordo = window.rutasTranscaribe.filter(f => 
         f.geometry && 
@@ -501,15 +587,45 @@
       let mejorTransbordo = null;
       let mejorScore = Infinity;
       let transbordosEncontrados = [];
+      let paraderosEvaluados = 0;
       
       paraderosTransbordo.forEach((paradero, index) => {
         const coords = paradero.geometry.coordinates;
         const lat = coords[1];
         const lon = coords[0];
         
-        const rutasParadero = typeof paradero.properties.rutas === 'string' ? 
-          paradero.properties.rutas.split(',').map(r => r.trim()) : 
-          (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
+        // NUEVO: Mejorar extracción de rutas del paradero
+        let rutasParadero = [];
+        if (paradero.properties.rutas) {
+          if (typeof paradero.properties.rutas === 'string') {
+            rutasParadero = paradero.properties.rutas.split(',').map(r => r.trim());
+          } else if (Array.isArray(paradero.properties.rutas)) {
+            rutasParadero = paradero.properties.rutas;
+          }
+        }
+        
+        // NUEVO: También verificar otros campos de rutas
+        if (paradero.properties.rutas_troncales) {
+          const rutasTroncales = Array.isArray(paradero.properties.rutas_troncales) ? 
+            paradero.properties.rutas_troncales : 
+            paradero.properties.rutas_troncales.split(',').map(r => r.trim());
+          rutasParadero = rutasParadero.concat(rutasTroncales);
+        }
+        
+        if (paradero.properties.rutas_alimentadoras) {
+          const rutasAlimentadoras = Array.isArray(paradero.properties.rutas_alimentadoras) ? 
+            paradero.properties.rutas_alimentadoras : 
+            paradero.properties.rutas_alimentadoras.split(',').map(r => r.trim());
+          rutasParadero = rutasParadero.concat(rutasAlimentadoras);
+        }
+        
+        // Eliminar duplicados y normalizar
+        rutasParadero = [...new Set(rutasParadero.map(r => r.trim().toUpperCase()).filter(Boolean))];
+        
+        // NUEVO: Logging para debugging
+        if (index < 5) {
+          console.log(`🔍 Paradero ${index + 1}: ${paradero.properties.nombre_paradero} - Rutas:`, rutasParadero);
+        }
         
         // Verificar si este paradero conecta origen y destino
         const rutaDesdeOrigen = verificarRutaDirecta(paraderoOrigen, {
@@ -523,6 +639,9 @@
         }, paraderoDestino);
         
         if (rutaDesdeOrigen && rutaHastaDestino) {
+          paraderosEvaluados++;
+          console.log(`✅ Paradero ${paradero.properties.nombre_paradero} conecta origen y destino`);
+          
           // Calcular distancias
           const distOrigenTransbordo = haversine(
             paraderoOrigen.lat, paraderoOrigen.lon,
@@ -576,8 +695,8 @@
           }
           
           // Log cada 50 paraderos para debugging
-          if (index % 50 === 0) {
-            console.log(`🔍 Evaluando paradero ${index + 1}/${paraderosTransbordo.length}: ${paradero.properties.nombre_paradero}`);
+          if (paraderosEvaluados % 10 === 0) {
+            console.log(`🔍 Encontrados ${paraderosEvaluados} transbordos válidos hasta ahora...`);
           }
         }
       });
@@ -586,6 +705,8 @@
       transbordosEncontrados.sort((a, b) => a.score - b.score);
       
       console.log('🔄 Transbordos encontrados:', transbordosEncontrados.length);
+      console.log('🔍 Paraderos evaluados:', paraderosEvaluados);
+      
       if (transbordosEncontrados.length > 0) {
         console.log('🏆 Mejor transbordo:', {
           paradero: mejorTransbordo.paraderoTransbordo.nombre,
@@ -612,9 +733,78 @@
             total: Math.round(transbordosEncontrados[2].distanciaTotal)
           });
         }
+      } else {
+        console.log('❌ No se encontraron transbordos válidos');
+        console.log('🔍 Posibles causas:');
+        console.log('   - No hay paraderos que conecten las rutas');
+        console.log('   - Las rutas no están correctamente mapeadas en el GeoJSON');
+        console.log('   - Problema en la función verificarRutaDirecta');
       }
       
       return mejorTransbordo;
+    }
+    
+    // NUEVA FUNCIÓN: Validar y reparar datos del GeoJSON
+    function validarYRepararDatosGeoJSON() {
+      console.log('🔧 === VALIDANDO Y REPARANDO DATOS GEOJSON ===');
+      
+      if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
+        console.error('❌ No hay datos de paraderos disponibles');
+        return false;
+      }
+      
+      let paraderosReparados = 0;
+      let paraderosConRutas = 0;
+      let paraderosSinRutas = 0;
+      
+      window.rutasTranscaribe.forEach((paradero, index) => {
+        if (paradero.geometry && paradero.geometry.type === "Point" && paradero.properties) {
+          // Verificar si tiene rutas
+          let tieneRutas = false;
+          const camposRutas = ['rutas', 'rutas_troncales', 'rutas_alimentadoras', 'rutas_complementarias'];
+          
+          camposRutas.forEach(campo => {
+            if (paradero.properties[campo] && paradero.properties[campo].toString().trim() !== '') {
+              tieneRutas = true;
+            }
+          });
+          
+          if (tieneRutas) {
+            paraderosConRutas++;
+          } else {
+            paraderosSinRutas++;
+            console.log(`⚠️ Paradero sin rutas: ${paradero.properties.nombre_paradero || 'Sin nombre'}`);
+          }
+          
+          // NUEVO: Reparar formato de rutas si es necesario
+          if (paradero.properties.rutas) {
+            const rutasOriginal = paradero.properties.rutas;
+            
+            // Si las rutas están en formato incorrecto, intentar reparar
+            if (typeof rutasOriginal === 'string' && rutasOriginal.includes('[')) {
+              try {
+                // Intentar parsear como JSON si está en formato de array
+                const rutasParseadas = JSON.parse(rutasOriginal);
+                if (Array.isArray(rutasParseadas)) {
+                  paradero.properties.rutas = rutasParseadas.join(', ');
+                  paraderosReparados++;
+                  console.log(`🔧 Reparado paradero: ${paradero.properties.nombre_paradero}`);
+                }
+              } catch (e) {
+                // Si no se puede parsear, mantener como está
+              }
+            }
+          }
+        }
+      });
+      
+      console.log('📊 Estadísticas de validación:');
+      console.log(`   - Paraderos con rutas: ${paraderosConRutas}`);
+      console.log(`   - Paraderos sin rutas: ${paraderosSinRutas}`);
+      console.log(`   - Paraderos reparados: ${paraderosReparados}`);
+      console.log(`   - Total de features: ${window.rutasTranscaribe.length}`);
+      
+      return paraderosConRutas > 0;
     }
     
     // NUEVA FUNCIÓN: Validar eficiencia del transbordo
@@ -675,6 +865,18 @@
       if (!destinoCoords) {
         console.error('❌ No hay coordenadas de destino');
         return null;
+      }
+
+      // NUEVO: Validar datos del GeoJSON antes de proceder
+      console.log('🔧 Validando datos del GeoJSON...');
+      const datosValidos = validarYRepararDatosGeoJSON();
+      if (!datosValidos) {
+        console.error('❌ Los datos del GeoJSON no son válidos');
+        return {
+          tipo: 'error_datos',
+          mensaje: 'Error en los datos de paraderos. Por favor, recarga la página.',
+          pasos: []
+        };
       }
 
       // Obtener el modo de destino y datos
@@ -741,7 +943,11 @@
 
       if (!paraderoDestino) {
         console.error('❌ No se encontró paradero cercano al destino');
-        return null;
+        return {
+          tipo: 'sin_paradero_destino',
+          mensaje: 'No se encontró un paradero cercano al destino. Considera usar otro medio de transporte.',
+          pasos: []
+        };
       }
 
       // Verificar si hay ruta directa
@@ -882,28 +1088,72 @@
       // Determinar el texto del punto de partida
       let textoPartida = puntoPartida.nombre || 'Punto de partida';
       
-      let instruccionesHTML = `
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 420px;">
-          <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">🧠 Tu Guía Inteligente</h3>
-          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-            <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${textoPartida}</span>
+      let instruccionesHTML = '';
+      
+      // NUEVO: Manejar diferentes tipos de resultado
+      if (rutaOptima.tipo === 'error_datos') {
+        instruccionesHTML = `
+          <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(220,53,69,0.10); color: #fff; max-width: 420px;">
+            <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">⚠️ Error en el Sistema</h3>
+            <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
+              <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>❌</span> Problema:</strong>
+              <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
+            </div>
+            <button onclick="window.location.reload()" style="background: #fff; color: #dc3545; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,255,255,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
+              <span style='font-size:1.2em;'>🔄</span> Recargar Página
+            </button>
           </div>
-          <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-            <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
+        `;
+      } else if (rutaOptima.tipo === 'sin_paradero_destino' || rutaOptima.tipo === 'sin_ruta') {
+        instruccionesHTML = `
+          <div style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(255,193,7,0.10); color: #fff; max-width: 420px;">
+            <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">⚠️ Sin Ruta Disponible</h3>
+            <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${textoPartida}</span>
+            </div>
+            <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
+              <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
+              <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); color: #fff; padding: 1rem; border-radius: 12px; font-size: 0.95rem;">
+              <strong>💡 Sugerencias:</strong>
+              <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                <li>Verifica que los puntos estén en Cartagena</li>
+                <li>Intenta con puntos más cercanos</li>
+                <li>Considera usar taxi o transporte privado</li>
+              </ul>
+            </div>
           </div>
-          <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
-            <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
-            <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
+        `;
+      } else {
+        // Lógica original para rutas con transporte público
+        instruccionesHTML = `
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 420px;">
+            <h3 style="margin: 0 0 1.1rem 0; font-size: 1.35rem; color: #fff; font-weight: 700; letter-spacing: 0.5px;">🧠 Tu Guía Inteligente</h3>
+            <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>📍</span> <strong>Punto de Partida:</strong> <span style='color:#ffe082;'>${textoPartida}</span>
+            </div>
+            <div style="margin-bottom: 1rem; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>🚌</span> <strong>Paradero más cercano:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
+              <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
+              <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
+            </div>
+            <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
+              <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento Inteligente
+            </button>
           </div>
-          <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
-            <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento Inteligente
-          </button>
-        </div>
-      `;
+        `;
+      }
+      
       const panelGuia = document.getElementById('panel-guia-inteligente');
       if (panelGuia) {
         panelGuia.innerHTML = instruccionesHTML;
-        // Asociar funcionalidad al botón
+        // Asociar funcionalidad al botón solo si existe
         const btn = document.getElementById('btnIniciarSeguimiento');
         if (btn) {
           btn.addEventListener('click', function() {
