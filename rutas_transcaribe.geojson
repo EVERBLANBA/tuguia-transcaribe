@@ -5193,27 +5193,7 @@
         ]
       }
     },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre_paradero": "Mz 68 Lt 1",
-        "coordenadas": "10.37996078849785, -75.49694851188207",
-        "rutas": "A108",
-        "network": "Transcaribe",
-        "tipos_ruta": "Alimentadoras",
-        "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-        "name": "Mz 68 Lt 1"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -75.49694851188207,
-          10.37996078849785
-        ]
-      }
-    },
+    
     {
       "type": "Feature",
       "properties": {
