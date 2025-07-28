@@ -714,10 +714,8 @@
       return mejorTransbordo;
     }
     
-    // NUEVA FUNCIÓN: Buscar paraderos conectores reales
+    // FUNCIÓN CORREGIDA: Buscar paraderos conectores reales
     function buscarParaderosConectoresReales(paraderoOrigen, paraderoDestino) {
-      console.log('🎯 === BUSCANDO PARADEROS CONECTORES REALES ===');
-      
       // Obtener rutas de origen y destino
       let rutasOrigen = [];
       let rutasDestino = [];
@@ -738,9 +736,6 @@
           rutasDestino = paraderoDestino.rutas.split(',').map(r => r.trim()).filter(Boolean);
         }
       }
-      
-      console.log('🔍 Rutas origen:', rutasOrigen);
-      console.log('🔍 Rutas destino:', rutasDestino);
       
       const paraderosConectores = [];
       
@@ -792,13 +787,6 @@
               rutasOrigen: rutasOrigen.filter(ruta => rutasParadero.includes(ruta)),
               rutasDestino: rutasDestino.filter(ruta => rutasParadero.includes(ruta))
             });
-            
-            console.log('✅ Paradero conector encontrado:', paradero.properties.nombre_paradero);
-            console.log('   Rutas origen:', rutasOrigen.filter(ruta => rutasParadero.includes(ruta)));
-            console.log('   Rutas destino:', rutasDestino.filter(ruta => rutasParadero.includes(ruta)));
-            console.log('   Distancia origen:', Math.round(distOrigen), 'm');
-            console.log('   Distancia destino:', Math.round(distDestino), 'm');
-            console.log('   Eficiencia:', eficiencia.toFixed(2));
           }
         }
       });
@@ -806,7 +794,6 @@
       // Ordenar por eficiencia (mejor primero)
       paraderosConectores.sort((a, b) => a.eficiencia - b.eficiencia);
       
-      console.log('🔍 Paraderos conectores encontrados:', paraderosConectores.length);
       return paraderosConectores;
     }
     
