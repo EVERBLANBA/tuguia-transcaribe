@@ -7389,7 +7389,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Liceo Pedro de Heredia"
       },
       "geometry": {
         "type": "Point",
@@ -7410,7 +7411,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Liceo Pedro de Heredia"
       },
       "geometry": {
         "type": "Point",
@@ -7431,7 +7433,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "La Candelaria"
       },
       "geometry": {
         "type": "Point",
@@ -7452,7 +7455,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Tienda La Unica"
       },
       "geometry": {
         "type": "Point",
@@ -7473,7 +7477,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Boston"
       },
       "geometry": {
         "type": "Point",
@@ -7494,7 +7499,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Boston"
       },
       "geometry": {
         "type": "Point",
@@ -7515,7 +7521,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "El Libano"
       },
       "geometry": {
         "type": "Point",
@@ -7536,7 +7543,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "El Libano"
       },
       "geometry": {
         "type": "Point",
@@ -7557,7 +7565,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya Sector El Tacon"
       },
       "geometry": {
         "type": "Point",
@@ -7578,7 +7587,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya Sector El Tacon"
       },
       "geometry": {
         "type": "Point",
@@ -7599,7 +7609,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Salida Perimetral Sector Rafael Nu ez."
       },
       "geometry": {
         "type": "Point",
@@ -7620,7 +7631,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Salida Perimetral Sector Rafael Nu ez."
       },
       "geometry": {
         "type": "Point",
@@ -7641,7 +7653,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "La Esquina Del Sabor"
       },
       "geometry": {
         "type": "Point",
@@ -7662,7 +7675,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Pollito Pio"
       },
       "geometry": {
         "type": "Point",
@@ -7683,7 +7697,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Cai Arrocera"
       },
       "geometry": {
         "type": "Point",
@@ -7704,7 +7719,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Cai Arrocera"
       },
       "geometry": {
         "type": "Point",
@@ -7725,7 +7741,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Casa Justicia Chiquinquira."
       },
       "geometry": {
         "type": "Point",
@@ -7746,7 +7763,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "I.E. Fulgencio Lequerica"
       },
       "geometry": {
         "type": "Point",
@@ -7767,7 +7785,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya Sector La Puntilla"
       },
       "geometry": {
         "type": "Point",
@@ -7788,7 +7807,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Centro Comercial Olaya Plaza"
       },
       "geometry": {
         "type": "Point",
@@ -7809,7 +7829,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya sector La Central"
       },
       "geometry": {
         "type": "Point",
@@ -7830,7 +7851,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya Sector Estela"
       },
       "geometry": {
         "type": "Point",
@@ -7851,7 +7873,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Olaya Sector Playa Blanca"
       },
       "geometry": {
         "type": "Point",
@@ -7872,7 +7895,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Cementerio De Olaya"
       },
       "geometry": {
         "type": "Point",
@@ -7893,7 +7917,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Cementerio De Olaya"
       },
       "geometry": {
         "type": "Point",
@@ -7914,7 +7939,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Fredonia"
       },
       "geometry": {
         "type": "Point",
@@ -7935,7 +7961,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Nuevo Paraiso"
       },
       "geometry": {
         "type": "Point",
@@ -7956,7 +7983,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Fredonia"
       },
       "geometry": {
         "type": "Point",
@@ -7977,7 +8005,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Las Palmeras"
       },
       "geometry": {
         "type": "Point",
@@ -7998,7 +8027,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Las Palmeras"
       },
       "geometry": {
         "type": "Point",
@@ -8019,7 +8049,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Las Palmeras"
       },
       "geometry": {
         "type": "Point",
@@ -8040,7 +8071,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Las Palmeras"
       },
       "geometry": {
         "type": "Point",
@@ -8061,7 +8093,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Altamare"
       },
       "geometry": {
         "type": "Point",
@@ -8082,7 +8115,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "MegaAluminios"
       },
       "geometry": {
         "type": "Point",
@@ -8103,7 +8137,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Bomba Petromil"
       },
       "geometry": {
         "type": "Point",
@@ -8124,7 +8159,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Billares El Kiosko"
       },
       "geometry": {
         "type": "Point",
@@ -8145,7 +8181,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "CDA"
       },
       "geometry": {
         "type": "Point",
@@ -8166,7 +8203,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Acaucar"
       },
       "geometry": {
         "type": "Point",
@@ -8187,7 +8225,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Supertienda El Ca onazo"
       },
       "geometry": {
         "type": "Point",
@@ -8208,7 +8247,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Drogueria Zharick"
       },
       "geometry": {
         "type": "Point",
@@ -8229,7 +8269,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "N Transversal 1055"
       },
       "geometry": {
         "type": "Point",
@@ -8250,7 +8291,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Kr 89 entre Tv 74B y 75A"
       },
       "geometry": {
         "type": "Point",
@@ -8271,7 +8313,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Tv 72B entre Kr 88 y 89"
       },
       "geometry": {
         "type": "Point",
@@ -8292,7 +8335,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Barberia Migue"
       },
       "geometry": {
         "type": "Point",
@@ -8313,7 +8357,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Mi Locura"
       },
       "geometry": {
         "type": "Point",
@@ -8334,7 +8379,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Iglesia El Pozon"
       },
       "geometry": {
         "type": "Point",
@@ -8355,7 +8401,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Pactemos"
       },
       "geometry": {
         "type": "Point",
@@ -8376,7 +8423,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Palmas De Salamanca"
       },
       "geometry": {
         "type": "Point",
@@ -8397,7 +8445,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Entrada Poz n"
       },
       "geometry": {
         "type": "Point",
@@ -8418,7 +8467,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Central De Abastos"
       },
       "geometry": {
         "type": "Point",
@@ -8439,7 +8489,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Frente Central De Abastos"
       },
       "geometry": {
         "type": "Point",
@@ -8460,7 +8511,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Urbanizaci n La India V"
       },
       "geometry": {
         "type": "Point",
@@ -8481,7 +8533,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Urbanizaci n La India "
       },
       "geometry": {
         "type": "Point",
@@ -8502,7 +8555,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "La Sevillana 1"
       },
       "geometry": {
         "type": "Point",
@@ -8523,7 +8577,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "La Carpa Roja"
       },
       "geometry": {
         "type": "Point",
@@ -8544,7 +8599,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Colegio Gustavo Pulecio Gomez"
       },
       "geometry": {
         "type": "Point",
@@ -8565,7 +8621,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Abastos Giraldo"
       },
       "geometry": {
         "type": "Point",
@@ -8586,7 +8643,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Flor del Campo Mz 1C Lt 4"
       },
       "geometry": {
         "type": "Point",
@@ -8607,7 +8665,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Colegio Gabriel Garcia Marquez"
       },
       "geometry": {
         "type": "Point",
@@ -8628,7 +8687,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Bicentenario Mz 79"
       },
       "geometry": {
         "type": "Point",
@@ -8649,7 +8709,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Bicentenario Mz 7 Lt 1"
       },
       "geometry": {
         "type": "Point",
@@ -8670,7 +8731,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Ciudad Del Bicentenario 2"
       },
       "geometry": {
         "type": "Point",
@@ -8691,7 +8753,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Bicentenario Mz 35 Lt 1"
       },
       "geometry": {
         "type": "Point",
@@ -8712,7 +8775,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Ciudad Del Bicentenario 1"
       },
       "geometry": {
         "type": "Point",
@@ -8733,7 +8797,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Bicentenario Mz 75"
       },
       "geometry": {
         "type": "Point",
@@ -8754,7 +8819,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Villa De Aranjuez Mz 1G"
       },
       "geometry": {
         "type": "Point",
@@ -8775,7 +8841,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "La Sevillana 2"
       },
       "geometry": {
         "type": "Point",
@@ -8796,7 +8863,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Colombiat n Mz 3G Casa 470"
       },
       "geometry": {
         "type": "Point",
@@ -8817,7 +8885,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Estaci n Terpel"
       },
       "geometry": {
         "type": "Point",
@@ -8838,7 +8907,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Palmas De Salamanca"
       },
       "geometry": {
         "type": "Point",
@@ -8859,7 +8929,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Parque De Galilea"
       },
       "geometry": {
         "type": "Point",
@@ -8880,7 +8951,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "El Jardín Orquidea"
       },
       "geometry": {
         "type": "Point",
@@ -8901,7 +8973,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Ciudad Jardin Primavera 2"
       },
       "geometry": {
         "type": "Point",
@@ -8922,7 +8995,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Cl 39H entre Kr 91B y 91A"
       },
       "geometry": {
         "type": "Point",
@@ -8943,7 +9017,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "El Jardín Orquidea"
       },
       "geometry": {
         "type": "Point",
@@ -8964,7 +9039,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Refugio La Carolina"
       },
       "geometry": {
         "type": "Point",
@@ -8985,7 +9061,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Diagonal Drogueria Shelema"
       },
       "geometry": {
         "type": "Point",
@@ -9006,7 +9083,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Villa De La Candelaria"
       },
       "geometry": {
         "type": "Point",
@@ -9027,7 +9105,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "El Cariñoso"
       },
       "geometry": {
         "type": "Point",
@@ -9048,7 +9127,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Dg Olimpica 13 De Junio"
       },
       "geometry": {
         "type": "Point",
@@ -9069,7 +9149,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Colegio La Verdadera Ensenanza"
       },
       "geometry": {
         "type": "Point",
@@ -9090,7 +9171,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Colegio Ciudadela 2000"
       },
       "geometry": {
         "type": "Point",
@@ -9111,7 +9193,8 @@
         "fuente": "csv_2025",
         "highway": "bus_stop",
         "public_transport": "platform",
-        "es_exclusivo": false
+        "es_exclusivo": false,
+        "name": "Tenaris"
       },
       "geometry": {
         "type": "Point",
