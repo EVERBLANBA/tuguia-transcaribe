@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador de Sentido de Paraderos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .upload-section:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .upload-btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .upload-btn:hover {
+            background: #0056b3;
+        }
+        .analyze-btn {
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .analyze-btn:hover {
+            background: #1e7e34;
+        }
+        .analyze-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .results {
+            margin-top: 20px;
+            display: none;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .sentido-ida {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .sentido-vuelta {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .sentido-ambos {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .sentido-desconocido {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        .filter-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .filter-controls label {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        .filter-controls select {
+            padding: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Analizador de Sentido de Paraderos</h1>
+        <h2>Detectar si los paraderos son de ida, vuelta o ambos sentidos</h2>
+        
+        <div class="upload-section">
+            <p>📁 Selecciona el archivo GeoJSON de paraderos</p>
+            <input type="file" id="geojsonFile" accept=".geojson,.json">
+            <button class="upload-btn" onclick="document.getElementById('geojsonFile').click()">
+                📂 Seleccionar archivo GeoJSON
+            </button>
+            <p id="fileName" style="margin-top: 10px; color: #666;"></p>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="analyze-btn" id="analyzeBtn" onclick="analyzeParaderos()" disabled>
+                🔍 Analizar Sentido de Paraderos
+            </button>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="results" id="results">
+            <div class="stats" id="stats"></div>
+            
+            <div class="filter-controls">
+                <label>Filtrar por sentido:</label>
+                <select id="filterSentido" onchange="filterTable()">
+                    <option value="todos">Todos</option>
+                    <option value="ida">Solo Ida</option>
+                    <option value="vuelta">Solo Vuelta</option>
+                    <option value="ambos">Ambos Sentidos</option>
+                    <option value="desconocido">Desconocido</option>
+                </select>
+                
+                <label>Buscar paradero:</label>
+                <input type="text" id="searchParadero" placeholder="Nombre del paradero..." onkeyup="filterTable()">
+            </div>
+            
+            <div class="table-container">
+                <table id="paraderosTable">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Paradero</th>
+                            <th>Sentido Detectado</th>
+                            <th>Rutas</th>
+                            <th>Coordenadas</th>
+                            <th>Indicadores</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paraderosTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let geojsonData = null;
+        let allParaderos = [];
+        
+        document.getElementById('geojsonFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = `📄 Archivo seleccionado: ${file.name}`;
+                document.getElementById('analyzeBtn').disabled = false;
+                showStatus('Archivo cargado correctamente. Listo para analizar.', 'info');
+            }
+        });
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        
+        function detectarSentido(nombreParadero) {
+            const nombre = nombreParadero.toLowerCase();
+            
+            // Indicadores de vuelta
+            const indicadoresVuelta = [
+                'vuelta', 'retorno', 'regreso', 'norte', 'sur', 'este', 'oeste',
+                'ida y vuelta', 'ambos sentidos', 'doble sentido'
+            ];
+            
+            // Indicadores de ida
+            const indicadoresIda = [
+                'ida', 'salida', 'partida', 'origen', 'inicio'
+            ];
+            
+            // Buscar indicadores de vuelta
+            const tieneVuelta = indicadoresVuelta.some(ind => nombre.includes(ind));
+            
+            // Buscar indicadores de ida
+            const tieneIda = indicadoresIda.some(ind => nombre.includes(ind));
+            
+            // Buscar paraderos duplicados (mismo nombre sin indicadores)
+            const nombreBase = nombre.replace(/\(vuelta\)|\(ida\)|vuelta|ida/gi, '').trim();
+            
+            if (tieneVuelta && !tieneIda) {
+                return {
+                    sentido: 'vuelta',
+                    confianza: 'alta',
+                    indicadores: indicadoresVuelta.filter(ind => nombre.includes(ind))
+                };
+            } else if (tieneIda && !tieneVuelta) {
+                return {
+                    sentido: 'ida',
+                    confianza: 'alta',
+                    indicadores: indicadoresIda.filter(ind => nombre.includes(ind))
+                };
+            } else if (tieneVuelta && tieneIda) {
+                return {
+                    sentido: 'ambos',
+                    confianza: 'media',
+                    indicadores: [...indicadoresVuelta.filter(ind => nombre.includes(ind)), ...indicadoresIda.filter(ind => nombre.includes(ind))]
+                };
+            } else {
+                return {
+                    sentido: 'desconocido',
+                    confianza: 'baja',
+                    indicadores: []
+                };
+            }
+        }
+        
+        function analyzeParaderos() {
+            const file = document.getElementById('geojsonFile').files[0];
+            if (!file) {
+                showStatus('❌ Por favor selecciona un archivo GeoJSON primero.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const geojson = JSON.parse(e.target.result);
+                    geojsonData = geojson;
+                    
+                    // Analizar cada paradero
+                    allParaderos = geojson.features.map(feature => {
+                        const nombre = feature.properties.nombre_paradero || feature.properties.name || '';
+                        const analisis = detectarSentido(nombre);
+                        
+                        return {
+                            nombre: nombre,
+                            rutas: feature.properties.rutas || '',
+                            coordenadas: feature.properties.coordenadas || '',
+                            sentido: analisis.sentido,
+                            confianza: analisis.confianza,
+                            indicadores: analisis.indicadores,
+                            feature: feature
+                        };
+                    });
+                    
+                    mostrarResultados();
+                    showStatus(`✅ Análisis completado! Se analizaron ${allParaderos.length} paraderos.`, 'success');
+                } catch (error) {
+                    showStatus(`❌ Error en el análisis: ${error.message}`, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function mostrarResultados() {
+            const stats = document.getElementById('stats');
+            const tableBody = document.getElementById('paraderosTableBody');
+            
+            // Calcular estadísticas
+            const statsData = {
+                total: allParaderos.length,
+                ida: allParaderos.filter(p => p.sentido === 'ida').length,
+                vuelta: allParaderos.filter(p => p.sentido === 'vuelta').length,
+                ambos: allParaderos.filter(p => p.sentido === 'ambos').length,
+                desconocido: allParaderos.filter(p => p.sentido === 'desconocido').length
+            };
+            
+            // Mostrar estadísticas
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${statsData.total}</div>
+                    <div class="stat-label">Total Paraderos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statsData.ida}</div>
+                    <div class="stat-label">Solo Ida</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statsData.vuelta}</div>
+                    <div class="stat-label">Solo Vuelta</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statsData.ambos}</div>
+                    <div class="stat-label">Ambos Sentidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${statsData.desconocido}</div>
+                    <div class="stat-label">Desconocido</div>
+                </div>
+            `;
+            
+            // Mostrar tabla
+            mostrarTabla(allParaderos);
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function mostrarTabla(paraderos) {
+            const tableBody = document.getElementById('paraderosTableBody');
+            tableBody.innerHTML = '';
+            
+            paraderos.forEach(paradero => {
+                const row = document.createElement('tr');
+                row.className = `sentido-${paradero.sentido}`;
+                
+                row.innerHTML = `
+                    <td><strong>${paradero.nombre}</strong></td>
+                    <td>
+                        <span class="badge badge-${paradero.sentido}">
+                            ${paradero.sentido.toUpperCase()} (${paradero.confianza})
+                        </span>
+                    </td>
+                    <td>${paradero.rutas}</td>
+                    <td>${paradero.coordenadas}</td>
+                    <td>${paradero.indicadores.join(', ') || 'Ninguno detectado'}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function filterTable() {
+            const filterSentido = document.getElementById('filterSentido').value;
+            const searchText = document.getElementById('searchParadero').value.toLowerCase();
+            
+            let filteredParaderos = allParaderos;
+            
+            // Filtrar por sentido
+            if (filterSentido !== 'todos') {
+                filteredParaderos = filteredParaderos.filter(p => p.sentido === filterSentido);
+            }
+            
+            // Filtrar por búsqueda de texto
+            if (searchText) {
+                filteredParaderos = filteredParaderos.filter(p => 
+                    p.nombre.toLowerCase().includes(searchText) ||
+                    p.rutas.toLowerCase().includes(searchText)
+                );
+            }
+            
+            mostrarTabla(filteredParaderos);
+        }
+    </script>
+</body>
+</html> 
