@@ -6999,6 +6999,1751 @@
           10.52309760271968
         ]
       }
+    },
+
+{
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Liceo Pedro de Heredia",
+        "coordenadas": "10.411956588785037, -75.51755420651168",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51755420651168,
+          10.411956588785037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Liceo Pedro de Heredia",
+        "coordenadas": "10.4116558575732, -75.51692657013896",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51692657013896,
+          10.4116558575732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Candelaria",
+        "coordenadas": "10.410574257208975, -75.5151348543983",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5151348543983,
+          10.410574257208975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tienda La Unica",
+        "coordenadas": "10.40986724419814, -75.50852587369806",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50852587369806,
+          10.40986724419814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Boston",
+        "coordenadas": "10.409518862691327, -75.5067583977954",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5067583977954,
+          10.409518862691327
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Boston",
+        "coordenadas": "10.40941333861242, -75.5064258034849",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5064258034849,
+          10.40941333861242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Libano",
+        "coordenadas": "10.408864620222191, -75.50336808497273",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50336808497273,
+          10.408864620222191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Libano",
+        "coordenadas": "10.408822408686131, -75.50297648087202",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50297648087202,
+          10.408822408686131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya Sector El Tacon",
+        "coordenadas": "10.408479434405196, -75.50089776030849",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50089776030849,
+          10.408479434405196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya Sector El Tacon",
+        "coordenadas": "10.408395008056369, -75.5003827726299",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5003827726299,
+          10.408395008056369
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Salida Perimetral Sector Rafael Nu ez.",
+        "coordenadas": "10.408078403341738, -75.49858030830534",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49858030830534,
+          10.408078403341738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Salida Perimetral Sector Rafael Nu ez.",
+        "coordenadas": "10.407888447167526, -75.49800094356277",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49800094356277,
+          10.407888447167526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Esquina Del Sabor",
+        "coordenadas": "10.410146716824602, -75.51043302126641",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51043302126641,
+          10.410146716824602
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Pollito Pio",
+        "coordenadas": "10.409793214213433, -75.50797075167273",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.50797075167273,
+          10.409793214213433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cai Arrocera",
+        "coordenadas": "10.407323318980518, -75.49487118802912",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49487118802912,
+          10.407323318980518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cai Arrocera",
+        "coordenadas": "10.407196690316532, -75.49442057776793",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49442057776793,
+          10.407196690316532
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Casa Justicia Chiquinquira.",
+        "coordenadas": "10.406732369139228, -75.4917812875542",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4917812875542,
+          10.406732369139228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "I.E. Fulgencio Lequerica",
+        "coordenadas": "10.406352443402033, -75.48927072936748",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48927072936748,
+          10.406352443402033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya Sector La Puntilla",
+        "coordenadas": "10.406162491781384, -75.48216823267516",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48216823267516,
+          10.406162491781384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Centro Comercial Olaya Plaza",
+        "coordenadas": "10.406093944409898, -75.48442130015809",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48442130015809,
+          10.406093944409898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya sector La Central",
+        "coordenadas": "10.405830161793347, -75.48733954813034",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48733954813034,
+          10.405830161793347
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya Sector Estela",
+        "coordenadas": "10.406062312038822, -75.48070912181117",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48070912181117,
+          10.406062312038822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Olaya Sector Playa Blanca",
+        "coordenadas": "10.405735185917768, -75.48018340874964",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48018340874964,
+          10.405735185917768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cementerio De Olaya",
+        "coordenadas": "10.403677451851996, -75.47649269079105",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47649269079105,
+          10.403677451851996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cementerio De Olaya",
+        "coordenadas": "10.403455845555085, -75.47610645214831",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47610645214831,
+          10.403455845555085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Fredonia",
+        "coordenadas": "10.402347851695632, -75.47397141552676",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47397141552676,
+          10.402347851695632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Nuevo Paraiso",
+        "coordenadas": "10.40144031423976, -75.47176127274162",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47176127274162,
+          10.40144031423976
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Fredonia",
+        "coordenadas": "10.40192574517022, -75.47303800748738",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47303800748738,
+          10.40192574517022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Las Palmeras",
+        "coordenadas": "10.400786068585768, -75.47020559314198",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47020559314198,
+          10.400786068585768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Las Palmeras",
+        "coordenadas": "10.400591897477637, -75.46978429643933",
+        "rutas": "X104",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46978429643933,
+          10.400591897477637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Las Palmeras",
+        "coordenadas": "10.398357361992979, -75.4710954385886",
+        "rutas": "A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4710954385886,
+          10.398357361992979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Las Palmeras",
+        "coordenadas": "10.39908549582921, -75.46931446276419",
+        "rutas": "A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46931446276419,
+          10.39908549582921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Altamare",
+        "coordenadas": "10.40037291180484, -75.4662620995639",
+        "rutas": "A101, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4662620995639,
+          10.40037291180484
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "MegaAluminios",
+        "coordenadas": "10.401491480613922, -75.46405196814709",
+        "rutas": "X104, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46405196814709,
+          10.401491480613922
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bomba Petromil",
+        "coordenadas": "10.401615466546199, -75.462941496449",
+        "rutas": "A101, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.462941496449,
+          10.401615466546199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Billares El Kiosko",
+        "coordenadas": "10.404190277599463, -75.46416462020836",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46416462020836,
+          10.404190277599463
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "CDA",
+        "coordenadas": "10.407841403489149, -75.46467960442939",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46467960442939,
+          10.407841403489149
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Acaucar",
+        "coordenadas": "10.410869906402572, -75.46589196424915",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46589196424915,
+          10.410869906402572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Supertienda El Ca onazo",
+        "coordenadas": "10.41321248720636, -75.46574176102227",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46574176102227,
+          10.41321248720636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogueria Zharick",
+        "coordenadas": "10.415533934435008, -75.46286642790268",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46286642790268,
+          10.415533934435008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "N Transversal 1055",
+        "coordenadas": "10.416335881119776, -75.45989454324776",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45989454324776,
+          10.416335881119776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Kr 89 entre Tv 74B y 75A",
+        "coordenadas": "10.417000643060202, -75.45851049788232",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45851049788232,
+          10.417000643060202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tv 72B entre Kr 88 y 89",
+        "coordenadas": "10.414637000015817, -75.45768439595368",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45768439595368,
+          10.414637000015817
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Barberia Migue",
+        "coordenadas": "10.413961668646857, -75.45805991463456",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45805991463456,
+          10.413961668646857
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mi Locura",
+        "coordenadas": "10.411249770695049, -75.45666515968375",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45666515968375,
+          10.411249770695049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia El Pozon",
+        "coordenadas": "10.40888607092997, -75.45545280230004",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45545280230004,
+          10.40888607092997
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Pactemos",
+        "coordenadas": "10.406553999491026, -75.45431554993009",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45431554993009,
+          10.406553999491026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Palmas De Salamanca",
+        "coordenadas": "10.403430496750316, -75.45785605861957",
+        "rutas": "A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45785605861957,
+          10.403430496750316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Entrada Poz n",
+        "coordenadas": "10.40573093325283, -75.45363963209444",
+        "rutas": "X104, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45363963209444,
+          10.40573093325283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Central De Abastos",
+        "coordenadas": "10.40588921522329, -75.45228779447204",
+        "rutas": "X104, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45228779447204,
+          10.40588921522329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Central De Abastos",
+        "coordenadas": "10.406817825278466, -75.45144019906967",
+        "rutas": "X104, A114, A117, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45144019906967,
+          10.406817825278466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Urbanizaci n La India V",
+        "coordenadas": "10.410732720154762, -75.44531406402335",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44531406402335,
+          10.410732720154762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Urbanizaci n La India ",
+        "coordenadas": "10.41107038448549, -75.4445630437446",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4445630437446,
+          10.41107038448549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Sevillana 1",
+        "coordenadas": "10.416889848659608, -75.43900514286443",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.43900514286443,
+          10.416889848659608
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Carpa Roja",
+        "coordenadas": "10.415370287432374, -75.4605708004443",
+        "rutas": "A117",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4605708004443,
+          10.415370287432374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Gustavo Pulecio Gomez",
+        "coordenadas": "10.415349288295728, -75.44454151045107",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44454151045107,
+          10.415349288295728
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Abastos Giraldo",
+        "coordenadas": "10.418071689616328, -75.44705213008194",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44705213008194,
+          10.418071689616328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Flor del Campo Mz 1C Lt 4",
+        "coordenadas": "10.418789231004814, -75.44771731371799",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44771731371799,
+          10.418789231004814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Gabriel Garcia Marquez",
+        "coordenadas": "10.420646389015285, -75.449262262202",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.449262262202,
+          10.420646389015285
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bicentenario Mz 79",
+        "coordenadas": "10.426534246766224, -75.44325406711323",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44325406711323,
+          10.426534246766224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bicentenario Mz 7 Lt 1",
+        "coordenadas": "10.421617158399537, -75.44973433534967",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44973433534967,
+          10.421617158399537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ciudad Del Bicentenario 2",
+        "coordenadas": "10.42385393726807, -75.44492149909993",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44492149909993,
+          10.42385393726807
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bicentenario Mz 35 Lt 1",
+        "coordenadas": "10.423468806501852, -75.44751788504142",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44751788504142,
+          10.423468806501852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ciudad Del Bicentenario 1",
+        "coordenadas": "10.424698086114953, -75.4424967894785",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4424967894785,
+          10.424698086114953
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Bicentenario Mz 75",
+        "coordenadas": "10.425302174693815, -75.44425095536054",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44425095536054,
+          10.425302174693815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Villa De Aranjuez Mz 1G",
+        "coordenadas": "10.42222105141492, -75.44175113278479",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44175113278479,
+          10.42222105141492
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "La Sevillana 2",
+        "coordenadas": "10.418907761842577, -75.44094647860817",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44094647860817,
+          10.418907761842577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colombiat n Mz 3G Casa 470",
+        "coordenadas": "10.417246167857893, -75.44596976983695",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.44596976983695,
+          10.417246167857893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Estaci n Terpel",
+        "coordenadas": "10.420327313010088, -75.43207588049751",
+        "rutas": "A114",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.43207588049751,
+          10.420327313010088
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Palmas De Salamanca",
+        "coordenadas": "10.400177855551576, -75.45687026816087",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45687026816087,
+          10.400177855551576
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque De Galilea",
+        "coordenadas": "10.398911549948334, -75.45521803202514",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45521803202514,
+          10.398911549948334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Jard n Camelia",
+        "coordenadas": "10.396959309805094, -75.45497126852985",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45497126852985,
+          10.396959309805094
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Ciudad Jardin Primavera 2",
+        "coordenadas": "10.395661325119967, -75.4585010635517",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4585010635517,
+          10.395661325119967
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cl 39H entre Kr 91B y 91A",
+        "coordenadas": "10.395091465030623, -75.45729943698457",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45729943698457,
+          10.395091465030623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Jard n Orquidea",
+        "coordenadas": "10.394964844796315, -75.45599050828488",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45599050828488,
+          10.394964844796315
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Refugio La Carolina",
+        "coordenadas": "10.394416102261554, -75.45607634112",
+        "rutas": "A101 ",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45607634112,
+          10.394416102261554
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Diagonal Drogueria Shelema",
+        "coordenadas": "10.389941699732468, -75.45353360510487",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45353360510487,
+          10.389941699732468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Villa De La Candelaria",
+        "coordenadas": "10.401934833874181, -75.46190209521728",
+        "rutas": "X104, A114, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46190209521728,
+          10.401934833874181
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Cari oso",
+        "coordenadas": "10.404024251674961, -75.45707411728121",
+        "rutas": "X104, A114, C016",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45707411728121,
+          10.404024251674961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dg Olimpica 13 De Junio",
+        "coordenadas": "10.401589883683716, -75.48182217186815",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48182217186815,
+          10.401589883683716
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio La Verdadera Ense anza",
+        "coordenadas": "10.384030023639237, -75.45888392931299",
+        "rutas": "X101",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.45888392931299,
+          10.384030023639237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Ciudadela 2000",
+        "coordenadas": "10.373455634833684, -75.47171561809382",
+        "rutas": "C001, X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47171561809382,
+          10.373455634833684
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Tenaris",
+        "coordenadas": "10.37180925530773, -75.46557877213398",
+        "rutas": "A102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Pretroncales",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.46557877213398,
+          10.37180925530773
+        ]
+      }
     }
+
   ]
 } 
