@@ -218,6 +218,7 @@
           
         }
     </style>
+    <link rel="stylesheet" href="mobile-optimizations.css" />
 </head>
 <body>
   <header>
@@ -287,10 +288,10 @@
         Desarrollado por <a href="https://brochure.agapai.com.co/" target="_blank">AGAPAI</a>
     </footer>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="mobile-optimizations.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+    
     <!-- Scripts para segundo plano y optimización móvil -->
     <script src="utils.js"></script>
     <script src="state-manager.js"></script>
@@ -801,10 +802,11 @@
       if (isIntelligentTrackingActive) return;
       
       // Iniciar tracking en segundo plano para móviles
-      if (window.BackgroundManager && window.BackgroundManager.isMobile && window.BackgroundManager.isMobile.isLikelyMobile) {
+      if (window.BackgroundManager && window.BackgroundManager.isMobile.isLikelyMobile) {
         console.log('📱 Iniciando tracking en segundo plano para móvil...');
         window.BackgroundManager.startBackgroundLocationTracking();
       }
+      
       isIntelligentTrackingActive = true;
       intelligentTrackingDistance = 0;
       intelligentTrackingAlarmaActivada = false;
@@ -994,11 +996,13 @@
         navigator.geolocation.clearWatch(intelligentTrackingWatchId);
         intelligentTrackingWatchId = null;
     }
+    
     // Detener tracking en segundo plano
     if (window.BackgroundManager) {
         console.log('📱 Deteniendo tracking en segundo plano...');
         window.BackgroundManager.stopBackgroundTracking();
     }
+    
     isIntelligentTrackingActive = false;
     
     // Reiniciar variables de control de transbordo
@@ -1511,8 +1515,7 @@ window.addEventListener('DOMContentLoaded', async function() {
         console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
       }
     } catch (e) {
-      // Si falla JSON.parse, es texto plano - no hay coordenadas disponibles
-      console.warn('⚠️ Inicio guardado como texto plano (sin coordenadas):', start);
+      console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
     }
   }
 
