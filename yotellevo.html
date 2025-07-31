@@ -991,7 +991,7 @@
       // Crear panel de seguimiento
       const seguimientoHTML = `
         <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
-          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Seguimiento Inteligente Activo</h4>
+          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Guia Inteligente Activo</h4>
           <div style="background: #ffe9b3; color: #b26a00; border-radius: 8px; padding: 8px 0; margin-bottom: 12px; font-weight: 700; font-size: 1.13rem; text-align: center; box-shadow: 0 1px 4px rgba(33,136,56,0.07); letter-spacing: 0.5px;">
             <span style="display:inline-flex;align-items:center;gap:8px;">
               <span style="font-size:1.3em;">🟢</span> ¡Estás siendo guiado en tiempo real!
@@ -1185,7 +1185,7 @@
             </div>
           </div>
           <button id="btnNuevoSeguimiento" style="background: #007bff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-top: 1rem;">
-            🔄 Iniciar Nuevo Seguimiento
+            🔄 Iniciar Nueva Guia
           </button>
         </div>
       `;
@@ -1983,6 +1983,273 @@ window.addEventListener('DOMContentLoaded', async function() {
       }).join('') + '</ul>';
     }
     document.getElementById('info-paraderos').innerHTML = html;
+    
+    // === MOSTRAR PARADEROS Y RUTAS EN LOS MAPAS ===
+    await mostrarParaderosEnMapas(startCoords, endCoords, paraderosOrigen, paraderosDestino);
+  }
+
+  // Función para obtener ruta peatonal real usando OpenRouteService
+  async function obtenerRutaPeatonal(origen, destino) {
+    const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
+    const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
+    
+    const body = {
+      coordinates: [
+        [origen[1], origen[0]], // [lon, lat] para ORS
+        [destino[1], destino[0]]
+      ],
+      format: "geojson"
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data && data.features && data.features[0] && 
+          data.features[0].geometry && 
+          data.features[0].geometry.coordinates) {
+        return data.features[0].geometry.coordinates;
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('⚠️ Error obteniendo ruta peatonal de ORS:', error);
+      return null;
+    }
+  }
+
+  // Función para mostrar paraderos y rutas en los mapas
+  async function mostrarParaderosEnMapas(startCoords, endCoords, paraderosOrigen, paraderosDestino) {
+    console.log('🗺️ Iniciando visualización de mapas con rutas peatonales...');
+    
+    // === MAPA DE ORIGEN ===
+    if (window.mapaOrigen && paraderosOrigen.length > 0) {
+      try {
+        console.log('🗺️ Configurando mapa de origen...');
+        
+        // Limpiar mapa anterior
+        window.mapaOrigen.eachLayer(layer => {
+          if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+            window.mapaOrigen.removeLayer(layer);
+          }
+        });
+        
+        // Marcador del punto de partida
+        const iconoPartida = L.divIcon({
+          className: 'custom-div-icon',
+          html: '<div style="background-color: #ff6600; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+          iconSize: [25, 25],
+          iconAnchor: [12, 12]
+        });
+        L.marker([startCoords[0], startCoords[1]], { icon: iconoPartida })
+          .addTo(window.mapaOrigen)
+          .bindPopup('<b>📍 Tu punto de partida</b>');
+        
+        // Marcadores de paraderos con diferentes estilos
+        const coloresParaderos = ['#1ca12d', '#007bff', '#ff9800']; // Verde, Azul, Naranja
+        const iconosParaderos = ['🥇', '🥈', '🥉'];
+        
+        for (let i = 0; i < paraderosOrigen.length; i++) {
+          const paradero = paraderosOrigen[i];
+          const color = coloresParaderos[i] || '#6c757d';
+          const icono = iconosParaderos[i] || '🚌';
+          
+          // Marcador del paradero
+          const iconoParadero = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background-color: ${color}; color: white; border-radius: 8px; padding: 3px 6px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3); font-size: 14px;">${icono}</div>`,
+            iconSize: [30, 25],
+            iconAnchor: [15, 12]
+          });
+          
+          L.marker([paradero.lat, paradero.lon], { icon: iconoParadero })
+            .addTo(window.mapaOrigen)
+            .bindPopup(`<b>${icono} ${paradero.nombre}</b><br>Distancia: ${paradero.dist.toFixed(0)}m<br>Rutas: ${Array.isArray(paradero.rutas) && paradero.rutas.length ? paradero.rutas.join(', ') : 'Sin rutas'}`);
+        }
+        
+        // Rutas peatonales desde el paradero más cercano hacia los otros
+        if (paraderosOrigen.length > 1) {
+          const paraderoBase = paraderosOrigen[0]; // El más cercano
+          console.log(`🚶 Calculando rutas desde ${paraderoBase.nombre} hacia otros paraderos...`);
+          
+          for (let i = 1; i < paraderosOrigen.length; i++) {
+            const paraderoDestino = paraderosOrigen[i];
+            const color = coloresParaderos[i] || '#6c757d';
+            
+            console.log(`🔍 Ruta ${i}: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+            
+            // Obtener ruta peatonal real
+            const rutaCoords = await obtenerRutaPeatonal(
+              [paraderoBase.lat, paraderoBase.lon],
+              [paraderoDestino.lat, paraderoDestino.lon]
+            );
+            
+            if (rutaCoords && rutaCoords.length > 0) {
+              // Convertir coordenadas para Leaflet [lat, lng]
+              const rutaLatLngs = rutaCoords.map(coord => [coord[1], coord[0]]);
+              
+              // Dibujar ruta
+              L.polyline(rutaLatLngs, {
+                color: color,
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 5'
+              }).addTo(window.mapaOrigen)
+                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoDestino.nombre}`);
+              
+              console.log(`✅ Ruta dibujada: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+            } else {
+              // Fallback: línea recta si falla la API
+              L.polyline([
+                [paraderoBase.lat, paraderoBase.lon],
+                [paraderoDestino.lat, paraderoDestino.lon]
+              ], {
+                color: color,
+                weight: 3,
+                opacity: 0.6,
+                dashArray: '15, 10'
+              }).addTo(window.mapaOrigen)
+                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoDestino.nombre}`);
+              
+              console.log(`⚠️ Ruta fallback dibujada: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+            }
+            
+            // Pequeña pausa para no sobrecargar la API
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
+        }
+        
+        // Ajustar vista del mapa para mostrar todos los puntos
+        const todosLosPuntos = [[startCoords[0], startCoords[1]], ...paraderosOrigen.map(p => [p.lat, p.lon])];
+        const grupo = L.featureGroup(todosLosPuntos.map(punto => L.marker(punto)));
+        window.mapaOrigen.fitBounds(grupo.getBounds().pad(0.1));
+        
+        console.log('✅ Mapa de origen configurado exitosamente');
+      } catch (error) {
+        console.error('❌ Error configurando mapa de origen:', error);
+        document.getElementById('mensaje-error-mapa-origen').innerHTML = 'Error mostrando rutas en el mapa de origen.';
+      }
+    }
+    
+    // === MAPA DE DESTINO ===
+    if (window.mapaDestino && paraderosDestino.length > 0) {
+      try {
+        console.log('🗺️ Configurando mapa de destino...');
+        
+        // Limpiar mapa anterior
+        window.mapaDestino.eachLayer(layer => {
+          if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+            window.mapaDestino.removeLayer(layer);
+          }
+        });
+        
+        // Marcador del punto de destino
+        const iconoDestino = L.divIcon({
+          className: 'custom-div-icon',
+          html: '<div style="background-color: #dc3545; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">🎯</div>',
+          iconSize: [25, 25],
+          iconAnchor: [12, 12]
+        });
+        L.marker([endCoords[0], endCoords[1]], { icon: iconoDestino })
+          .addTo(window.mapaDestino)
+          .bindPopup('<b>🎯 Tu destino</b>');
+        
+        // Marcadores de paraderos con diferentes estilos
+        const coloresParaderos = ['#1ca12d', '#007bff', '#ff9800']; // Verde, Azul, Naranja
+        const iconosParaderos = ['🥇', '🥈', '🥉'];
+        
+        for (let i = 0; i < paraderosDestino.length; i++) {
+          const paradero = paraderosDestino[i];
+          const color = coloresParaderos[i] || '#6c757d';
+          const icono = iconosParaderos[i] || '🚌';
+          
+          // Marcador del paradero
+          const iconoParadero = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div style="background-color: ${color}; color: white; border-radius: 8px; padding: 3px 6px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3); font-size: 14px;">${icono}</div>`,
+            iconSize: [30, 25],
+            iconAnchor: [15, 12]
+          });
+          
+          L.marker([paradero.lat, paradero.lon], { icon: iconoParadero })
+            .addTo(window.mapaDestino)
+            .bindPopup(`<b>${icono} ${paradero.nombre}</b><br>Distancia: ${paradero.dist.toFixed(0)}m<br>Rutas: ${Array.isArray(paradero.rutas) && paradero.rutas.length ? paradero.rutas.join(', ') : 'Sin rutas'}`);
+        }
+        
+        // Rutas peatonales desde el paradero más cercano hacia los otros
+        if (paraderosDestino.length > 1) {
+          const paraderoBase = paraderosDestino[0]; // El más cercano
+          console.log(`🚶 Calculando rutas desde ${paraderoBase.nombre} hacia otros paraderos...`);
+          
+          for (let i = 1; i < paraderosDestino.length; i++) {
+            const paraderoOtro = paraderosDestino[i];
+            const color = coloresParaderos[i] || '#6c757d';
+            
+            console.log(`🔍 Ruta ${i}: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+            
+            // Obtener ruta peatonal real
+            const rutaCoords = await obtenerRutaPeatonal(
+              [paraderoBase.lat, paraderoBase.lon],
+              [paraderoOtro.lat, paraderoOtro.lon]
+            );
+            
+            if (rutaCoords && rutaCoords.length > 0) {
+              // Convertir coordenadas para Leaflet [lat, lng]
+              const rutaLatLngs = rutaCoords.map(coord => [coord[1], coord[0]]);
+              
+              // Dibujar ruta
+              L.polyline(rutaLatLngs, {
+                color: color,
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 5'
+              }).addTo(window.mapaDestino)
+                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoOtro.nombre}`);
+              
+              console.log(`✅ Ruta dibujada: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+            } else {
+              // Fallback: línea recta si falla la API
+              L.polyline([
+                [paraderoBase.lat, paraderoBase.lon],
+                [paraderoOtro.lat, paraderoOtro.lon]
+              ], {
+                color: color,
+                weight: 3,
+                opacity: 0.6,
+                dashArray: '15, 10'
+              }).addTo(window.mapaDestino)
+                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoOtro.nombre}`);
+              
+              console.log(`⚠️ Ruta fallback dibujada: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+            }
+            
+            // Pequeña pausa para no sobrecargar la API
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
+        }
+        
+        // Ajustar vista del mapa para mostrar todos los puntos
+        const todosLosPuntos = [[endCoords[0], endCoords[1]], ...paraderosDestino.map(p => [p.lat, p.lon])];
+        const grupo = L.featureGroup(todosLosPuntos.map(punto => L.marker(punto)));
+        window.mapaDestino.fitBounds(grupo.getBounds().pad(0.1));
+        
+        console.log('✅ Mapa de destino configurado exitosamente');
+      } catch (error) {
+        console.error('❌ Error configurando mapa de destino:', error);
+        document.getElementById('mensaje-error-mapa-destino').innerHTML = 'Error mostrando rutas en el mapa de destino.';
+      }
+    }
+    
+    console.log('🗺️ Visualización de mapas completada');
   }
 
   console.log('🚀 [DEBUG] yotellevo.html cargado, llamando a procesarInformacion...');
