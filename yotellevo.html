@@ -490,7 +490,7 @@
             // Buscar mejor transbordo si no hay ruta directa
             let transbordo = null;
             if (!rutaDirecta || !rutaDirecta.todas || rutaDirecta.todas.length === 0) {
-                transbordo = await buscarMejorTransbordo(paradero, paraderoDestino);
+                transbordo = encontrarMejorTransbordo(paradero, paraderoDestino);
             }
             
             // Calcular score de esta opción
