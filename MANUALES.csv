@@ -1,46 +1,84 @@
 nombre_paradero;coordenadas;rutas;network;tipos_ruta;fuente;highway;public_transport;name
-Teatro Heredia;10.427365510389881, -75.55132943822083;C017, T102;Transcaribe;Trocales, Complementarias;csv_2025;bus_stop;platform;Teatro Heredia
-Boquete Paz Concordia San Diego;10.42774195310738, -75.54495003413196;C017, T102;Transcaribe;Trocales, Complementarias;csv_2026;bus_stop;platform;Boquete Paz Concordia San Diego
-Parque De La Marina;10.420540194362168, -75.55092049322448;C001, C017, C018. T102;Transcaribe;Trocales, Complementarias;csv_2027;bus_stop;platform;Parque De La Marina
-Cancha Bambino;10.422032452232136, -75.55355298538244;C017, T102;Transcaribe;Trocales, Complementarias;csv_2028;bus_stop;platform;Cancha Bambino
-El Boquetillo;10.428948974223543, -75.54897836644501;C017, T102;Transcaribe;Trocales, Complementarias;csv_2029;bus_stop;platform;El Boquetillo
-Frente Parque Apolo;10.430146293308239, -75.54456005207349;C017, T102;Transcaribe;Trocales, Complementarias;csv_2030;bus_stop;platform;Frente Parque Apolo
-Colegio Modelo De La Costa;10.432221892382454, -75.54401865065861;C017, T102;Transcaribe;Trocales, Complementarias;csv_2031;bus_stop;platform;Colegio Modelo De La Costa
-Costa Azul;10.432938575942808, -75.54299131035806;C017, T102;Transcaribe;Trocales, Complementarias;csv_2032;bus_stop;platform;Costa Azul
-Droqueria Inglesa;10.433392288465003, -75.54190769791603;C017, T102;Transcaribe;Trocales, Complementarias;csv_2033;bus_stop;platform;Droqueria Inglesa
-Entrada El cabrero;10.434373571424626, -75.5400408804417;C017, T102;Transcaribe;Trocales, Complementarias;csv_2034;bus_stop;platform;Entrada El cabrero
-El Cabrero;10.433941386851767, -75.54074322209505;C017, T102;Transcaribe;Trocales, Complementarias;csv_2035;bus_stop;platform;El Cabrero
-Bellavista Hotel;10.435561566263834, -75.53818987532055;C017, T102;Transcaribe;Trocales, Complementarias;csv_2036;bus_stop;platform;Bellavista Hotel
-Kr 1 entre Cl 47 y 46;10.436458730376039, -75.5366524389351;C017, T102;Transcaribe;Trocales, Complementarias;csv_2037;bus_stop;platform;Kr 1 entre Cl 47 y 46
-Datt;10.435857829565661, -75.53746061009701;C017, T102;Transcaribe;Trocales, Complementarias;csv_2038;bus_stop;platform;Datt
-Edificio Altamar;10.437120106585615, -75.53365136157727;C017, T102;Transcaribe;Trocales, Complementarias;csv_2039;bus_stop;platform;Edificio Altamar
-Terrazas De San Sebastian;10.438455470675908, -75.53169768032562;C017, T102;Transcaribe;Trocales, Complementarias;csv_2040;bus_stop;platform;Terrazas De San Sebastian
-Global Center;10.43924156307048, -75.53048868237637;C017, T102;Transcaribe;Trocales, Complementarias;csv_2041;bus_stop;platform;Global Center
-Bomba Terpel;10.441424841186162, -75.52727346271556;C017;Transcaribe;Trocales, Complementarias;csv_2042;bus_stop;platform;Bomba Terpel
-Parque De Las Americas;10.442603303117663, -75.52341655142352;C017;Transcaribe;Complementarias;csv_2043;bus_stop;platform;Parque De Las Americas
-Calle 67;10.442877632483617, -75.52027300245801;C017;Transcaribe;Complementarias;csv_2044;bus_stop;platform;Calle 67
-Puente Crespito;10.44295676590741, -75.5187548721556;C017;Transcaribe;Complementarias;csv_2045;bus_stop;platform;Puente Crespito
-Vivero Rincon Del Mar;10.443083379343614, -75.51845982916394;T102;Transcaribe;Trocales ;csv_2046;bus_stop;platform;Vivero Rincon Del Mar
-Gimnasio-Estetica-Peluqueria;10.442972592589761, -75.52079335100689;T102;Transcaribe;Trocales ;csv_2047;bus_stop;platform;Gimnasio-Estetica-Peluqueria
-Calle 64;10.442983143709508, -75.52303567774335;T102;Transcaribe;Trocales ;csv_2048;bus_stop;platform;Calle 64
-Corales de India;10.442882908044453, -75.52509024984874;T102;Transcaribe;Trocales ;csv_2049;bus_stop;platform;Corales de India
-Carrera 2;10.44380085453212, -75.51784292109045;T102;Transcaribe;Trocales ;csv_2050;bus_stop;platform;Carrera 2
-Iglesia Cristo Rey;10.444666042968876, -75.51773026831182;C017;Transcaribe;Complementarias;csv_2051;bus_stop;platform;Iglesia Cristo Rey
-Carrera 4;10.445805555810162, -75.51762297995121;T102;Transcaribe;Trocales ;csv_2052;bus_stop;platform;Carrera 4
-Carrera 6;10.44708222724562, -75.51749959833654;C017;Transcaribe;Complementarias;csv_2053;bus_stop;platform;Carrera 6
-Esquina Carrera 6;10.447651979739526, -75.51743522532018;T102;Transcaribe;Trocales ;csv_2054;bus_stop;platform;Esquina Carrera 6
-Ferreteria Crespo 70;10.4486332177237, -75.51732257254153;C017;Transcaribe;Complementarias;csv_2055;bus_stop;platform;Ferreteria Crespo 70
-Tienda Glorimar;10.449134386452492, -75.51723137743502;T102;Transcaribe;Trocales ;csv_2056;bus_stop;platform;Tienda Glorimar
-Kr 9 - Beach Club;10.450264622924216, -75.51583030861694;T102;Transcaribe;Trocales ;csv_2057;bus_stop;platform;Kr 9 - Beach Club
-Playa Azul;10.457681172294885, -75.50892256177079;C017;Transcaribe;Complementarias;csv_2058;bus_stop;platform;Playa Azul
-Frente a las Americas;10.458293338310288, -75.50780385363778;C017;Transcaribe;Complementarias;csv_2059;bus_stop;platform;Frente a las Americas
-Murano;10.464512521835504, -75.50175019914373;C017;Transcaribe;Complementarias;csv_2060;bus_stop;platform;Murano
-Morros Vitri;10.466677229743743, -75.49972930703251;C017;Transcaribe;Complementarias;csv_2061;bus_stop;platform;Morros Vitri
-Boquilla 2;10.468815307642759, -75.49789787355671;C017;Transcaribe;Complementarias;csv_2062;bus_stop;platform;Boquilla 2
-Boquilla 1;10.476418228544398, -75.49188932826152;C017;Transcaribe;Complementarias;csv_2063;bus_stop;platform;Boquilla 1
-Frente a Serena del Mar;10.505694465408014, -75.47351190477386;C017;Transcaribe;Complementarias;csv_2064;bus_stop;platform;Frente a Serena del Mar
-Terminal del Norte;10.492539721200199, -75.4772257127086;C017;Transcaribe;Complementarias;csv_2065;bus_stop;platform;Terminal del Norte
-Ramblas;10.51514633419766, -75.46936147587687;C017;Transcaribe;Complementarias;csv_2066;bus_stop;platform;Ramblas
-Frente a Barcelona de Indias;10.515557731791317, -75.46901815312296;C017;Transcaribe;Complementarias;csv_2067;bus_stop;platform;Frente a Barcelona de Indias
-Barcelona de Indias;10.519883901862261, -75.46759193307948;C017;Transcaribe;Complementarias;csv_2068;bus_stop;platform;Barcelona de Indias
-Barceloneta;10.52309760271968, -75.46612000477371;C017;Transcaribe;Complementarias;csv_2069;bus_stop;platform;Barceloneta
+Liceo Pedro de Heredia;10.411956588785037, -75.51755420651168;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Liceo Pedro de Heredia
+Liceo Pedro de Heredia;10.4116558575732, -75.51692657013896;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Liceo Pedro de Heredia
+La Candelaria;10.410574257208975, -75.5151348543983;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;La Candelaria
+Tienda La Unica;10.40986724419814, -75.50852587369806;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Tienda La Unica
+Boston;10.409518862691327, -75.5067583977954;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Boston
+Boston;10.40941333861242, -75.5064258034849;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Boston
+El Libano;10.408864620222191, -75.50336808497273;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;El Libano
+El Libano;10.408822408686131, -75.50297648087202;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;El Libano
+Olaya Sector El Tacon;10.408479434405196, -75.50089776030849;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya Sector El Tacon
+Olaya Sector El Tacon;10.408395008056369, -75.5003827726299;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya Sector El Tacon
+Salida Perimetral Sector Rafael Nuñez.;10.408078403341738, -75.49858030830534;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Salida Perimetral Sector Rafael Nuñez.
+Salida Perimetral Sector Rafael Nuñez.;10.407888447167526, -75.49800094356277;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Salida Perimetral Sector Rafael Nuñez.
+La Esquina Del Sabor;10.410146716824602, -75.51043302126641;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;La Esquina Del Sabor
+Pollito Pio;10.409793214213433, -75.50797075167273;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Pollito Pio
+Cai Arrocera;10.407323318980518, -75.49487118802912;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Cai Arrocera
+Cai Arrocera;10.407196690316532, -75.49442057776793;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Cai Arrocera
+Casa Justicia Chiquinquira.;10.406732369139228, -75.4917812875542;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Casa Justicia Chiquinquira.
+I.E. Fulgencio Lequerica;10.406352443402033, -75.48927072936748;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;I.E. Fulgencio Lequerica
+Olaya Sector La Puntilla;10.406162491781384, -75.48216823267516;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya Sector La Puntilla
+Centro Comercial Olaya Plaza;10.406093944409898, -75.48442130015809;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Centro Comercial Olaya Plaza
+Olaya sector La Central;10.405830161793347, -75.48733954813034;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya sector La Central
+Olaya Sector Estela;10.406062312038822, -75.48070912181117;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya Sector Estela
+Olaya Sector Playa Blanca;10.405735185917768, -75.48018340874964;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Olaya Sector Playa Blanca
+Cementerio De Olaya;10.403677451851996, -75.47649269079105;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Cementerio De Olaya
+Cementerio De Olaya;10.403455845555085, -75.47610645214831;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Cementerio De Olaya
+Entrada Fredonia;10.402347851695632, -75.47397141552676;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Fredonia
+Entrada Nuevo Paraiso;10.40144031423976, -75.47176127274162;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Nuevo Paraiso
+Entrada Fredonia;10.40192574517022, -75.47303800748738;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Fredonia
+Entrada Las Palmeras;10.400786068585768, -75.47020559314198;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Las Palmeras
+Entrada Las Palmeras;10.400591897477637, -75.46978429643933;X104;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Las Palmeras
+Las Palmeras;10.398357361992979, -75.4710954385886;A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Las Palmeras
+Entrada Las Palmeras;10.39908549582921, -75.46931446276419;A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Las Palmeras
+Altamare;10.40037291180484, -75.4662620995639;A101, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Altamare
+MegaAluminios;10.401491480613922, -75.46405196814709;X104, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;MegaAluminios
+Bomba Petromil;10.401615466546199, -75.462941496449;A101, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Bomba Petromil
+Billares El Kiosko;10.404190277599463, -75.46416462020836;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Billares El Kiosko
+CDA;10.407841403489149, -75.46467960442939;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;CDA
+Acaucar;10.410869906402572, -75.46589196424915;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Acaucar
+Supertienda El Cañonazo;10.41321248720636, -75.46574176102227;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Supertienda El Cañonazo
+Drogueria Zharick;10.415533934435008, -75.46286642790268;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Drogueria Zharick
+N Transversal 1055;10.416335881119776, -75.45989454324776;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;N Transversal 1055
+Kr 89 entre Tv 74B y 75A;10.417000643060202, -75.45851049788232;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Kr 89 entre Tv 74B y 75A
+Tv 72B entre Kr 88 y 89;10.414637000015817, -75.45768439595368;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Tv 72B entre Kr 88 y 89
+Barberia Migue;10.413961668646857, -75.45805991463456;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Barberia Migue
+Mi Locura;10.411249770695049, -75.45666515968375;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Mi Locura
+Iglesia El Pozon;10.40888607092997, -75.45545280230004;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Iglesia El Pozon
+Pactemos;10.406553999491026, -75.45431554993009;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Pactemos
+Palmas De Salamanca;10.403430496750316, -75.45785605861957;A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Palmas De Salamanca
+Entrada Pozón;10.40573093325283, -75.45363963209444;X104, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Entrada Pozón
+Central De Abastos;10.40588921522329, -75.45228779447204;X104, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Central De Abastos
+Frente Central De Abastos;10.406817825278466, -75.45144019906967;X104, A114, A117, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Frente Central De Abastos
+Urbanización La India V;10.410732720154762, -75.44531406402335;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Urbanización La India V
+Urbanización La India ;10.41107038448549, -75.4445630437446;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Urbanización La India 
+La Sevillana 1;10.416889848659608, -75.43900514286443;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;La Sevillana 1
+La Carpa Roja;10.415370287432374, -75.4605708004443;A117;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;La Carpa Roja
+Colegio Gustavo Pulecio Gomez;10.415349288295728, -75.44454151045107;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Colegio Gustavo Pulecio Gomez
+Abastos Giraldo;10.418071689616328, -75.44705213008194;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Abastos Giraldo
+Flor del Campo Mz 1C Lt 4;10.418789231004814, -75.44771731371799;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Flor del Campo Mz 1C Lt 4
+Colegio Gabriel Garcia Marquez;10.420646389015285, -75.449262262202;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Colegio Gabriel Garcia Marquez
+Bicentenario Mz 79;10.426534246766224, -75.44325406711323;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Bicentenario Mz 79
+Bicentenario Mz 7 Lt 1;10.421617158399537, -75.44973433534967;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Bicentenario Mz 7 Lt 1
+Ciudad Del Bicentenario 2;10.42385393726807, -75.44492149909993;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Ciudad Del Bicentenario 2
+Bicentenario Mz 35 Lt 1;10.423468806501852, -75.44751788504142;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Bicentenario Mz 35 Lt 1
+Ciudad Del Bicentenario 1;10.424698086114953, -75.4424967894785;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Ciudad Del Bicentenario 1
+Bicentenario Mz 75;10.425302174693815, -75.44425095536054;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Bicentenario Mz 75
+Villa De Aranjuez Mz 1G;10.42222105141492, -75.44175113278479;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Villa De Aranjuez Mz 1G
+La Sevillana 2;10.418907761842577, -75.44094647860817;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;La Sevillana 2
+Colombiatón Mz 3G Casa 470;10.417246167857893, -75.44596976983695;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Colombiatón Mz 3G Casa 470
+Estación Terpel;10.420327313010088, -75.43207588049751;A114;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Estación Terpel
+Palmas De Salamanca;10.400177855551576, -75.45687026816087;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Palmas De Salamanca
+Parque De Galilea;10.398911549948334, -75.45521803202514;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Parque De Galilea
+El Jardín Camelia;10.396959309805094, -75.45497126852985;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;El Jardín Camelia
+Ciudad Jardin Primavera 2;10.395661325119967, -75.4585010635517;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Ciudad Jardin Primavera 2
+Cl 39H entre Kr 91B y 91A;10.395091465030623, -75.45729943698457;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Cl 39H entre Kr 91B y 91A
+El Jardín Orquidea;10.394964844796315, -75.45599050828488;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;El Jardín Orquidea
+Refugio La Carolina;10.394416102261554, -75.45607634112;A101 ;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Refugio La Carolina
+Diagonal Drogueria Shelema;10.389941699732468, -75.45353360510487;X101;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Diagonal Drogueria Shelema
+Villa De La Candelaria;10.401934833874181, -75.46190209521728;X104, A114, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Villa De La Candelaria
+El Cariñoso;10.404024251674961, -75.45707411728121;X104, A114, C016;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;El Cariñoso
+Dg Olimpica 13 De Junio;10.401589883683716, -75.48182217186815;X101;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Dg Olimpica 13 De Junio
+Colegio La Verdadera Enseñanza;10.384030023639237, -75.45888392931299;X101;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Colegio La Verdadera Enseñanza
+Colegio Ciudadela 2000;10.373455634833684, -75.47171561809382;C001, X105;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Colegio Ciudadela 2000
+Tenaris;10.37180925530773, -75.46557877213398;A102;Transcaribe;Pretroncales;csv_2025;bus_stop;platform;Tenaris

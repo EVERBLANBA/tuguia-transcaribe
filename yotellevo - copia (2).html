@@ -287,9 +287,16 @@
         Desarrollado por <a href="https://brochure.agapai.com.co/" target="_blank">AGAPAI</a>
     </footer>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="mobile-optimizations.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+    <!-- Scripts para segundo plano y optimización móvil -->
+    <script src="utils.js"></script>
+    <script src="state-manager.js"></script>
+    <script src="error-handler.js"></script>
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
     <script>
     // =================== LÓGICA DE NAVEGACIÓN INTELIGENTE ===================
     
@@ -309,6 +316,7 @@
     let paraderoTransbordoActual = null;
     let seRealizoTransbordo = false;
     let distanciaTransbordoRegistrada = false;
+    let pasoPorDestinoAntesDeTransbordo = false; // <--- NUEVO
     
     // Variables globales para alarma/vibración
     let alarmaFinalInterval = null;
@@ -731,6 +739,30 @@
     function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida) {
       // Determinar el texto del punto de partida
       let textoPartida = puntoPartida.nombre || 'Punto de partida';
+      const irrelevantes = [
+        'Cartagena de indias',
+        'Dique',
+        'Bolívar',
+        'Bolivar',
+        'Cartagena',
+        'Colombia',
+        '130003',
+        'Provincia de Cartagena',
+        'Provincia',
+        'Barrio'
+      ];
+      // Limpiar fragmentos irrelevantes si la dirección contiene comas
+      if (textoPartida && textoPartida.includes(',')) {
+        textoPartida = textoPartida
+          .split(',')
+          .map(part => part.trim())
+          .filter(part => !irrelevantes.map(x => x.toLowerCase()).includes(part.toLowerCase()))
+          .join(', ');
+      }
+      // Si después de limpiar queda vacío, mostrar 'Punto seleccionado'
+      if (!textoPartida || textoPartida === '') {
+        textoPartida = 'Punto seleccionado';
+      }
       
       let instruccionesHTML = `
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; padding: 1.7rem 1.3rem 1.3rem 1.3rem; margin: 1.2rem 0; box-shadow: 0 2px 16px rgba(44,62,80,0.10); color: #fff; max-width: 420px;">
@@ -746,7 +778,7 @@
             <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
           </div>
           <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
-            <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento Inteligente
+            <span style='font-size:1.2em;'>🚀</span> Iniciar Guia Inteligente
           </button>
         </div>
       `;
@@ -768,6 +800,11 @@
     function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {
       if (isIntelligentTrackingActive) return;
       
+      // Iniciar tracking en segundo plano para móviles
+      if (window.BackgroundManager && window.BackgroundManager.isMobile && window.BackgroundManager.isMobile.isLikelyMobile) {
+        console.log('📱 Iniciando tracking en segundo plano para móvil...');
+        window.BackgroundManager.startBackgroundLocationTracking();
+      }
       isIntelligentTrackingActive = true;
       intelligentTrackingDistance = 0;
       intelligentTrackingAlarmaActivada = false;
@@ -780,7 +817,7 @@
       // Crear panel de seguimiento
       const seguimientoHTML = `
         <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
-          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Seguimiento Inteligente Activo</h4>
+          <h4 style="margin: 0 0 1rem 0; color: #007bff;">🚀 Tu Guia Inteligente Activo</h4>
           <div style="background: #ffe9b3; color: #b26a00; border-radius: 8px; padding: 8px 0; margin-bottom: 12px; font-weight: 700; font-size: 1.13rem; text-align: center; box-shadow: 0 1px 4px rgba(33,136,56,0.07); letter-spacing: 0.5px;">
             <span style="display:inline-flex;align-items:center;gap:8px;">
               <span style="font-size:1.3em;">🟢</span> ¡Estás siendo guiado en tiempo real!
@@ -809,7 +846,7 @@
             <div style="background: #007bff; height: 8px; border-radius: 4px; width: 0%; transition: width 0.3s;" id="barraProgreso"></div>
           </div>
           <button id="detenerSeguimientoBtn" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
-            ⏹️ Detener Seguimiento
+            ⏹️ Detener Recorrido
           </button>
         </div>
       `;
@@ -881,6 +918,13 @@
                     const distanciaATransbordo = current.distanceTo(
                         L.latLng(paraderoTransbordoActual.lat, paraderoTransbordoActual.lon)
                     );
+                    const distanciaADestino = distRestante;
+
+                    // Si pasa por el destino antes del transbordo, registrar pero NO alertar
+                    if (!seRealizoTransbordo && distanciaADestino <= 300) {
+                        pasoPorDestinoAntesDeTransbordo = true;
+                        // No mostrar alerta
+                    }
 
                     // Registrar paso por el transbordo
                     if (!distanciaTransbordoRegistrada && distanciaATransbordo <= 100) {
@@ -894,10 +938,10 @@
                         seRealizoTransbordo = true;
                     }
 
-                    // Solo mostrar alerta si ya pasamos el transbordo
+                    // Solo mostrar alerta si ya pasamos el transbordo y nos acercamos al destino
                     if (!intelligentTrackingAlarmaActivada && 
-                        distRestante <= 300 && 
-                        distRestante > 30 && 
+                        distanciaADestino <= 300 && 
+                        distanciaADestino > 30 && 
                         seRealizoTransbordo) {
                         console.log('🔔 Activando alerta de proximidad al destino final');
                         intelligentTrackingAlarmaActivada = true;
@@ -941,7 +985,7 @@
         }
       );
       
-      console.log('🚀 Seguimiento inteligente iniciado');
+      console.log('🚀 Guia inteligente iniciado');
     }
     
     // Función para detener seguimiento inteligente
@@ -950,7 +994,11 @@
         navigator.geolocation.clearWatch(intelligentTrackingWatchId);
         intelligentTrackingWatchId = null;
     }
-    
+    // Detener tracking en segundo plano
+    if (window.BackgroundManager) {
+        console.log('📱 Deteniendo tracking en segundo plano...');
+        window.BackgroundManager.stopBackgroundTracking();
+    }
     isIntelligentTrackingActive = false;
     
     // Reiniciar variables de control de transbordo
@@ -958,6 +1006,7 @@
     paraderoTransbordoActual = null;
     seRealizoTransbordo = false;
     distanciaTransbordoRegistrada = false;
+    pasoPorDestinoAntesDeTransbordo = false; // <--- NUEVO
       
       // Mostrar resumen con botón
       const resumenHTML = `
@@ -974,7 +1023,7 @@
             </div>
           </div>
           <button id="btnNuevoSeguimiento" style="background: #007bff; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-top: 1rem;">
-            🔄 Iniciar Nuevo Seguimiento
+            🔄 Iniciar Nueva Guia
           </button>
         </div>
       `;
@@ -1462,7 +1511,8 @@ window.addEventListener('DOMContentLoaded', async function() {
         console.log('✅ Coordenadas de inicio extraídas:', startLatLng);
       }
     } catch (e) {
-      console.warn('⚠️ Error extrayendo coordenadas de inicio:', e);
+      // Si falla JSON.parse, es texto plano - no hay coordenadas disponibles
+      console.warn('⚠️ Inicio guardado como texto plano (sin coordenadas):', start);
     }
   }
 
