@@ -1242,6 +1242,232 @@
         @media (max-width: 600px) {
             .footer-agapai { font-size: 0.95em; padding-bottom: 0.5em; }
         }
+        
+        /* =================== ESTILOS MODAL DE BIENVENIDA =================== */
+        .welcome-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: welcomeFadeIn 0.5s ease-out;
+        }
+        
+        .welcome-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: welcomeSlideUp 0.6s ease-out;
+            border: 3px solid #ff6600;
+        }
+        
+        .welcome-header {
+            text-align: center;
+            padding: 2rem 2rem 1rem 2rem;
+            background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
+            color: white;
+            border-radius: 21px 21px 0 0;
+        }
+        
+        .welcome-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: welcomeBounce 1s ease-in-out infinite alternate;
+        }
+        
+        .welcome-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .welcome-body {
+            padding: 2rem;
+        }
+        
+        .problem h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .problem p {
+            color: #4a5568;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: rgba(255, 102, 0, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #ff6600;
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            min-width: 1.5rem;
+        }
+        
+        .feature span:last-child {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .how-it-works {
+            background: rgba(107, 70, 193, 0.05);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 2px solid rgba(107, 70, 193, 0.1);
+        }
+        
+        .how-it-works h3 {
+            color: #6b46c1;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+        }
+        
+        .step-number {
+            background: #6b46c1;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            min-width: 2rem;
+        }
+        
+        .welcome-footer {
+            padding: 1.5rem 2rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .welcome-btn-primary {
+            background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+        
+        .welcome-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.4);
+        }
+        
+        .welcome-btn-secondary {
+            background: transparent;
+            color: #6b46c1;
+            border: 2px solid #6b46c1;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .welcome-btn-secondary:hover {
+            background: #6b46c1;
+            color: white;
+        }
+        
+        /* Animaciones */
+        @keyframes welcomeFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes welcomeSlideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes welcomeBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-content {
+                margin: 0.5rem;
+                max-height: 95vh;
+            }
+            
+            .welcome-header {
+                padding: 1.5rem 1rem 1rem 1rem;
+            }
+            
+            .welcome-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-body {
+                padding: 1.5rem 1rem;
+            }
+            
+            .welcome-footer {
+                padding: 1rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                gap: 0.75rem;
+            }
+        }
         /* === HEADER STICKY (fijo arriba) y COMPACTO EN MÓVILES (ajuste fuerte) === */
         #headerTitle {
           position: fixed;
@@ -1495,6 +1721,71 @@
         </div>
     </div>
     
+    <!-- Modal de Bienvenida -->
+    <div id="welcomeModal" class="welcome-modal" style="display: none;">
+        <div class="welcome-content">
+            <div class="welcome-header">
+                <div class="welcome-icon">🚌</div>
+                <h2>¡Bienvenido a Tu Guía Cartagena!</h2>
+            </div>
+            
+            <div class="welcome-body">
+                <div class="problem-solution">
+                    <div class="problem">
+                        <h3>😴 ¿Te duermes en el bus y pierdes tu parada?</h3>
+                        <p>¡Ya no más! Esta app te despertará automáticamente cuando llegues a tu destino.</p>
+                    </div>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <span class="feature-icon">🔔</span>
+                            <span>Alarmas súper fuertes que te despiertan</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📱</span>
+                            <span>Funciona en segundo plano</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🎯</span>
+                            <span>No necesitas estar pendiente</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🆓</span>
+                            <span>Completamente gratis</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="how-it-works">
+                    <h3>¿Cómo funciona?</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <span>Planifica tu ruta</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <span>Inicia el seguimiento</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <span>¡Duerme tranquilo! Te despertamos a tiempo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="welcome-footer">
+                <button id="startUsingApp" class="welcome-btn-primary">
+                    <span>🚀 ¡Entendí! Comenzar</span>
+                </button>
+                <button id="skipWelcome" class="welcome-btn-secondary">
+                    Omitir introducción
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="controls" style="justify-content: center; gap: 1rem;">
         <button id="startRoute" class="btn-primary">Iniciar recorrido</button>
         <button id="clearRoute" class="btn-secondary">Limpiar ruta</button>
@@ -4145,6 +4436,158 @@
 
    
     </script>
+    
+    <!-- =================== SCRIPT MODAL DE BIENVENIDA =================== -->
+    <script>
+        // =================== MODAL DE BIENVENIDA ===================
+        class WelcomeManager {
+            constructor() {
+                this.modal = document.getElementById('welcomeModal');
+                this.startBtn = document.getElementById('startUsingApp');
+                this.skipBtn = document.getElementById('skipWelcome');
+                this.hasShown = localStorage.getItem('tuguia_welcome_shown');
+                
+                this.init();
+            }
+            
+            init() {
+                // Mostrar modal si es primera visita
+                if (!this.hasShown) {
+                    this.showWelcome();
+                }
+                
+                // Event listeners
+                if (this.startBtn) {
+                    this.startBtn.addEventListener('click', () => this.handleStart());
+                }
+                
+                if (this.skipBtn) {
+                    this.skipBtn.addEventListener('click', () => this.handleSkip());
+                }
+                
+                // Cerrar con Escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isVisible()) {
+                        this.handleSkip();
+                    }
+                });
+            }
+            
+            showWelcome() {
+                if (this.modal) {
+                    console.log('👋 Mostrando modal de bienvenida');
+                    this.modal.style.display = 'flex';
+                    
+                    // Prevenir scroll del body
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Foco en el modal para accesibilidad
+                    setTimeout(() => {
+                        this.startBtn?.focus();
+                    }, 100);
+                    
+                    // Analytics: registrar que se mostró
+                    this.trackEvent('welcome_modal_shown');
+                }
+            }
+            
+            hideWelcome() {
+                if (this.modal) {
+                    console.log('✅ Ocultando modal de bienvenida');
+                    this.modal.style.display = 'none';
+                    
+                    // Restaurar scroll del body
+                    document.body.style.overflow = '';
+                    
+                    // Marcar como visto
+                    localStorage.setItem('tuguia_welcome_shown', 'true');
+                }
+            }
+            
+            handleStart() {
+                console.log('🚀 Usuario eligió: Comenzar');
+                this.trackEvent('welcome_start_clicked');
+                this.hideWelcome();
+                
+                // Opcional: mostrar tooltip o destacar el primer paso
+                this.highlightFirstStep();
+            }
+            
+            handleSkip() {
+                console.log('⏭️ Usuario eligió: Omitir');
+                this.trackEvent('welcome_skip_clicked');
+                this.hideWelcome();
+            }
+            
+            isVisible() {
+                return this.modal && this.modal.style.display === 'flex';
+            }
+            
+            highlightFirstStep() {
+                // Destacar el primer input (punto de partida)
+                const firstInput = document.querySelector('#startDireccionInput, #startUbicacionInput');
+                if (firstInput) {
+                    firstInput.style.boxShadow = '0 0 0 3px rgba(255, 102, 0, 0.3)';
+                    setTimeout(() => {
+                        firstInput.style.boxShadow = '';
+                    }, 3000);
+                }
+            }
+            
+            // Analytics básico (expandiremos en futuras fases)
+            trackEvent(event) {
+                try {
+                    const data = {
+                        event: event,
+                        timestamp: Date.now(),
+                        userAgent: navigator.userAgent,
+                        viewport: `${window.innerWidth}x${window.innerHeight}`
+                    };
+                    
+                    console.log('📊 Event tracked:', data);
+                    
+                    // Guardar en localStorage para futuro sync
+                    const events = JSON.parse(localStorage.getItem('tuguia_events') || '[]');
+                    events.push(data);
+                    
+                    // Mantener solo últimos 50 eventos
+                    if (events.length > 50) {
+                        events.splice(0, events.length - 50);
+                    }
+                    
+                    localStorage.setItem('tuguia_events', JSON.stringify(events));
+                } catch (error) {
+                    console.warn('Error tracking event:', error);
+                }
+            }
+            
+            // Método para mostrar modal manualmente (útil para testing)
+            showManually() {
+                localStorage.removeItem('tuguia_welcome_shown');
+                this.hasShown = false;
+                this.showWelcome();
+            }
+        }
+        
+        // =================== INICIALIZACIÓN ===================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Inicializando Welcome Manager...');
+            
+            // Pequeño delay para asegurar que todo esté cargado
+            setTimeout(() => {
+                window.welcomeManager = new WelcomeManager();
+                
+                // Exponer globalmente para debugging
+                window.showWelcome = () => window.welcomeManager.showManually();
+            }, 500);
+        });
+        
+        // =================== UTILIDADES PARA DEBUGGING ===================
+        // En consola del navegador puedes usar:
+        // showWelcome() - para mostrar el modal manualmente
+        // localStorage.removeItem('tuguia_welcome_shown') - para resetear estado
+    </script>
+    
     <footer class="footer-agapai">
       Desarrollado por <a href="https://brochure.agapai.com.co/" target="_blank">AGAPAI</a>
     </footer>
