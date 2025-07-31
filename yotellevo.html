@@ -294,6 +294,10 @@
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
     <script>
     // =================== LÓGICA DE NAVEGACIÓN INTELIGENTE ===================
+    console.log('🚀 [DEBUG] Iniciando script de navegación inteligente');
+    console.log('🔍 [DEBUG] Verificando funciones disponibles:');
+    console.log('  - haversine:', typeof haversine);
+    console.log('  - window.rutasTranscaribe:', typeof window.rutasTranscaribe);
     
     // Variables globales para el seguimiento inteligente
     let isIntelligentTrackingActive = false;
@@ -2892,6 +2896,22 @@ window.addEventListener('DOMContentLoaded', async function() {
 
     // NUEVA FUNCIÓN: Encontrar múltiples paraderos cercanos para optimización de transbordos
     async function encontrarParaderosCercanosOptimizados(ubicacionUsuario, cantidad = 3) {
+      console.log('🔍 [DEBUG] Verificando función haversine:', typeof haversine);
+      if (typeof haversine !== 'function') {
+        console.error('❌ [DEBUG] Función haversine no encontrada, usando fallback');
+        // Fallback simple si haversine no existe
+        function haversineFallback(lat1, lon1, lat2, lon2) {
+          const R = 6371e3;
+          const φ1 = lat1 * Math.PI / 180;
+          const φ2 = lat2 * Math.PI / 180;
+          const Δφ = (lat2 - lat1) * Math.PI / 180;
+          const Δλ = (lon2 - lon1) * Math.PI / 180;
+          const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          return R * c;
+        }
+        window.haversine = haversineFallback;
+      }
       if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
         console.error('❌ No hay datos de paraderos disponibles');
         return [];
