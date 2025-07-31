@@ -2076,21 +2076,20 @@ window.addEventListener('DOMContentLoaded', async function() {
             .bindPopup(`<b>${icono} ${paradero.nombre}</b><br>Distancia: ${paradero.dist.toFixed(0)}m<br>Rutas: ${Array.isArray(paradero.rutas) && paradero.rutas.length ? paradero.rutas.join(', ') : 'Sin rutas'}`);
         }
         
-        // Rutas peatonales desde el paradero más cercano hacia los otros
-        if (paraderosOrigen.length > 1) {
-          const paraderoBase = paraderosOrigen[0]; // El más cercano
-          console.log(`🚶 Calculando rutas desde ${paraderoBase.nombre} hacia otros paraderos...`);
+        // Rutas peatonales desde el punto de partida hacia TODOS los paraderos cercanos
+        if (paraderosOrigen.length > 0) {
+          console.log(`🚶 Calculando rutas desde tu punto de partida hacia los ${paraderosOrigen.length} paraderos cercanos...`);
           
-          for (let i = 1; i < paraderosOrigen.length; i++) {
-            const paraderoDestino = paraderosOrigen[i];
+          for (let i = 0; i < paraderosOrigen.length; i++) {
+            const paradero = paraderosOrigen[i];
             const color = coloresParaderos[i] || '#6c757d';
             
-            console.log(`🔍 Ruta ${i}: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+            console.log(`🔍 Ruta ${i + 1}: Punto de partida → ${paradero.nombre}`);
             
-            // Obtener ruta peatonal real
+            // Obtener ruta peatonal real desde el punto de partida hacia el paradero
             const rutaCoords = await obtenerRutaPeatonal(
-              [paraderoBase.lat, paraderoBase.lon],
-              [paraderoDestino.lat, paraderoDestino.lon]
+              [startCoords[0], startCoords[1]], // Desde el punto de partida
+              [paradero.lat, paradero.lon]      // Hacia el paradero
             );
             
             if (rutaCoords && rutaCoords.length > 0) {
@@ -2104,23 +2103,23 @@ window.addEventListener('DOMContentLoaded', async function() {
                 opacity: 0.8,
                 dashArray: '10, 5'
               }).addTo(window.mapaOrigen)
-                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoDestino.nombre}`);
+                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: Tu punto de partida<br>Hacia: ${paradero.nombre}<br>Distancia: ${paradero.dist.toFixed(0)}m`);
               
-              console.log(`✅ Ruta dibujada: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+              console.log(`✅ Ruta dibujada: Punto de partida → ${paradero.nombre}`);
             } else {
               // Fallback: línea recta si falla la API
               L.polyline([
-                [paraderoBase.lat, paraderoBase.lon],
-                [paraderoDestino.lat, paraderoDestino.lon]
+                [startCoords[0], startCoords[1]],
+                [paradero.lat, paradero.lon]
               ], {
                 color: color,
                 weight: 3,
                 opacity: 0.6,
                 dashArray: '15, 10'
               }).addTo(window.mapaOrigen)
-                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoDestino.nombre}`);
+                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: Tu punto de partida<br>Hacia: ${paradero.nombre}<br>Distancia: ${paradero.dist.toFixed(0)}m`);
               
-              console.log(`⚠️ Ruta fallback dibujada: ${paraderoBase.nombre} → ${paraderoDestino.nombre}`);
+              console.log(`⚠️ Ruta fallback dibujada: Punto de partida → ${paradero.nombre}`);
             }
             
             // Pequeña pausa para no sobrecargar la API
@@ -2185,21 +2184,20 @@ window.addEventListener('DOMContentLoaded', async function() {
             .bindPopup(`<b>${icono} ${paradero.nombre}</b><br>Distancia: ${paradero.dist.toFixed(0)}m<br>Rutas: ${Array.isArray(paradero.rutas) && paradero.rutas.length ? paradero.rutas.join(', ') : 'Sin rutas'}`);
         }
         
-        // Rutas peatonales desde el paradero más cercano hacia los otros
-        if (paraderosDestino.length > 1) {
-          const paraderoBase = paraderosDestino[0]; // El más cercano
-          console.log(`🚶 Calculando rutas desde ${paraderoBase.nombre} hacia otros paraderos...`);
+        // Rutas peatonales desde el punto de destino hacia TODOS los paraderos cercanos
+        if (paraderosDestino.length > 0) {
+          console.log(`🚶 Calculando rutas desde tu punto de destino hacia los ${paraderosDestino.length} paraderos cercanos...`);
           
-          for (let i = 1; i < paraderosDestino.length; i++) {
-            const paraderoOtro = paraderosDestino[i];
+          for (let i = 0; i < paraderosDestino.length; i++) {
+            const paradero = paraderosDestino[i];
             const color = coloresParaderos[i] || '#6c757d';
             
-            console.log(`🔍 Ruta ${i}: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+            console.log(`🔍 Ruta ${i + 1}: Punto de destino → ${paradero.nombre}`);
             
-            // Obtener ruta peatonal real
+            // Obtener ruta peatonal real desde el punto de destino hacia el paradero
             const rutaCoords = await obtenerRutaPeatonal(
-              [paraderoBase.lat, paraderoBase.lon],
-              [paraderoOtro.lat, paraderoOtro.lon]
+              [endCoords[0], endCoords[1]], // Desde el punto de destino
+              [paradero.lat, paradero.lon]  // Hacia el paradero
             );
             
             if (rutaCoords && rutaCoords.length > 0) {
@@ -2213,23 +2211,23 @@ window.addEventListener('DOMContentLoaded', async function() {
                 opacity: 0.8,
                 dashArray: '10, 5'
               }).addTo(window.mapaDestino)
-                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoOtro.nombre}`);
+                .bindPopup(`<b>🚶 Ruta peatonal</b><br>Desde: Tu punto de destino<br>Hacia: ${paradero.nombre}<br>Distancia: ${paradero.dist.toFixed(0)}m`);
               
-              console.log(`✅ Ruta dibujada: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+              console.log(`✅ Ruta dibujada: Punto de destino → ${paradero.nombre}`);
             } else {
               // Fallback: línea recta si falla la API
               L.polyline([
-                [paraderoBase.lat, paraderoBase.lon],
-                [paraderoOtro.lat, paraderoOtro.lon]
+                [endCoords[0], endCoords[1]],
+                [paradero.lat, paradero.lon]
               ], {
                 color: color,
                 weight: 3,
                 opacity: 0.6,
                 dashArray: '15, 10'
               }).addTo(window.mapaDestino)
-                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: ${paraderoBase.nombre}<br>Hacia: ${paraderoOtro.nombre}`);
+                .bindPopup(`<b>🚶 Ruta estimada</b><br>Desde: Tu punto de destino<br>Hacia: ${paradero.nombre}<br>Distancia: ${paradero.dist.toFixed(0)}m`);
               
-              console.log(`⚠️ Ruta fallback dibujada: ${paraderoBase.nombre} → ${paraderoOtro.nombre}`);
+              console.log(`⚠️ Ruta fallback dibujada: Punto de destino → ${paradero.nombre}`);
             }
             
             // Pequeña pausa para no sobrecargar la API
