@@ -2888,6 +2888,8 @@ window.addEventListener('DOMContentLoaded', async function() {
     // FIN SISTEMA VERDADERAMENTE INTELIGENTE
     // ========================================
 
+
+
     // NUEVA FUNCIÓN: Encontrar múltiples paraderos cercanos para optimización de transbordos
     async function encontrarParaderosCercanosOptimizados(ubicacionUsuario, cantidad = 3) {
       if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
@@ -2909,7 +2911,7 @@ window.addEventListener('DOMContentLoaded', async function() {
         const lat = coords[1];
         const lon = coords[0];
         
-        const distancia = calcularDistanciaHaversine(
+        const distancia = haversine(
           ubicacionUsuario.lat, ubicacionUsuario.lng,
           lat, lon
         );
