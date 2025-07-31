@@ -203,8 +203,18 @@
             }
         }
         #panel-guia-inteligente {
-          position: relative;
-          z-index: 10;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          padding: 20px;
+          border-radius: 15px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 1000;
+          max-width: 90%;
+          width: 400px;
+          display: block;
         }
         #info-paraderos, #info-ruta {
           width: 100%;
@@ -1026,9 +1036,14 @@
           </div>
           
           ${generarHTMLParaderosAlternativos(rutaOptima)}
-          <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px; margin: 0 auto;">
-            <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento Inteligente
-          </button>
+          <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button id="btnIniciarSeguimiento" style="background: linear-gradient(90deg, #ff6600 60%, #ff9800 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(255,102,0,0.13); display: flex; align-items: center; gap: 8px;">
+              <span style='font-size:1.2em;'>🚀</span> Iniciar Seguimiento
+            </button>
+            <button id="btnDetenerSeguimiento" style="background: linear-gradient(90deg, #e53e3e 60%, #f56565 100%); color: #fff; border: none; border-radius: 10px; padding: 0.85em 1.7em; font-size: 1.08em; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(229,62,62,0.13); display: flex; align-items: center; gap: 8px; display: none;">
+              <span style='font-size:1.2em;'>⏹️</span> Detener
+            </button>
+          </div>
         </div>
       `;
       
@@ -1038,6 +1053,27 @@
       console.log('🔍 [DEBUG] Panel guía encontrado:', panelGuia);
       
       if (panelGuia) {
+        panelGuia.style.display = 'block';
+        panelGuia.innerHTML = instruccionesHTML;
+        
+        const btnIniciarSeguimiento = document.getElementById('btnIniciarSeguimiento');
+        const btnDetenerSeguimiento = document.getElementById('btnDetenerSeguimiento');
+
+        if (btnIniciarSeguimiento && btnDetenerSeguimiento) {
+          btnIniciarSeguimiento.onclick = () => {
+            iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
+            btnIniciarSeguimiento.style.display = 'none';
+            btnDetenerSeguimiento.style.display = 'flex';
+          };
+
+          btnDetenerSeguimiento.onclick = () => {
+            detenerSeguimientoInteligente();
+            btnDetenerSeguimiento.style.display = 'none';
+            btnIniciarSeguimiento.style.display = 'flex';
+          };
+        }
+      } else {
+        console.error('❌ No se encontró el panel guía inteligente');
         console.log('✅ [DEBUG] Insertando HTML en panel-guia-inteligente');
         panelGuia.innerHTML = instruccionesHTML;
         
@@ -1268,6 +1304,13 @@
     paraderoTransbordoActual = null;
     seRealizoTransbordo = false;
     distanciaTransbordoRegistrada = false;
+
+    // Cerrar el panel inteligente
+    const panelGuia = document.getElementById('panel-guia-inteligente');
+    if (panelGuia) {
+        panelGuia.style.display = 'none';
+        panelGuia.innerHTML = '';
+    }
       
       // Mostrar resumen con botón
       const resumenHTML = `
@@ -1333,6 +1376,19 @@
     async function iniciarNavegacionInteligente(destinoCoords) {
         try {
             console.log('🧠 Iniciando navegación inteligente...');
+            
+            // Asegurar que el panel inteligente existe y está visible
+            let panelGuia = document.getElementById('panel-guia-inteligente');
+            if (!panelGuia) {
+                panelGuia = document.createElement('div');
+                panelGuia.id = 'panel-guia-inteligente';
+                panelGuia.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 90%; width: 420px; display: none;';
+                document.body.appendChild(panelGuia);
+                console.log('✅ Panel guía inteligente creado');
+            }
+            panelGuia.style.display = 'block';
+            console.log('✅ Panel guía inteligente visible');
+            panelGuia.style.display = 'block';
             
             // Obtener datos del punto de partida seleccionado
             const startMode = localStorage.getItem('tuguia_start_mode') || '';
@@ -2218,6 +2274,14 @@ window.ejecutarPruebaConexion = function() {
 // Inicializar la aplicación cuando el DOM esté listo
 window.addEventListener('DOMContentLoaded', async function() {
   console.log('🟣 [INIT] DOMContentLoaded en yotellevo.html');
+
+  // Crear el panel inteligente si no existe
+  if (!document.getElementById('panel-guia-inteligente')) {
+    const panelGuia = document.createElement('div');
+    panelGuia.id = 'panel-guia-inteligente';
+    document.body.appendChild(panelGuia);
+    console.log('✅ Panel guía inteligente creado');
+  }
   
   // NUEVO: Ejecutar prueba de conexión después de cargar datos
   setTimeout(() => {
