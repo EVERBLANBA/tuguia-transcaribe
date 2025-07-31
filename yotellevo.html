@@ -2054,7 +2054,7 @@ window.addEventListener('DOMContentLoaded', async function() {
           .addTo(window.mapaOrigen)
           .bindPopup('<b>📍 Tu punto de partida</b>');
         
-        // Marcadores de paraderos con diferentes estilos
+        // Marcadores de paraderos con imagen de bus y diferentes colores de borde
         const coloresParaderos = ['#1ca12d', '#007bff', '#ff9800']; // Verde, Azul, Naranja
         const iconosParaderos = ['🥇', '🥈', '🥉'];
         
@@ -2063,12 +2063,47 @@ window.addEventListener('DOMContentLoaded', async function() {
           const color = coloresParaderos[i] || '#6c757d';
           const icono = iconosParaderos[i] || '🚌';
           
-          // Marcador del paradero
+          // Marcador del paradero con imagen de bus
           const iconoParadero = L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="background-color: ${color}; color: white; border-radius: 8px; padding: 3px 6px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3); font-size: 14px;">${icono}</div>`,
-            iconSize: [30, 25],
-            iconAnchor: [15, 12]
+            html: `
+              <div style="
+                position: relative; 
+                border: 3px solid ${color}; 
+                border-radius: 12px; 
+                padding: 2px; 
+                background: white; 
+                box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                <img src="BUS.jpeg" style="
+                  width: 28px; 
+                  height: 28px; 
+                  border-radius: 8px; 
+                  object-fit: cover;
+                " alt="Bus">
+                <div style="
+                  position: absolute; 
+                  top: -8px; 
+                  right: -8px; 
+                  background: ${color}; 
+                  color: white; 
+                  border-radius: 50%; 
+                  width: 20px; 
+                  height: 20px; 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center; 
+                  font-size: 12px; 
+                  font-weight: bold;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                ">${icono}</div>
+              </div>
+            `,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
           });
           
           L.marker([paradero.lat, paradero.lon], { icon: iconoParadero })
@@ -2162,7 +2197,7 @@ window.addEventListener('DOMContentLoaded', async function() {
           .addTo(window.mapaDestino)
           .bindPopup('<b>🎯 Tu destino</b>');
         
-        // Marcadores de paraderos con diferentes estilos
+        // Marcadores de paraderos con imagen de bus y diferentes colores de borde
         const coloresParaderos = ['#1ca12d', '#007bff', '#ff9800']; // Verde, Azul, Naranja
         const iconosParaderos = ['🥇', '🥈', '🥉'];
         
@@ -2171,12 +2206,47 @@ window.addEventListener('DOMContentLoaded', async function() {
           const color = coloresParaderos[i] || '#6c757d';
           const icono = iconosParaderos[i] || '🚌';
           
-          // Marcador del paradero
+          // Marcador del paradero con imagen de bus
           const iconoParadero = L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="background-color: ${color}; color: white; border-radius: 8px; padding: 3px 6px; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.3); font-size: 14px;">${icono}</div>`,
-            iconSize: [30, 25],
-            iconAnchor: [15, 12]
+            html: `
+              <div style="
+                position: relative; 
+                border: 3px solid ${color}; 
+                border-radius: 12px; 
+                padding: 2px; 
+                background: white; 
+                box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                <img src="BUS.jpeg" style="
+                  width: 28px; 
+                  height: 28px; 
+                  border-radius: 8px; 
+                  object-fit: cover;
+                " alt="Bus">
+                <div style="
+                  position: absolute; 
+                  top: -8px; 
+                  right: -8px; 
+                  background: ${color}; 
+                  color: white; 
+                  border-radius: 50%; 
+                  width: 20px; 
+                  height: 20px; 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center; 
+                  font-size: 12px; 
+                  font-weight: bold;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                ">${icono}</div>
+              </div>
+            `,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
           });
           
           L.marker([paradero.lat, paradero.lon], { icon: iconoParadero })
