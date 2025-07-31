@@ -1,0 +1,85 @@
+{
+  "name": "Tu Guía Cartagena - Transporte Inteligente",
+  "short_name": "Tu Guía",
+  "description": "Sistema inteligente de navegación para transporte público en Cartagena con seguimiento en tiempo real y alarmas de proximidad",
+  "version": "3.0.0",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#ff6600",
+  "background_color": "#f4f6fb",
+  "categories": ["navigation", "travel", "utilities"],
+  "lang": "es",
+  
+  "icons": [
+    {
+      "src": "./logoagapai-ok2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "./logoagapai-ok2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Planificar Ruta",
+      "short_name": "Ruta",
+      "description": "Planifica tu viaje en transporte público",
+      "url": "./index.html",
+      "icons": [{ "src": "./pin-verde-destino.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Yo te llevo",
+      "short_name": "Navegación",
+      "description": "Navegación inteligente con seguimiento",
+      "url": "./yotellevo.html",
+      "icons": [{ "src": "./pin-morado.png", "sizes": "96x96" }]
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "./bus-station.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Planificación de rutas en Tu Guía"
+    }
+  ],
+  
+  "related_applications": [],
+  "prefer_related_applications": false,
+  
+  "protocol_handlers": [
+    {
+      "protocol": "geo",
+      "url": "./index.html?coords=%s"
+    }
+  ],
+  
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  
+  "handle_links": "preferred",
+  
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "application/geo+json": [".geojson"]
+      }
+    }
+  ]
+}

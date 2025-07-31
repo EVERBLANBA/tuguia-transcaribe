@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="mobile-optimizations.css" />
     <link rel="icon" type="image/png" href="logoagapai-ok2.png" />
+    
+    <!-- PWA Manifest para funcionamiento en segundo plano -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Meta tags adicionales para PWA móvil -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tu Guía">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Tu Guía">
+    
+    <!-- Iconos para iOS -->
+    <link rel="apple-touch-icon" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="logoagapai-ok2.png">
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -1496,7 +1512,7 @@
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
     
-    <button class="map-selection-toggle" id="toggleMapSelection">��️ Mostrar selección en mapa (origen/destino)</button>
+    <button class="map-selection-toggle" id="toggleMapSelection"> Mostrar selección en mapa (origen/destino)</button>
     <div class="map-selection-controls" id="mapSelectionControls" style="display: none !important;">
         <h4>Selecciona en el mapa</h4>
         <div class="map-selection-buttons">

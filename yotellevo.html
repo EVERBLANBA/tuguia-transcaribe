@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¡Yo te llevo! - Tuguia</title>
+    
+    <!-- PWA Manifest para funcionamiento en segundo plano -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Meta tags adicionales para PWA móvil -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tu Guía">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Tu Guía">
+    
+    <!-- Iconos para iOS -->
+    <link rel="apple-touch-icon" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logoagapai-ok2.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="logoagapai-ok2.png">
     <style>
         body {
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -1228,6 +1244,14 @@
         alarmaFinalInterval = null;
       }
       if (navigator.vibrate) navigator.vibrate(0);
+      
+      // Liberar contexto de audio si existe
+      if (audioContext) {
+        try {
+          audioContext.close();
+          audioContext = null;
+        } catch (e) {}
+      }
     }
     
     // Función principal de navegación inteligente
@@ -1583,29 +1607,66 @@ window.addEventListener('pagehide', function(e) {
 <script>
 // Función para mostrar la alerta de proximidad (modal + notificación + vibración)
 let alarmaProximidadInterval = null;
+let audioContext = null; // Reutilizar contexto de audio
+
 function mostrarAlertaProximidad() {
+  console.log('🚨 ACTIVANDO ALARMA DE PROXIMIDAD - DESPERTAR USUARIO');
+  
   // Mostrar modal llamativo
   var modal = document.getElementById('modal-proximidad');
   if (modal) modal.style.display = 'flex';
 
+  // Activar Wake Lock para asegurar que la app no se duerma
+  if (window.BackgroundManager && window.BackgroundManager.requestWakeLock) {
+    window.BackgroundManager.requestWakeLock();
+    console.log('🔆 Wake Lock activado para alarma');
+  }
+
   // Iniciar alarma y vibración repetitiva (patrón muy molesto)
   detenerAlarmaProximidad(); // Por si acaso ya hay una activa
   alarmaProximidadInterval = setInterval(() => {
-    // Vibración muy notoria: vibrar 1200ms, pausa 200ms, repetir varias veces
-    if (navigator.vibrate) navigator.vibrate([1200, 200, 1200, 200, 1200, 200, 1200]);
-    // Sonido
+    // Vibración EXTRA fuerte para despertar: patrón largo y agresivo
+    if (navigator.vibrate) {
+      navigator.vibrate([1500, 300, 1500, 300, 1500, 300, 1500, 300, 1500]);
+      console.log('📳 Vibración de alarma activada');
+    }
+    
+    // Sonido MÁS fuerte y persistente
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = 'sine';
-      o.frequency.value = 880;
-      o.connect(g); g.connect(ctx.destination);
-      g.gain.value = 0.2;
-      o.start();
-      setTimeout(()=>{g.gain.value=0; o.stop(); ctx.close();}, 500);
-    } catch(e) {}
-  }, 2200);
+      // Crear o reutilizar contexto de audio
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      // Crear múltiples tonos para alarma más molesta
+      const frequencies = [880, 1200, 660]; // Múltiples frecuencias
+      frequencies.forEach((freq, index) => {
+        setTimeout(() => {
+          const o = audioContext.createOscillator();
+          const g = audioContext.createGain();
+          o.type = 'square'; // Tipo de onda más molesto
+          o.frequency.value = freq;
+          o.connect(g); 
+          g.connect(audioContext.destination);
+          g.gain.value = 0.3; // Volumen más alto
+          o.start();
+          setTimeout(() => {
+            g.gain.value = 0; 
+            o.stop();
+          }, 800); // Sonido más largo
+        }, index * 200);
+      });
+      
+      console.log('🔊 Sonido de alarma multi-tono activado');
+    } catch(e) {
+      console.warn('⚠️ Error con audio contexto:', e);
+      // Fallback con beep simple
+      try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+LpummAEA==');
+        audio.play().catch(() => {});
+      } catch (e2) {}
+    }
+  }, 1800); // Intervalo más rápido para más molestia
 
   // Botón para detener alarma y vibración
   setTimeout(() => {
@@ -1618,19 +1679,58 @@ function mostrarAlertaProximidad() {
     }
   }, 100);
 
-  // Notificación del sistema (opcional)
+  // Notificación del sistema PROMINENTE para despertar
   if (window.Notification && Notification.permission === 'granted') {
-    new Notification('¡Faltan menos de 300 metros!', {
-      body: 'Prepárate para descender en tu destino.',
-      icon: 'https://cdn-icons-png.flaticon.com/512/684/684908.png'
+    const notification = new Notification('🚨 ¡DESPERTAR! - Faltan 300 metros', {
+      body: '¡Prepárate para descender! Tu destino está muy cerca.',
+      icon: '/logoagapai-ok2.png',
+      badge: '/logoagapai-ok2.png',
+      tag: 'proximidad-destino', // Evitar duplicados
+      requireInteraction: true, // Requiere interacción para cerrar
+      silent: false, // Asegurar que tenga sonido
+      vibrate: [1500, 300, 1500, 300, 1500], // Vibración en la notificación
+      actions: [
+        {
+          action: 'entendido',
+          title: '✅ Entendido'
+        }
+      ],
+      data: {
+        timestamp: Date.now(),
+        type: 'proximity-alert'
+      }
     });
+    
+    // Manejar click en la notificación
+    notification.onclick = function() {
+      window.focus();
+      notification.close();
+      detenerAlarmaProximidad();
+    };
+    
+    console.log('🔔 Notificación de proximidad enviada');
   } else if (window.Notification && Notification.permission !== 'denied') {
     Notification.requestPermission().then(function(permission) {
       if (permission === 'granted') {
-        new Notification('¡Faltan menos de 300 metros!', {
-          body: 'Prepárate para descender en tu destino.',
-          icon: 'https://cdn-icons-png.flaticon.com/512/684/684908.png'
+        const notification = new Notification('🚨 ¡DESPERTAR! - Faltan 300 metros', {
+          body: '¡Prepárate para descender! Tu destino está muy cerca.',
+          icon: '/logoagapai-ok2.png',
+          badge: '/logoagapai-ok2.png',
+          tag: 'proximidad-destino',
+          requireInteraction: true,
+          silent: false,
+          vibrate: [1500, 300, 1500, 300, 1500],
+          data: {
+            timestamp: Date.now(),
+            type: 'proximity-alert'
+          }
         });
+        
+        notification.onclick = function() {
+          window.focus();
+          notification.close();
+          detenerAlarmaProximidad();
+        };
       }
     });
   }
