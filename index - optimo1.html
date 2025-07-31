@@ -3540,8 +3540,28 @@
       return mejorTransbordo;
     }
     
-    // NOTA: Las instrucciones inteligentes se muestran en yotellevo.html, no aquí
-    // Esta página es solo para entrada de datos (inputs y selects)
+    // Función para mostrar instrucciones inteligentes
+    function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario) {
+      let instruccionesHTML = `
+        <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
+          <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #764ba2;">🧠 Tu Guía Inteligente</h3>
+          <div style="margin-bottom: 1rem; color: #222;">
+            <strong>📍 Tu ubicación:</strong> ${ubicacionUsuario.lat.toFixed(6)}, ${ubicacionUsuario.lng.toFixed(6)}
+          </div>
+          <div style="margin-bottom: 1rem; color: #222;">
+            <strong>🚌 Paradero más cercano:</strong> ${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)
+          </div>
+          <div style="background: #ffe9b3; color: #b26a00; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <strong>📋 Instrucciones:</strong><br>
+            ${rutaOptima.mensaje}
+          </div>
+        </div>
+      `;
+      const panelGuia = document.getElementById('panel-guia-inteligente');
+      if (panelGuia) {
+        panelGuia.innerHTML = instruccionesHTML;
+      }
+    }
     
     // Función para iniciar seguimiento inteligente
     function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {

@@ -902,74 +902,14 @@
         </div>
       `;
       const panelGuia = document.getElementById('panel-guia-inteligente');
-      console.log('🔍 [DEBUG] Panel guía encontrado:', panelGuia);
-      
       if (panelGuia) {
-        panelGuia.style.display = 'block';
         panelGuia.innerHTML = instruccionesHTML;
-        console.log('✅ [DEBUG] HTML insertado en panel-guia-inteligente');
-        
         // Asociar funcionalidad al botón
-        setTimeout(() => {
-          const btn = document.getElementById('btnIniciarSeguimiento');
-          console.log('🔍 [DEBUG] Botón encontrado:', btn);
-          
-          if (btn) {
-            btn.addEventListener('click', function() {
-              console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado');
-              iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
-            });
-            console.log('✅ [DEBUG] Event listener agregado al botón');
-          }
-        }, 100);
-      } else {
-        console.error('❌ No se encontró el panel guía inteligente');
-        // FALLBACK: Crear el panel si no existe
-        const nuevoPanel = document.createElement('div');
-        nuevoPanel.id = 'panel-guia-inteligente';
-        nuevoPanel.style.cssText = 'position: relative; z-index: 10; width: 100%; max-width: 420px; margin: 24px auto 0 auto;';
-        
-        // Insertarlo después del cuadro naranja y antes de info-ruta
-        const infoRuta = document.getElementById('info-ruta');
-        if (infoRuta && infoRuta.parentNode) {
-          infoRuta.parentNode.insertBefore(nuevoPanel, infoRuta);
-          nuevoPanel.innerHTML = instruccionesHTML;
-          console.log('✅ [DEBUG] Panel guía inteligente creado y HTML insertado');
-          
-          // Asociar funcionalidad al botón
-          setTimeout(() => {
-            const btn = document.getElementById('btnIniciarSeguimiento');
-            console.log('🔍 [DEBUG] Botón encontrado (fallback):', btn);
-            
-            if (btn) {
-              btn.addEventListener('click', function() {
-                console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado (fallback)');
-                iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
-              });
-              console.log('✅ [DEBUG] Event listener agregado al botón (fallback)');
-            }
-          }, 100);
-        } else {
-          console.log('⚠️ [DEBUG] No se encontró info-ruta, intentando fallback en info-ruta');
-          const infoRuta = document.getElementById('info-ruta');
-          console.log('🔍 [DEBUG] Info-ruta encontrado:', infoRuta);
-          
-          if (infoRuta) {
-            console.log('✅ [DEBUG] Insertando HTML en info-ruta como fallback');
-            infoRuta.innerHTML = instruccionesHTML;
-            
-            setTimeout(() => {
-              const btn = document.getElementById('btnIniciarSeguimiento');
-              if (btn) {
-                btn.addEventListener('click', function() {
-                  console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado (fallback info-ruta)');
-                  iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
-                });
-              }
-            }, 100);
-          } else {
-            console.error('❌ [DEBUG] Ni panel-guia-inteligente ni info-ruta encontrados');
-          }
+        const btn = document.getElementById('btnIniciarSeguimiento');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
+          });
         }
       }
       console.log('📋 Instrucciones inteligentes mostradas:', rutaOptima.mensaje);
@@ -1323,12 +1263,6 @@
             }
             
             // 4. Mostrar instrucciones usando el punto de partida seleccionado
-            console.log('📋 [DEBUG] Llamando a mostrarInstruccionesInteligentes con:', {
-                rutaOptima: rutaOptima?.tipo,
-                paraderoCercano: paraderoCercano?.nombre,
-                puntoPartida: puntoPartida?.nombre,
-                top3Length: top3Paraderos?.length
-            });
             mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida, top3Paraderos);
             
         } catch (error) {
@@ -1802,9 +1736,8 @@ window.addEventListener('DOMContentLoaded', async function() {
     ]);
   }
 
-      // === LÓGICA DE PARADEROS Y RUTAS ===
-    async function procesarInformacion() {
-      console.log('🔍 [DEBUG] === INICIANDO PROCESAMIENTO DE INFORMACIÓN ===');
+  // === LÓGICA DE PARADEROS Y RUTAS ===
+  async function procesarInformacion() {
     let start = localStorage.getItem('tuguia_start') || '';
     let end = localStorage.getItem('tuguia_end') || '';
     let startMode = localStorage.getItem('tuguia_start_mode') || '';
@@ -1985,7 +1918,6 @@ window.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('info-paraderos').innerHTML = html;
   }
 
-  console.log('🚀 [DEBUG] yotellevo.html cargado, llamando a procesarInformacion...');
   procesarInformacion();
 });
   </script>
