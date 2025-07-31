@@ -1243,6 +1243,97 @@
             .footer-agapai { font-size: 0.95em; padding-bottom: 0.5em; }
         }
         
+        /* =================== ESTILOS MINI BANNER RECORDATORIO =================== */
+        .reminder-banner {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            animation: reminderSlideDown 0.4s ease-out;
+            max-width: 90vw;
+        }
+        
+        .reminder-content {
+            background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(255, 102, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 320px;
+            position: relative;
+        }
+        
+        .reminder-icon {
+            font-size: 1.5rem;
+            animation: reminderPulse 2s infinite;
+        }
+        
+        .reminder-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .reminder-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+        
+        .reminder-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        @keyframes reminderSlideDown {
+            from { 
+                transform: translateX(-50%) translateY(-100%); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateX(-50%) translateY(0); 
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes reminderPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 600px) {
+            .reminder-banner {
+                top: 10px;
+                max-width: 95vw;
+            }
+            
+            .reminder-content {
+                min-width: auto;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .reminder-text {
+                font-size: 0.85rem;
+            }
+        }
+        
         /* =================== ESTILOS MODAL DE BIENVENIDA =================== */
         .welcome-modal {
             position: fixed;
@@ -1783,6 +1874,18 @@
                     Omitir introducción
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Mini Banner de Recordatorio (aparece cada 7 días) -->
+    <div id="reminderBanner" class="reminder-banner" style="display: none;">
+        <div class="reminder-content">
+            <span class="reminder-icon">💡</span>
+            <span class="reminder-text">
+                <strong>¿Sabías que puedes dormir tranquilo?</strong> 
+                Activamos alarmas automáticas para despertarte en tu destino
+            </span>
+            <button id="reminderClose" class="reminder-close">×</button>
         </div>
     </div>
 
@@ -4439,38 +4542,92 @@
     
     <!-- =================== SCRIPT MODAL DE BIENVENIDA =================== -->
     <script>
-        // =================== MODAL DE BIENVENIDA ===================
+        // =================== MODAL DE BIENVENIDA INTELIGENTE ===================
         class WelcomeManager {
             constructor() {
                 this.modal = document.getElementById('welcomeModal');
+                this.banner = document.getElementById('reminderBanner');
                 this.startBtn = document.getElementById('startUsingApp');
                 this.skipBtn = document.getElementById('skipWelcome');
-                this.hasShown = localStorage.getItem('tuguia_welcome_shown');
+                this.closeBtn = document.getElementById('reminderClose');
+                
+                // Gestión de timestamps
+                this.firstVisit = localStorage.getItem('tuguia_first_visit');
+                this.lastReminder = localStorage.getItem('tuguia_last_reminder');
+                this.hasCompletedWelcome = localStorage.getItem('tuguia_welcome_completed');
+                
+                this.REMINDER_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 días en milisegundos
                 
                 this.init();
             }
             
             init() {
-                // Mostrar modal si es primera visita
-                if (!this.hasShown) {
-                    this.showWelcome();
+                console.log('🎯 Inicializando Welcome Manager Inteligente...');
+                
+                // Marcar primera visita si no existe
+                if (!this.firstVisit) {
+                    const now = Date.now();
+                    localStorage.setItem('tuguia_first_visit', now);
+                    this.firstVisit = now;
                 }
                 
-                // Event listeners
+                // Decidir qué mostrar
+                this.decideWhatToShow();
+                
+                // Event listeners para modal
                 if (this.startBtn) {
                     this.startBtn.addEventListener('click', () => this.handleStart());
                 }
-                
                 if (this.skipBtn) {
                     this.skipBtn.addEventListener('click', () => this.handleSkip());
                 }
                 
+                // Event listeners para banner
+                if (this.closeBtn) {
+                    this.closeBtn.addEventListener('click', () => this.hideReminder());
+                }
+                
                 // Cerrar con Escape
                 document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.isVisible()) {
-                        this.handleSkip();
+                    if (e.key === 'Escape') {
+                        if (this.isModalVisible()) this.handleSkip();
+                        if (this.isBannerVisible()) this.hideReminder();
                     }
                 });
+            }
+            
+            decideWhatToShow() {
+                const now = Date.now();
+                
+                // PRIMERA VISITA: Mostrar modal completo
+                if (!this.hasCompletedWelcome) {
+                    console.log('👋 Primera visita - Mostrando modal completo');
+                    this.showWelcome();
+                    return;
+                }
+                
+                // VISITAS POSTERIORES: Verificar si toca recordatorio
+                if (this.shouldShowReminder(now)) {
+                    console.log('💡 Mostrando recordatorio (cada 7 días)');
+                    this.showReminder();
+                } else {
+                    console.log('⏰ Recordatorio no necesario aún');
+                }
+            }
+            
+            shouldShowReminder(now) {
+                // No mostrar recordatorio si nunca completó el welcome
+                if (!this.hasCompletedWelcome) return false;
+                
+                // Si nunca se ha mostrado recordatorio, mostrar después de 7 días del welcome
+                if (!this.lastReminder) {
+                    const welcomeTime = parseInt(this.hasCompletedWelcome);
+                    return (now - welcomeTime) >= this.REMINDER_INTERVAL;
+                }
+                
+                // Mostrar si han pasado 7 días desde último recordatorio
+                const lastReminderTime = parseInt(this.lastReminder);
+                return (now - lastReminderTime) >= this.REMINDER_INTERVAL;
             }
             
             showWelcome() {
@@ -4509,6 +4666,10 @@
                 this.trackEvent('welcome_start_clicked');
                 this.hideWelcome();
                 
+                // Marcar como completado con timestamp
+                const now = Date.now();
+                localStorage.setItem('tuguia_welcome_completed', now.toString());
+                
                 // Opcional: mostrar tooltip o destacar el primer paso
                 this.highlightFirstStep();
             }
@@ -4517,6 +4678,51 @@
                 console.log('⏭️ Usuario eligió: Omitir');
                 this.trackEvent('welcome_skip_clicked');
                 this.hideWelcome();
+                
+                // Marcar como completado con timestamp (aunque skip)
+                const now = Date.now();
+                localStorage.setItem('tuguia_welcome_completed', now.toString());
+            }
+            
+            // =================== FUNCIONES DEL MINI BANNER ===================
+            showReminder() {
+                if (this.banner) {
+                    console.log('💡 Mostrando banner recordatorio');
+                    this.banner.style.display = 'block';
+                    
+                    // Marcar timestamp del recordatorio
+                    const now = Date.now();
+                    localStorage.setItem('tuguia_last_reminder', now.toString());
+                    
+                    // Auto-ocultar después de 8 segundos
+                    setTimeout(() => {
+                        if (this.isBannerVisible()) {
+                            this.hideReminder();
+                        }
+                    }, 8000);
+                    
+                    // Analytics: registrar que se mostró recordatorio
+                    this.trackEvent('reminder_shown');
+                }
+            }
+            
+            hideReminder() {
+                if (this.banner) {
+                    console.log('🙈 Ocultando banner recordatorio');
+                    this.banner.style.display = 'none';
+                    
+                    // Analytics: registrar que cerró recordatorio
+                    this.trackEvent('reminder_closed');
+                }
+            }
+            
+            // =================== FUNCIONES DE VISIBILIDAD ===================
+            isModalVisible() {
+                return this.modal && this.modal.style.display === 'flex';
+            }
+            
+            isBannerVisible() {
+                return this.banner && this.banner.style.display === 'block';
             }
             
             isVisible() {
@@ -4586,6 +4792,73 @@
         // En consola del navegador puedes usar:
         // showWelcome() - para mostrar el modal manualmente
         // localStorage.removeItem('tuguia_welcome_shown') - para resetear estado
+            showManually() {
+                console.log('🔧 Mostrando modal manualmente (para debugging)');
+                this.showWelcome();
+            }
+            
+            showReminderManually() {
+                console.log('🔧 Mostrando recordatorio manualmente (para debugging)');
+                this.showReminder();
+            }
+            
+            // =================== DEBUGGING UTILITIES ===================
+            resetWelcomeState() {
+                console.log('🗑️ Reseteando estado de welcome...');
+                localStorage.removeItem('tuguia_first_visit');
+                localStorage.removeItem('tuguia_welcome_completed');
+                localStorage.removeItem('tuguia_last_reminder');
+                localStorage.removeItem('tuguia_welcome_shown'); // Legacy
+                console.log('✅ Estado reseteado - recarga la página para ver el modal');
+            }
+            
+            getWelcomeStatus() {
+                const status = {
+                    firstVisit: this.firstVisit ? new Date(parseInt(this.firstVisit)).toLocaleString() : 'Nunca',
+                    welcomeCompleted: this.hasCompletedWelcome ? new Date(parseInt(this.hasCompletedWelcome)).toLocaleString() : 'No',
+                    lastReminder: this.lastReminder ? new Date(parseInt(this.lastReminder)).toLocaleString() : 'Nunca',
+                    nextReminderIn: this.getNextReminderTime()
+                };
+                console.table(status);
+                return status;
+            }
+            
+            getNextReminderTime() {
+                if (!this.hasCompletedWelcome) return 'Debe completar welcome primero';
+                
+                const baseTime = this.lastReminder || this.hasCompletedWelcome;
+                const nextTime = parseInt(baseTime) + this.REMINDER_INTERVAL;
+                const now = Date.now();
+                
+                if (nextTime <= now) return 'Ya disponible';
+                
+                const diffDays = Math.ceil((nextTime - now) / (24 * 60 * 60 * 1000));
+                return `En ${diffDays} día(s)`;
+            }
+        }
+        
+        // =================== INICIALIZACIÓN ===================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Inicializando Welcome Manager Inteligente...');
+            
+            // Pequeño delay para asegurar que todo esté cargado
+            setTimeout(() => {
+                window.welcomeManager = new WelcomeManager();
+                
+                // Exponer funciones globalmente para debugging
+                window.showWelcome = () => window.welcomeManager.showManually();
+                window.showReminder = () => window.welcomeManager.showReminderManually();
+                window.resetWelcome = () => window.welcomeManager.resetWelcomeState();
+                window.welcomeStatus = () => window.welcomeManager.getWelcomeStatus();
+            }, 500);
+        });
+        
+        // =================== UTILIDADES PARA DEBUGGING ===================
+        // En consola del navegador puedes usar:
+        // showWelcome() - mostrar modal manualmente
+        // showReminder() - mostrar banner recordatorio manualmente  
+        // resetWelcome() - resetear todo el estado (como primera visita)
+        // welcomeStatus() - ver estado actual del sistema
     </script>
     
     <footer class="footer-agapai">
