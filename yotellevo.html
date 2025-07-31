@@ -2692,7 +2692,6 @@ window.addEventListener('DOMContentLoaded', async function() {
 
       // Procesar cada paradero y calcular su eficiencia
       paraderosValidos.forEach(paradero => {
-          
           const rutasParadero = obtenerRutasParadero(paradero);
           
           // Verificar si conecta las rutas
@@ -2736,7 +2735,6 @@ window.addEventListener('DOMContentLoaded', async function() {
               rutasDestino: rutasDestino.filter(ruta => rutasParadero.includes(ruta))
             });
           }
-        }
       });
       
       // Ordenar primero por eficiencia estratégica
