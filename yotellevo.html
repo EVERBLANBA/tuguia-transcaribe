@@ -1074,38 +1074,51 @@
         }
       } else {
         console.error('❌ No se encontró el panel guía inteligente');
-        console.log('✅ [DEBUG] Insertando HTML en panel-guia-inteligente');
-        panelGuia.innerHTML = instruccionesHTML;
+        // Crear el panel si no existe
+        const nuevoPanel = document.createElement('div');
+        nuevoPanel.id = 'panel-guia-inteligente';
+        nuevoPanel.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 90%; width: 420px;';
+        document.body.appendChild(nuevoPanel);
+        nuevoPanel.innerHTML = instruccionesHTML;
+        console.log('✅ [DEBUG] Panel guía inteligente creado y HTML insertado');
         
-        // Asociar funcionalidad al botón
-        const btn = document.getElementById('btnIniciarSeguimiento');
-        console.log('🔍 [DEBUG] Botón encontrado:', btn);
+        // Asociar funcionalidad a los botones
+        const btnIniciar = document.getElementById('btnIniciarSeguimiento');
+        const btnDetener = document.getElementById('btnDetenerSeguimiento');
+        console.log('🔍 [DEBUG] Botones encontrados:', { iniciar: btnIniciar, detener: btnDetener });
         
-        if (btn) {
-          btn.addEventListener('click', function() {
+        if (btnIniciar && btnDetener) {
+          btnIniciar.onclick = () => {
             console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado');
             iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
-          });
-        }
-      } else {
-        console.log('⚠️ [DEBUG] Panel-guia-inteligente no encontrado, buscando fallback');
-        // Fallback: mostrar en info-ruta si no existe panel-guia-inteligente
-        const infoRuta = document.getElementById('info-ruta');
-        console.log('🔍 [DEBUG] Info-ruta encontrado:', infoRuta);
-        
-        if (infoRuta) {
-          console.log('✅ [DEBUG] Insertando HTML en info-ruta como fallback');
-          infoRuta.innerHTML = instruccionesHTML;
-          
-          const btn = document.getElementById('btnIniciarSeguimiento');
-          if (btn) {
-            btn.addEventListener('click', function() {
-              console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado (fallback)');
-              iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
-            });
-          }
+            btnIniciar.style.display = 'none';
+            btnDetener.style.display = 'flex';
+          };
+
+          btnDetener.onclick = () => {
+            detenerSeguimientoInteligente();
+            btnDetener.style.display = 'none';
+            btnIniciar.style.display = 'flex';
+          };
         } else {
-          console.error('❌ [DEBUG] Ni panel-guia-inteligente ni info-ruta encontrados');
+          console.log('⚠️ [DEBUG] Botones no encontrados, intentando fallback en info-ruta');
+          const infoRuta = document.getElementById('info-ruta');
+          console.log('🔍 [DEBUG] Info-ruta encontrado:', infoRuta);
+          
+          if (infoRuta) {
+            console.log('✅ [DEBUG] Insertando HTML en info-ruta como fallback');
+            infoRuta.innerHTML = instruccionesHTML;
+            
+            const btn = document.getElementById('btnIniciarSeguimiento');
+            if (btn) {
+              btn.addEventListener('click', function() {
+                console.log('🚀 [DEBUG] Botón iniciar seguimiento clickeado (fallback)');
+                iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, puntoPartida);
+              });
+            }
+          } else {
+            console.error('❌ [DEBUG] Ni panel-guia-inteligente ni info-ruta encontrados');
+          }
         }
       }
     }
