@@ -1702,6 +1702,339 @@
     <script src="error-handler.js"></script>
     <script src="background-manager.js"></script>
     <script src="mobile-optimization.js"></script>
+    
+    <!-- Sistema de Cache y Monitoreo de API -->
+    <script>
+        // =================== SISTEMA DE CACHE Y MONITOREO API ===================
+        class APIOptimizer {
+            constructor() {
+                this.cachePrefix = 'tuguia_route_cache_';
+                this.statsKey = 'tuguia_api_stats';
+                this.cacheExpiry = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+                this.dailyLimit = 2000; // Límite OpenRouteService
+                
+                this.initializeStats();
+                this.cleanExpiredCache();
+            }
+            
+            // =================== SISTEMA DE CACHE ===================
+            generateCacheKey(startCoords, endCoords, profile = 'driving-car') {
+                // Redondear coordenadas para mejorar cache hits
+                const lat1 = Math.round(startCoords[0] * 10000) / 10000;
+                const lon1 = Math.round(startCoords[1] * 10000) / 10000;
+                const lat2 = Math.round(endCoords[0] * 10000) / 10000;
+                const lon2 = Math.round(endCoords[1] * 10000) / 10000;
+                
+                return `${this.cachePrefix}${lat1},${lon1}_${lat2},${lon2}_${profile}`;
+            }
+            
+            getCachedRoute(cacheKey) {
+                try {
+                    const cached = localStorage.getItem(cacheKey);
+                    if (!cached) return null;
+                    
+                    const data = JSON.parse(cached);
+                    const now = Date.now();
+                    
+                    // Verificar si no ha expirado
+                    if (now - data.timestamp > this.cacheExpiry) {
+                        localStorage.removeItem(cacheKey);
+                        return null;
+                    }
+                    
+                    console.log('🎯 Cache HIT - Ruta encontrada en cache local');
+                    this.recordStats('cache_hit');
+                    return data.route;
+                    
+                } catch (error) {
+                    console.warn('Error al leer cache:', error);
+                    return null;
+                }
+            }
+            
+            setCachedRoute(cacheKey, routeData) {
+                try {
+                    const cacheData = {
+                        route: routeData,
+                        timestamp: Date.now()
+                    };
+                    
+                    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+                    console.log('💾 Ruta guardada en cache local');
+                    
+                } catch (error) {
+                    console.warn('Error al guardar en cache:', error);
+                    // Si localStorage está lleno, limpiar cache antiguo
+                    this.cleanExpiredCache();
+                }
+            }
+            
+            cleanExpiredCache() {
+                try {
+                    const now = Date.now();
+                    const keysToRemove = [];
+                    
+                    // Buscar claves de cache expiradas
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith(this.cachePrefix)) {
+                            const data = JSON.parse(localStorage.getItem(key) || '{}');
+                            if (now - data.timestamp > this.cacheExpiry) {
+                                keysToRemove.push(key);
+                            }
+                        }
+                    }
+                    
+                    // Eliminar cache expirado
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+                    
+                    if (keysToRemove.length > 0) {
+                        console.log(`🧹 Limpieza automática: ${keysToRemove.length} rutas expiradas eliminadas`);
+                    }
+                    
+                } catch (error) {
+                    console.warn('Error en limpieza de cache:', error);
+                }
+            }
+            
+            // =================== SISTEMA DE MONITOREO ===================
+            initializeStats() {
+                const today = this.getToday();
+                const stats = this.getStats();
+                
+                // Reset stats si es un nuevo día
+                if (stats.date !== today) {
+                    this.resetDailyStats();
+                }
+            }
+            
+            getStats() {
+                try {
+                    const stats = localStorage.getItem(this.statsKey);
+                    return stats ? JSON.parse(stats) : this.getDefaultStats();
+                } catch (error) {
+                    return this.getDefaultStats();
+                }
+            }
+            
+            getDefaultStats() {
+                return {
+                    date: this.getToday(),
+                    apiRequests: 0,
+                    cacheHits: 0,
+                    uniqueRoutes: new Set().toJSON ? [] : [],
+                    hourlyDistribution: {},
+                    popularRoutes: {},
+                    totalUsers: new Set().toJSON ? [] : [],
+                    errors: 0
+                };
+            }
+            
+            recordStats(type, metadata = {}) {
+                try {
+                    const stats = this.getStats();
+                    const hour = new Date().getHours();
+                    const now = Date.now();
+                    
+                    // Actualizar contadores
+                    switch (type) {
+                        case 'api_request':
+                            stats.apiRequests++;
+                            this.recordHourlyUsage(stats, hour);
+                            if (metadata.routeKey) {
+                                this.recordPopularRoute(stats, metadata.routeKey);
+                            }
+                            break;
+                            
+                        case 'cache_hit':
+                            stats.cacheHits++;
+                            break;
+                            
+                        case 'unique_user':
+                            if (metadata.userId && !stats.totalUsers.includes(metadata.userId)) {
+                                stats.totalUsers.push(metadata.userId);
+                            }
+                            break;
+                            
+                        case 'error':
+                            stats.errors++;
+                            break;
+                    }
+                    
+                    // Guardar stats actualizadas
+                    localStorage.setItem(this.statsKey, JSON.stringify(stats));
+                    
+                    // Alertar si nos acercamos al límite
+                    this.checkDailyLimit(stats);
+                    
+                } catch (error) {
+                    console.warn('Error al registrar stats:', error);
+                }
+            }
+            
+            recordHourlyUsage(stats, hour) {
+                if (!stats.hourlyDistribution[hour]) {
+                    stats.hourlyDistribution[hour] = 0;
+                }
+                stats.hourlyDistribution[hour]++;
+            }
+            
+            recordPopularRoute(stats, routeKey) {
+                if (!stats.popularRoutes[routeKey]) {
+                    stats.popularRoutes[routeKey] = 0;
+                }
+                stats.popularRoutes[routeKey]++;
+            }
+            
+            checkDailyLimit(stats) {
+                const percentage = (stats.apiRequests / this.dailyLimit) * 100;
+                
+                if (percentage >= 90) {
+                    console.warn('🚨 ALERTA: Has usado el 90% del límite diario de API!');
+                    this.showLimitAlert('CRÍTICO', percentage);
+                } else if (percentage >= 75) {
+                    console.warn('⚠️ ADVERTENCIA: Has usado el 75% del límite diario de API');
+                    this.showLimitAlert('ADVERTENCIA', percentage);
+                } else if (percentage >= 50) {
+                    console.info('📊 INFO: Has usado el 50% del límite diario de API');
+                }
+            }
+            
+            showLimitAlert(level, percentage) {
+                // Mostrar notificación discreta al administrador
+                if (window.Notification && Notification.permission === 'granted') {
+                    new Notification(`${level}: Límite API`, {
+                        body: `Has usado ${percentage.toFixed(1)}% del límite diario (${this.getStats().apiRequests}/${this.dailyLimit})`,
+                        icon: './logoagapai-ok2.png'
+                    });
+                }
+            }
+            
+            resetDailyStats() {
+                const newStats = this.getDefaultStats();
+                localStorage.setItem(this.statsKey, JSON.stringify(newStats));
+                console.log('🔄 Stats diarias reseteadas para nuevo día');
+            }
+            
+            getToday() {
+                return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            }
+            
+            // =================== FUNCIONES PÚBLICAS ===================
+            async optimizedApiCall(apiFunction, startCoords, endCoords, profile = 'driving-car') {
+                // Generar clave de cache
+                const cacheKey = this.generateCacheKey(startCoords, endCoords, profile);
+                
+                // Intentar obtener de cache primero
+                const cachedResult = this.getCachedRoute(cacheKey);
+                if (cachedResult) {
+                    return cachedResult;
+                }
+                
+                try {
+                    // Registrar que vamos a hacer una llamada a la API
+                    this.recordStats('api_request', { routeKey: cacheKey });
+                    
+                    console.log('🌐 Cache MISS - Consultando API externa...');
+                    
+                    // Hacer llamada real a la API
+                    const result = await apiFunction(startCoords, endCoords, profile);
+                    
+                    // Guardar resultado en cache
+                    this.setCachedRoute(cacheKey, result);
+                    
+                    return result;
+                    
+                } catch (error) {
+                    this.recordStats('error');
+                    console.error('❌ Error en llamada optimizada a API:', error);
+                    throw error;
+                }
+            }
+            
+            // =================== DASHBOARD DE MONITOREO ===================
+            getDashboardData() {
+                const stats = this.getStats();
+                const cacheSize = this.getCacheSize();
+                const percentage = (stats.apiRequests / this.dailyLimit) * 100;
+                
+                return {
+                    today: stats.date,
+                    apiRequests: stats.apiRequests,
+                    cacheHits: stats.cacheHits,
+                    totalRequests: stats.apiRequests + stats.cacheHits,
+                    cacheEfficiency: stats.cacheHits > 0 ? ((stats.cacheHits / (stats.apiRequests + stats.cacheHits)) * 100).toFixed(1) : '0',
+                    dailyLimitPercentage: percentage.toFixed(1),
+                    remainingRequests: this.dailyLimit - stats.apiRequests,
+                    uniqueUsers: stats.totalUsers.length,
+                    errors: stats.errors,
+                    cacheSize: cacheSize,
+                    hourlyDistribution: stats.hourlyDistribution,
+                    popularRoutes: Object.entries(stats.popularRoutes)
+                        .sort(([,a], [,b]) => b - a)
+                        .slice(0, 5)
+                };
+            }
+            
+            getCacheSize() {
+                let count = 0;
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(this.cachePrefix)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+            
+            showDashboard() {
+                const data = this.getDashboardData();
+                
+                console.group('📊 DASHBOARD DE MONITOREO API');
+                console.log('📅 Fecha:', data.today);
+                console.log('🌐 Requests API hoy:', data.apiRequests);
+                console.log('💾 Cache hits hoy:', data.cacheHits);
+                console.log('📈 Total requests:', data.totalRequests);
+                console.log('⚡ Eficiencia cache:', data.cacheEfficiency + '%');
+                console.log('📊 Límite usado:', data.dailyLimitPercentage + '%');
+                console.log('🎯 Requests restantes:', data.remainingRequests);
+                console.log('👥 Usuarios únicos:', data.uniqueUsers);
+                console.log('❌ Errores:', data.errors);
+                console.log('💾 Rutas en cache:', data.cacheSize);
+                
+                if (data.popularRoutes.length > 0) {
+                    console.log('🔥 Rutas más populares:');
+                    data.popularRoutes.forEach(([route, count], index) => {
+                        console.log(`  ${index + 1}. ${count} veces`);
+                    });
+                }
+                
+                console.groupEnd();
+                
+                return data;
+            }
+        }
+        
+        // =================== INICIALIZACIÓN ===================
+        window.apiOptimizer = new APIOptimizer();
+        
+        // =================== FUNCIONES GLOBALES PARA DEBUGGING ===================
+        window.showAPIStats = () => window.apiOptimizer.showDashboard();
+        window.clearAPICache = () => {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('tuguia_route_cache_')) {
+                    keys.push(key);
+                }
+            }
+            keys.forEach(key => localStorage.removeItem(key));
+            console.log(`🧹 Cache limpiado: ${keys.length} rutas eliminadas`);
+        };
+        
+        console.log('🚀 Sistema de optimización API inicializado');
+        console.log('💡 Usa showAPIStats() para ver el dashboard');
+    </script>
 </head>
 <body>
    
@@ -3138,24 +3471,39 @@
             // Obtener coordenadas
             let start = window.startMarker.getLatLng();
             let end = window.endMarker.getLatLng();
-            // --- AJUSTAR AL CAMINO MÁS CERCANO ---
+            // --- AJUSTAR AL CAMINO MÁS CERCANO CON CACHE ---
             async function getNearestPoint(lat, lon) {
               try {
-                const url = `https://api.openrouteservice.org/v2/nearest/foot-walking?api_key=${ORS_API_KEY}`;
-                const body = JSON.stringify({ coordinates: [[lon, lat]] });
-                const response = await fetch(url, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body
-                });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) return null;
-                if (data && data.coordinates && data.coordinates[0]) {
-                  return { lat: data.coordinates[0][1], lng: data.coordinates[0][0] };
-                } else {
-                  return null;
-                }
-              } catch (err) { return null; }
+                // Función para hacer la llamada real a la API
+                const apiCall = async () => {
+                  const url = `https://api.openrouteservice.org/v2/nearest/foot-walking?api_key=${ORS_API_KEY}`;
+                  const body = JSON.stringify({ coordinates: [[lon, lat]] });
+                  const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body
+                  });
+                  const data = await response.json().catch(() => ({}));
+                  if (!response.ok) return null;
+                  if (data && data.coordinates && data.coordinates[0]) {
+                    return { lat: data.coordinates[0][1], lng: data.coordinates[0][0] };
+                  } else {
+                    return null;
+                  }
+                };
+                
+                // Usar el optimizador de API con cache
+                return await window.apiOptimizer.optimizedApiCall(
+                  apiCall,
+                  [lat, lon], // startCoords
+                  [lat, lon], // endCoords (mismo punto para nearest)
+                  'nearest-foot-walking'
+                );
+                
+              } catch (err) { 
+                console.warn('Error en getNearestPoint:', err);
+                return null; 
+              }
             }
             document.getElementById('info').textContent = 'Ajustando puntos al camino más cercano...';
             const nearestStart = await getNearestPoint(start.lat, start.lng);
@@ -3165,32 +3513,47 @@
             if (!nearestEnd) end = { lat: end.lat, lng: end.lng };
             else end = nearestEnd;
             try {
-              const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${ORS_API_KEY}`;
-              const body = JSON.stringify({
-                coordinates: [
-                  [start.lng, start.lat],
-                  [end.lng, end.lat]
-                ]
-              });
-              const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body
-              });
-              let text = await response.text();
-              let data = {};
-              try { 
-                data = JSON.parse(text); 
-              } catch (e) { 
-                console.error('Error parsing JSON:', text);
-                data = { error: text }; 
-              }
-              if (!response.ok) {
-                console.error('Error de API:', response.status, data);
-                document.getElementById('info').textContent = 'Error de API: ' + response.status;
-                return;
-              }
-              if (!data.routes || !data.routes[0]) {
+              // Función para hacer la llamada real a la API de directions
+              const getDirectionsFromAPI = async () => {
+                const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${ORS_API_KEY}`;
+                const body = JSON.stringify({
+                  coordinates: [
+                    [start.lng, start.lat],
+                    [end.lng, end.lat]
+                  ]
+                });
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body
+                });
+                let text = await response.text();
+                let data = {};
+                try { 
+                  data = JSON.parse(text); 
+                } catch (e) { 
+                  console.error('Error parsing JSON:', text);
+                  data = { error: text }; 
+                }
+                if (!response.ok) {
+                  throw new Error(`API Error: ${response.status} - ${data.error || text}`);
+                }
+                if (!data.routes || !data.routes[0]) {
+                  throw new Error('No se encontraron rutas entre los puntos seleccionados');
+                }
+                return data;
+              };
+              
+              // Usar el optimizador de API con cache para directions
+              document.getElementById('info').textContent = 'Calculando ruta optimizada...';
+              const data = await window.apiOptimizer.optimizedApiCall(
+                getDirectionsFromAPI,
+                [start.lat, start.lng], // startCoords
+                [end.lat, end.lng],     // endCoords
+                'foot-walking'
+              );
+              
+              if (!data || !data.routes || !data.routes[0]) {
                 console.error('No se encontraron rutas:', data);
                 document.getElementById('info').textContent = 'No se encontró ruta entre los puntos seleccionados.';
                 return;
@@ -4785,71 +5148,11 @@
                 
                 // Exponer globalmente para debugging
                 window.showWelcome = () => window.welcomeManager.showManually();
-            }, 500);
-        });
-        
-        // =================== UTILIDADES PARA DEBUGGING ===================
-        // En consola del navegador puedes usar:
-        // showWelcome() - para mostrar el modal manualmente
-        // localStorage.removeItem('tuguia_welcome_shown') - para resetear estado
-            showManually() {
-                console.log('🔧 Mostrando modal manualmente (para debugging)');
-                this.showWelcome();
-            }
             
-            showReminderManually() {
-                console.log('🔧 Mostrando recordatorio manualmente (para debugging)');
-                this.showReminder();
-            }
-            
-            // =================== DEBUGGING UTILITIES ===================
-            resetWelcomeState() {
-                console.log('🗑️ Reseteando estado de welcome...');
-                localStorage.removeItem('tuguia_first_visit');
-                localStorage.removeItem('tuguia_welcome_completed');
-                localStorage.removeItem('tuguia_last_reminder');
-                localStorage.removeItem('tuguia_welcome_shown'); // Legacy
-                console.log('✅ Estado reseteado - recarga la página para ver el modal');
-            }
-            
-            getWelcomeStatus() {
-                const status = {
-                    firstVisit: this.firstVisit ? new Date(parseInt(this.firstVisit)).toLocaleString() : 'Nunca',
-                    welcomeCompleted: this.hasCompletedWelcome ? new Date(parseInt(this.hasCompletedWelcome)).toLocaleString() : 'No',
-                    lastReminder: this.lastReminder ? new Date(parseInt(this.lastReminder)).toLocaleString() : 'Nunca',
-                    nextReminderIn: this.getNextReminderTime()
-                };
-                console.table(status);
-                return status;
-            }
-            
-            getNextReminderTime() {
-                if (!this.hasCompletedWelcome) return 'Debe completar welcome primero';
-                
-                const baseTime = this.lastReminder || this.hasCompletedWelcome;
-                const nextTime = parseInt(baseTime) + this.REMINDER_INTERVAL;
-                const now = Date.now();
-                
-                if (nextTime <= now) return 'Ya disponible';
-                
-                const diffDays = Math.ceil((nextTime - now) / (24 * 60 * 60 * 1000));
-                return `En ${diffDays} día(s)`;
-            }
-        }
-        
-        // =================== INICIALIZACIÓN ===================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 Inicializando Welcome Manager Inteligente...');
-            
-            // Pequeño delay para asegurar que todo esté cargado
-            setTimeout(() => {
-                window.welcomeManager = new WelcomeManager();
-                
-                // Exponer funciones globalmente para debugging
-                window.showWelcome = () => window.welcomeManager.showManually();
-                window.showReminder = () => window.welcomeManager.showReminderManually();
-                window.resetWelcome = () => window.welcomeManager.resetWelcomeState();
-                window.welcomeStatus = () => window.welcomeManager.getWelcomeStatus();
+            // Exponer funciones adicionales globalmente para debugging
+            window.showReminder = () => window.welcomeManager.showReminderManually();
+            window.resetWelcome = () => window.welcomeManager.resetWelcomeState();
+            window.welcomeStatus = () => window.welcomeManager.getWelcomeStatus();
             }, 500);
         });
         

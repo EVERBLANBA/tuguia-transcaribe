@@ -325,6 +325,280 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
+    
+    <!-- Sistema de Cache y Monitoreo de API para Yotellevo -->
+    <script>
+        // =================== SISTEMA DE CACHE Y MONITOREO API ===================
+        // Reutilizamos la misma clase APIOptimizer para consistencia
+        class APIOptimizer {
+            constructor() {
+                this.cachePrefix = 'yotellevo_route_cache_';
+                this.statsKey = 'yotellevo_api_stats';
+                this.cacheExpiry = 24 * 60 * 60 * 1000; // 24 horas
+                this.dailyLimit = 2000; // Límite OpenRouteService
+                
+                this.initializeStats();
+                this.cleanExpiredCache();
+            }
+            
+            // =================== SISTEMA DE CACHE ===================
+            generateCacheKey(startCoords, endCoords, profile = 'foot-walking') {
+                const lat1 = Math.round(startCoords[0] * 10000) / 10000;
+                const lon1 = Math.round(startCoords[1] * 10000) / 10000;
+                const lat2 = Math.round(endCoords[0] * 10000) / 10000;
+                const lon2 = Math.round(endCoords[1] * 10000) / 10000;
+                
+                return `${this.cachePrefix}${lat1},${lon1}_${lat2},${lon2}_${profile}`;
+            }
+            
+            getCachedRoute(cacheKey) {
+                try {
+                    const cached = localStorage.getItem(cacheKey);
+                    if (!cached) return null;
+                    
+                    const data = JSON.parse(cached);
+                    const now = Date.now();
+                    
+                    if (now - data.timestamp > this.cacheExpiry) {
+                        localStorage.removeItem(cacheKey);
+                        return null;
+                    }
+                    
+                    console.log('🎯 Cache HIT (Yotellevo) - Ruta encontrada en cache local');
+                    this.recordStats('cache_hit');
+                    return data.route;
+                    
+                } catch (error) {
+                    console.warn('Error al leer cache:', error);
+                    return null;
+                }
+            }
+            
+            setCachedRoute(cacheKey, routeData) {
+                try {
+                    const cacheData = {
+                        route: routeData,
+                        timestamp: Date.now()
+                    };
+                    
+                    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+                    console.log('💾 Ruta guardada en cache local (Yotellevo)');
+                    
+                } catch (error) {
+                    console.warn('Error al guardar en cache:', error);
+                    this.cleanExpiredCache();
+                }
+            }
+            
+            cleanExpiredCache() {
+                try {
+                    const now = Date.now();
+                    const keysToRemove = [];
+                    
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith(this.cachePrefix)) {
+                            const data = JSON.parse(localStorage.getItem(key) || '{}');
+                            if (now - data.timestamp > this.cacheExpiry) {
+                                keysToRemove.push(key);
+                            }
+                        }
+                    }
+                    
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+                    
+                    if (keysToRemove.length > 0) {
+                        console.log(`🧹 Limpieza automática (Yotellevo): ${keysToRemove.length} rutas expiradas eliminadas`);
+                    }
+                    
+                } catch (error) {
+                    console.warn('Error en limpieza de cache:', error);
+                }
+            }
+            
+            // =================== SISTEMA DE MONITOREO ===================
+            initializeStats() {
+                const today = this.getToday();
+                const stats = this.getStats();
+                
+                if (stats.date !== today) {
+                    this.resetDailyStats();
+                }
+            }
+            
+            getStats() {
+                try {
+                    const stats = localStorage.getItem(this.statsKey);
+                    return stats ? JSON.parse(stats) : this.getDefaultStats();
+                } catch (error) {
+                    return this.getDefaultStats();
+                }
+            }
+            
+            getDefaultStats() {
+                return {
+                    date: this.getToday(),
+                    apiRequests: 0,
+                    cacheHits: 0,
+                    hourlyDistribution: {},
+                    popularRoutes: {},
+                    errors: 0
+                };
+            }
+            
+            recordStats(type, metadata = {}) {
+                try {
+                    const stats = this.getStats();
+                    const hour = new Date().getHours();
+                    
+                    switch (type) {
+                        case 'api_request':
+                            stats.apiRequests++;
+                            this.recordHourlyUsage(stats, hour);
+                            if (metadata.routeKey) {
+                                this.recordPopularRoute(stats, metadata.routeKey);
+                            }
+                            break;
+                            
+                        case 'cache_hit':
+                            stats.cacheHits++;
+                            break;
+                            
+                        case 'error':
+                            stats.errors++;
+                            break;
+                    }
+                    
+                    localStorage.setItem(this.statsKey, JSON.stringify(stats));
+                    this.checkDailyLimit(stats);
+                    
+                } catch (error) {
+                    console.warn('Error al registrar stats:', error);
+                }
+            }
+            
+            recordHourlyUsage(stats, hour) {
+                if (!stats.hourlyDistribution[hour]) {
+                    stats.hourlyDistribution[hour] = 0;
+                }
+                stats.hourlyDistribution[hour]++;
+            }
+            
+            recordPopularRoute(stats, routeKey) {
+                if (!stats.popularRoutes[routeKey]) {
+                    stats.popularRoutes[routeKey] = 0;
+                }
+                stats.popularRoutes[routeKey]++;
+            }
+            
+            checkDailyLimit(stats) {
+                const percentage = (stats.apiRequests / this.dailyLimit) * 100;
+                
+                if (percentage >= 90) {
+                    console.warn('🚨 ALERTA (Yotellevo): Has usado el 90% del límite diario de API!');
+                } else if (percentage >= 75) {
+                    console.warn('⚠️ ADVERTENCIA (Yotellevo): Has usado el 75% del límite diario de API');
+                } else if (percentage >= 50) {
+                    console.info('📊 INFO (Yotellevo): Has usado el 50% del límite diario de API');
+                }
+            }
+            
+            resetDailyStats() {
+                const newStats = this.getDefaultStats();
+                localStorage.setItem(this.statsKey, JSON.stringify(newStats));
+                console.log('🔄 Stats diarias reseteadas para nuevo día (Yotellevo)');
+            }
+            
+            getToday() {
+                return new Date().toISOString().split('T')[0];
+            }
+            
+            // =================== FUNCIÓN PRINCIPAL ===================
+            async optimizedApiCall(apiFunction, startCoords, endCoords, profile = 'foot-walking') {
+                const cacheKey = this.generateCacheKey(startCoords, endCoords, profile);
+                
+                const cachedResult = this.getCachedRoute(cacheKey);
+                if (cachedResult) {
+                    return cachedResult;
+                }
+                
+                try {
+                    this.recordStats('api_request', { routeKey: cacheKey });
+                    console.log('🌐 Cache MISS (Yotellevo) - Consultando API externa...');
+                    
+                    const result = await apiFunction(startCoords, endCoords, profile);
+                    this.setCachedRoute(cacheKey, result);
+                    
+                    return result;
+                    
+                } catch (error) {
+                    this.recordStats('error');
+                    console.error('❌ Error en llamada optimizada a API (Yotellevo):', error);
+                    throw error;
+                }
+            }
+            
+            // =================== DASHBOARD ===================
+            showDashboard() {
+                const stats = this.getStats();
+                const cacheSize = this.getCacheSize();
+                const percentage = (stats.apiRequests / this.dailyLimit) * 100;
+                
+                console.group('📊 DASHBOARD YOTELLEVO API');
+                console.log('📅 Fecha:', stats.date);
+                console.log('🌐 Requests API hoy:', stats.apiRequests);
+                console.log('💾 Cache hits hoy:', stats.cacheHits);
+                console.log('📈 Total requests:', stats.apiRequests + stats.cacheHits);
+                console.log('⚡ Eficiencia cache:', stats.cacheHits > 0 ? ((stats.cacheHits / (stats.apiRequests + stats.cacheHits)) * 100).toFixed(1) + '%' : '0%');
+                console.log('📊 Límite usado:', percentage.toFixed(1) + '%');
+                console.log('🎯 Requests restantes:', this.dailyLimit - stats.apiRequests);
+                console.log('❌ Errores:', stats.errors);
+                console.log('💾 Rutas en cache:', cacheSize);
+                console.groupEnd();
+                
+                return {
+                    date: stats.date,
+                    apiRequests: stats.apiRequests,
+                    cacheHits: stats.cacheHits,
+                    percentage: percentage.toFixed(1),
+                    remaining: this.dailyLimit - stats.apiRequests,
+                    errors: stats.errors,
+                    cacheSize: cacheSize
+                };
+            }
+            
+            getCacheSize() {
+                let count = 0;
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(this.cachePrefix)) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        }
+        
+        // =================== INICIALIZACIÓN ===================
+        window.yotellevoOptimizer = new APIOptimizer();
+        
+        // =================== FUNCIONES GLOBALES ===================
+        window.showYotellevoStats = () => window.yotellevoOptimizer.showDashboard();
+        window.clearYotellevoCache = () => {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('yotellevo_route_cache_')) {
+                    keys.push(key);
+                }
+            }
+            keys.forEach(key => localStorage.removeItem(key));
+            console.log(`🧹 Cache Yotellevo limpiado: ${keys.length} rutas eliminadas`);
+        };
+        
+        console.log('🚀 Sistema de optimización API inicializado (Yotellevo)');
+        console.log('💡 Usa showYotellevoStats() para ver el dashboard');
+    </script>
     <script>
     // =================== LÓGICA DE NAVEGACIÓN INTELIGENTE ===================
     
@@ -1493,10 +1767,9 @@
     // ... resto del código existente ...
     </script>
     <script>
-    // Función para obtener la distancia caminando usando OpenRouteService
+    // Función para obtener la distancia caminando usando OpenRouteService CON CACHE
     async function obtenerDistanciaCaminando(origen, destino) {
       const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
-      const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
       
       // Log de depuración
       console.log('[DISTANCIA CAMINANDO] Enviando a ORS:', {
@@ -1504,14 +1777,16 @@
         destino: [destino[0], destino[1]]
       });
 
-      const body = {
-        coordinates: [
-          [origen[1], origen[0]], // [lon, lat] para ORS
-          [destino[1], destino[0]]
-        ]
-      };
+      // Función para hacer la llamada real a la API
+      const apiCall = async () => {
+        const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
+        const body = {
+          coordinates: [
+            [origen[1], origen[0]], // [lon, lat] para ORS
+            [destino[1], destino[0]]
+          ]
+        };
 
-      try {
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1524,6 +1799,17 @@
 
         const data = await response.json();
         console.log('[DISTANCIA CAMINANDO] Respuesta ORS:', data);
+        return data;
+      };
+
+      try {
+        // Usar el optimizador de API con cache
+        const data = await window.yotellevoOptimizer.optimizedApiCall(
+          apiCall,
+          [origen[0], origen[1]], // startCoords
+          [destino[0], destino[1]], // endCoords
+          'foot-walking-distance'
+        );
 
         if (data && data.features && data.features[0] && 
             data.features[0].properties && 
@@ -2107,20 +2393,21 @@ window.addEventListener('DOMContentLoaded', async function() {
     await mostrarParaderosEnMapas(startCoords, endCoords, paraderosOrigen, paraderosDestino);
   }
 
-  // Función para obtener ruta peatonal real usando OpenRouteService
+  // Función para obtener ruta peatonal real usando OpenRouteService CON CACHE
   async function obtenerRutaPeatonal(origen, destino) {
     const apiKey = '5b3ce3597851110001cf6248e92a24fdb4744773ab33cab2c808de44';
-    const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
     
-    const body = {
-      coordinates: [
-        [origen[1], origen[0]], // [lon, lat] para ORS
-        [destino[1], destino[0]]
-      ],
-      format: "geojson"
-    };
+    // Función para hacer la llamada real a la API
+    const apiCall = async () => {
+      const url = `https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`;
+      const body = {
+        coordinates: [
+          [origen[1], origen[0]], // [lon, lat] para ORS
+          [destino[1], destino[0]]
+        ],
+        format: "geojson"
+      };
 
-    try {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2131,7 +2418,17 @@ window.addEventListener('DOMContentLoaded', async function() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      return await response.json();
+    };
+
+    try {
+      // Usar el optimizador de API con cache
+      const data = await window.yotellevoOptimizer.optimizedApiCall(
+        apiCall,
+        [origen[0], origen[1]], // startCoords
+        [destino[0], destino[1]], // endCoords
+        'foot-walking-route'
+      );
       
       if (data && data.features && data.features[0] && 
           data.features[0].geometry && 
