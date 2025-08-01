@@ -4441,7 +4441,7 @@
       });
       
       // Verificar si hay ruta directa
-      const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
+      const rutaDirecta = await verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       
       if (rutaDirecta) {
         return {
@@ -4458,7 +4458,7 @@
         };
       } else {
         // Buscar transbordo
-        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
+        const transbordo = await encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         
         if (transbordo) {
           return {
@@ -4485,7 +4485,7 @@
     }
     
     // 🔥 FUNCIÓN MEJORADA: Verificar ruta directa CON VALIDACIÓN DE EFICIENCIA
-    function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
+    async function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
       // Convertir rutas de string a array si es necesario
       const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
         paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
@@ -4637,7 +4637,7 @@
     }
     
     // Función para encontrar mejor transbordo
-    function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
+    async function encontrarMejorTransbordo(paraderoOrigen, paraderoDestino) {
       if (!window.rutasTranscaribe) return null;
       
       // Buscar paraderos que conecten las rutas
@@ -4661,12 +4661,12 @@
           (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
         
         // Verificar si este paradero conecta origen y destino
-        const rutaDesdeOrigen = verificarRutaDirecta(paraderoOrigen, {
+        const rutaDesdeOrigen = await verificarRutaDirecta(paraderoOrigen, {
           nombre: paradero.properties.nombre_paradero,
           rutas: rutasParadero
         });
         
-        const rutaHastaDestino = verificarRutaDirecta({
+        const rutaHastaDestino = await verificarRutaDirecta({
           nombre: paradero.properties.nombre_paradero,
           rutas: rutasParadero
         }, paraderoDestino);
