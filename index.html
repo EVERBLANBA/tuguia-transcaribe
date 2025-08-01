@@ -2639,6 +2639,83 @@
     // === NUEVO: LayerGroup para aislar marcadores de estaciones/paraderos ===
     let paraderosLayerGroup = null;
     
+    // =================== MATRIZ DE EFICIENCIA POR DESTINO ===================
+    const RUTAS_OPTIMAS_POR_ZONA = {
+      // Rutas más eficientes para destinos específicos
+      'campestre': ['A108', 'A107'], // A108 es óptima para Campestre
+      'ternera': ['A102', 'A101', 'A108'],
+      'nelson mandela': ['A103', 'A104', 'A105'],
+      'socorro': ['A104', 'A105'], 
+      'santa lucia': ['A103', 'A104', 'A105', 'A107', 'A108', 'A111'],
+      'bosque': ['A111', 'X102'],
+      'blas de lezo': ['A107'],
+      'san fernando': ['A103', 'A104'],
+      'pozon': ['A117'],
+      'villa estrella': ['A117'],
+      'flor del campo': ['A114'],
+      'ciudad jardin': ['A101'],
+      'manga': ['C001', 'C017'],
+      'zona norte': ['C017'],
+      'torices': ['C018'],
+      'terminal': ['C016', 'X104'],
+      'ciudadela 2000': ['C001', 'X105'],
+      'crisanto luque': ['X105'],
+      'bocagrande': ['T103', 'X105'],
+      'centro': ['T100E', 'T101', 'T102', 'T103', 'X101', 'X102', 'X103', 'X104', 'X105', 'X106'],
+      'bazurto': ['T101', 'T102', 'T103', 'X101', 'X102', 'X103', 'X104', 'X105']
+    };
+    
+    // Función para detectar zona de destino basada en nombre
+    function detectarZonaDestino(nombreDestino) {
+      if (!nombreDestino) return null;
+      
+      const nombre = nombreDestino.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      
+      // Buscar coincidencias exactas primero
+      for (const [zona, rutas] of Object.entries(RUTAS_OPTIMAS_POR_ZONA)) {
+        if (nombre.includes(zona)) {
+          return { zona, rutasOptimas: rutas };
+        }
+      }
+      
+      // Buscar coincidencias parciales para palabras clave
+      const palabrasClave = {
+        'camp': 'campestre',
+        'tern': 'ternera', 
+        'nelson': 'nelson mandela',
+        'mandela': 'nelson mandela',
+        'socorro': 'socorro',
+        'santa': 'santa lucia',
+        'lucia': 'santa lucia',
+        'bosque': 'bosque',
+        'blas': 'blas de lezo',
+        'lezo': 'blas de lezo',
+        'fernando': 'san fernando',
+        'pozon': 'pozon',
+        'estrella': 'villa estrella',
+        'flor': 'flor del campo',
+        'ciudad': 'ciudad jardin',
+        'jardin': 'ciudad jardin',
+        'manga': 'manga',
+        'norte': 'zona norte',
+        'torices': 'torices',
+        'terminal': 'terminal',
+        'ciudadela': 'ciudadela 2000',
+        'crisanto': 'crisanto luque',
+        'bocagrande': 'bocagrande',
+        'centro': 'centro',
+        'bazurto': 'bazurto'
+      };
+      
+      for (const [palabra, zona] of Object.entries(palabrasClave)) {
+        if (nombre.includes(palabra)) {
+          return { zona, rutasOptimas: RUTAS_OPTIMAS_POR_ZONA[zona] };
+        }
+      }
+      
+      return null;
+    }
+    
     // =================== MANEJO DE RADIOS Y MOSTRAR/OCULTAR INPUTS ===================
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🔧 Inicializando manejo de radios...');
@@ -4446,27 +4523,40 @@
       // Por ahora solo logging para debugging
     }
     
-    // Función para calcular ruta óptima
+    // 🔥 FUNCIÓN MEJORADA: Calcular ruta óptima con detección de zona de destino
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
       if (!destinoCoords) {
         console.error('❌ No hay coordenadas de destino');
         return null;
       }
       
-      // Buscar paradero más cercano al destino
-      const paraderoDestino = await encontrarParaderoMasCercano({
-        lat: destinoCoords[0],
-        lng: destinoCoords[1]
+      // 🔥 DEFINIR VARIABLES ANTES DE USAR
+      const destinoDisplayName = localStorage.getItem('tuguia_end') || 'destino';
+      const destinoNombreFiltrado = formatearDireccionParaPopup(destinoDisplayName);
+      
+      // 🎯 DETECTAR ZONA ÓPTIMA PARA EL DESTINO
+      const zonaDestino = detectarZonaDestino(destinoNombreFiltrado);
+      console.log('🎯 Zona detectada para destino:', {
+        destino: destinoNombreFiltrado,
+        zona: zonaDestino?.zona,
+        rutasOptimas: zonaDestino?.rutasOptimas
       });
+      
+      // Buscar paradero más cercano al destino (con prioridad en rutas óptimas si se detectó zona)
+      const paraderoDestino = zonaDestino 
+        ? await encontrarParaderoMasCercano({
+            lat: destinoCoords[0],
+            lng: destinoCoords[1]
+          }, zonaDestino.rutasOptimas)
+        : await encontrarParaderoMasCercano({
+            lat: destinoCoords[0],
+            lng: destinoCoords[1]
+          });
       
       if (!paraderoDestino) {
         console.error('❌ No se encontró paradero cercano al destino');
         return null;
       }
-      
-      // 🔥 DEFINIR VARIABLES FALTANTES ANTES DE USAR
-      const destinoDisplayName = localStorage.getItem('tuguia_end') || 'destino';
-      const destinoNombreFiltrado = formatearDireccionParaPopup(destinoDisplayName);
       
       // Calcular distancia a pie al destino
       const distanciaAPie = haversine(
@@ -4477,11 +4567,16 @@
       console.log('📏 Variables calculadas:', {
         destinoDisplayName,
         destinoNombreFiltrado, 
-        distanciaAPie: distanciaAPie.toFixed(1) + 'm'
+        distanciaAPie: distanciaAPie.toFixed(1) + 'm',
+        paraderoDestino: paraderoDestino.nombre
       });
       
-      // Verificar si hay ruta directa
-      const rutaDirecta = await verificarRutaDirecta(paraderoOrigen, paraderoDestino);
+      // 🔥 VERIFICAR RUTA DIRECTA CON PRIORIDAD EN RUTAS ÓPTIMAS
+      const rutaDirecta = await verificarRutaDirectaConPrioridad(
+        paraderoOrigen, 
+        paraderoDestino, 
+        zonaDestino?.rutasOptimas
+      );
       
       if (rutaDirecta) {
         return {
@@ -4489,6 +4584,7 @@
           paraderoOrigen: paraderoOrigen,
           paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.ruta,
+          eficiencia: rutaDirecta.esOptima ? 'alta' : 'media',
           mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
             ? `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
             : `Toma la ruta ${rutaDirecta.ruta} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}.`,
@@ -4497,8 +4593,13 @@
           ]
         };
       } else {
-        // Buscar transbordo
-        const transbordo = await encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
+        // 🔥 BUSCAR TRANSBORDO INTELIGENTE CON RUTAS ÓPTIMAS
+        const transbordo = await encontrarMejorTransbordoInteligente(
+          paraderoOrigen, 
+          paraderoDestino, 
+          zonaDestino?.rutasOptimas,
+          destinoNombreFiltrado
+        );
         
         if (transbordo) {
           return {
@@ -4508,6 +4609,7 @@
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             ruta2: transbordo.ruta2,
+            eficiencia: transbordo.eficiencia || 'media',
             mensaje: (paraderoDestino.nombre !== destinoNombreFiltrado)
               ? `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}, desde aquí caminas a pie ${Math.round(distanciaAPie)} metros para llegar a ${formatearDireccionParaPopup(destinoDisplayName)}.`
               : `Toma la ruta ${transbordo.ruta1} hasta ${transbordo.paraderoTransbordo.nombre}. Allí cambia a la ruta ${transbordo.ruta2} hasta ${paraderoDestino.nombre}.`,
@@ -4522,6 +4624,270 @@
           return null;
         }
       }
+    }
+    
+    // 🔥 NUEVA FUNCIÓN: Verificar ruta directa con prioridad en rutas óptimas
+    async function verificarRutaDirectaConPrioridad(paraderoOrigen, paraderoDestino, rutasOptimas = null) {
+      console.log('🔍 Verificando ruta directa con prioridad:', {
+        origen: paraderoOrigen.nombre,
+        destino: paraderoDestino.nombre,
+        rutasOptimas: rutasOptimas
+      });
+      
+      // Convertir rutas de string a array si es necesario
+      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
+        paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoOrigen.rutas) ? paraderoOrigen.rutas : []);
+      
+      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
+        paraderoDestino.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoDestino.rutas) ? paraderoDestino.rutas : []);
+      
+      // Buscar rutas comunes
+      const rutasComunes = rutasOrigen.filter(ruta => rutasDestino.includes(ruta));
+      
+      if (rutasComunes.length === 0) {
+        console.log('❌ No hay rutas directas entre paraderos');
+        return null;
+      }
+      
+      console.log('✅ Rutas comunes encontradas:', rutasComunes);
+      
+      // 🔥 PRIORIZAR RUTAS ÓPTIMAS SI ESTÁN DISPONIBLES
+      if (rutasOptimas && rutasOptimas.length > 0) {
+        const rutaOptima = rutasComunes.find(ruta => rutasOptimas.includes(ruta));
+        if (rutaOptima) {
+          console.log('🎯 Ruta óptima encontrada:', rutaOptima);
+          return { 
+            ruta: rutaOptima, 
+            esOptima: true,
+            razon: 'Ruta directa óptima para el destino'
+          };
+        }
+      }
+      
+      // Si no hay ruta óptima, usar scoring inteligente
+      let mejorRuta = null;
+      let mejorScore = -1;
+      
+      for (const ruta of rutasComunes) {
+        let score = 0;
+        
+        // Scoring base por tipo de ruta
+        if (ruta.startsWith('T')) score += 100; // Troncales alta prioridad
+        else if (ruta.startsWith('X')) score += 90; // Express/Pretroncales
+        else if (ruta.startsWith('A')) score += 80; // Alimentadoras
+        else if (ruta.startsWith('C')) score += 70; // Complementarias
+        
+        // Bonus específicos
+        if (ruta === 'A108') score += 50; // A108 siempre prioritaria
+        if (ruta === 'A102') score += 40; // A102 importante
+        
+        // Análisis geográfico
+        const analisisGeo = analizarEficienciaGeografica(ruta, paraderoOrigen, paraderoDestino);
+        score += analisisGeo.bonusScore;
+        
+        console.log(`📊 Ruta ${ruta}: Score ${score} (${analisisGeo.razon})`);
+        
+        if (score > mejorScore) {
+          mejorScore = score;
+          mejorRuta = ruta;
+        }
+      }
+      
+      return { 
+        ruta: mejorRuta, 
+        esOptima: false, 
+        score: mejorScore,
+        razon: 'Mejor ruta disponible por scoring inteligente'
+      };
+    }
+    
+    // 🔥 NUEVA FUNCIÓN: Encontrar mejor transbordo inteligente
+    async function encontrarMejorTransbordoInteligente(paraderoOrigen, paraderoDestino, rutasOptimas = null, destinoNombre = '') {
+      if (!window.rutasTranscaribe) {
+        console.error('❌ No hay datos de paraderos para transbordo');
+        return null;
+      }
+      
+      console.log('🔄 Buscando transbordo inteligente:', {
+        origen: paraderoOrigen.nombre,
+        destino: paraderoDestino.nombre,
+        rutasOptimas: rutasOptimas,
+        destinoNombre: destinoNombre
+      });
+      
+      // Buscar paraderos que puedan servir como transbordo
+      const paraderosTransbordo = window.rutasTranscaribe.filter(f => 
+        f.geometry && 
+        f.geometry.type === "Point" && 
+        f.properties && 
+        f.properties.network === "Transcaribe" &&
+        f.properties.rutas // Debe tener rutas
+      );
+      
+      let mejorTransbordo = null;
+      let mejorScore = Infinity;
+      let mejorEficiencia = 'baja';
+      
+      for (const paradero of paraderosTransbordo) {
+        const coords = paradero.geometry.coordinates;
+        const lat = coords[1];
+        const lon = coords[0];
+        
+        const rutasParadero = typeof paradero.properties.rutas === 'string' ? 
+          paradero.properties.rutas.split(',').map(r => r.trim()) : 
+          (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
+        
+        const paraderoTransbordo = {
+          nombre: paradero.properties.nombre_paradero,
+          lat: lat,
+          lon: lon,
+          rutas: rutasParadero
+        };
+        
+        // 🔥 VERIFICAR CONECTIVIDAD INTELIGENTE
+        const conectividad = await verificarConectividadInteligente(
+          paraderoOrigen, 
+          paraderoTransbordo, 
+          paraderoDestino, 
+          rutasOptimas
+        );
+        
+        if (conectividad && conectividad.viable) {
+          // Calcular score multi-criterio
+          const scoreMulticriterio = calcularScoreMulticriterio(
+            paraderoOrigen, 
+            paraderoTransbordo, 
+            paraderoDestino, 
+            conectividad,
+            rutasOptimas
+          );
+          
+          console.log(`🔄 Transbordo ${paraderoTransbordo.nombre}:`, {
+            ruta1: conectividad.ruta1,
+            ruta2: conectividad.ruta2,
+            score: scoreMulticriterio.score.toFixed(1),
+            eficiencia: scoreMulticriterio.eficiencia
+          });
+          
+          if (scoreMulticriterio.score < mejorScore) {
+            mejorScore = scoreMulticriterio.score;
+            mejorEficiencia = scoreMulticriterio.eficiencia;
+            mejorTransbordo = {
+              paraderoTransbordo: paraderoTransbordo,
+              ruta1: conectividad.ruta1,
+              ruta2: conectividad.ruta2,
+              score: scoreMulticriterio.score,
+              eficiencia: scoreMulticriterio.eficiencia,
+              razon: scoreMulticriterio.razon
+            };
+          }
+        }
+      }
+      
+      if (mejorTransbordo) {
+        console.log('🏆 Mejor transbordo encontrado:', {
+          paradero: mejorTransbordo.paraderoTransbordo.nombre,
+          ruta1: mejorTransbordo.ruta1,
+          ruta2: mejorTransbordo.ruta2,
+          eficiencia: mejorTransbordo.eficiencia,
+          score: mejorTransbordo.score.toFixed(1)
+        });
+      }
+      
+      return mejorTransbordo;
+    }
+    
+    // 🔥 NUEVA FUNCIÓN: Verificar conectividad inteligente entre tres paraderos
+    async function verificarConectividadInteligente(origen, transbordo, destino, rutasOptimas = null) {
+      // Convertir rutas a arrays
+      const rutasOrigen = Array.isArray(origen.rutasArray) ? origen.rutasArray : 
+        (typeof origen.rutas === 'string' ? origen.rutas.split(',').map(r => r.trim()) : []);
+      
+      const rutasTransbordo = Array.isArray(transbordo.rutas) ? transbordo.rutas : 
+        (typeof transbordo.rutas === 'string' ? transbordo.rutas.split(',').map(r => r.trim()) : []);
+      
+      const rutasDestino = Array.isArray(destino.rutasArray) ? destino.rutasArray : 
+        (typeof destino.rutas === 'string' ? destino.rutas.split(',').map(r => r.trim()) : []);
+      
+      // Buscar ruta desde origen hasta transbordo
+      const rutasOrigenTransbordo = rutasOrigen.filter(ruta => rutasTransbordo.includes(ruta));
+      
+      // Buscar ruta desde transbordo hasta destino
+      const rutasTransbordoDestino = rutasTransbordo.filter(ruta => rutasDestino.includes(ruta));
+      
+      if (rutasOrigenTransbordo.length === 0 || rutasTransbordoDestino.length === 0) {
+        return null;
+      }
+      
+      // 🔥 PRIORIZAR RUTAS ÓPTIMAS PARA EL DESTINO
+      let ruta2Optima = null;
+      if (rutasOptimas && rutasOptimas.length > 0) {
+        ruta2Optima = rutasTransbordoDestino.find(ruta => rutasOptimas.includes(ruta));
+      }
+      
+      // Seleccionar mejores rutas
+      const ruta1 = rutasOrigenTransbordo[0]; // Por ahora tomar la primera
+      const ruta2 = ruta2Optima || rutasTransbordoDestino[0];
+      
+      return {
+        viable: true,
+        ruta1: ruta1,
+        ruta2: ruta2,
+        esOptima: ruta2Optima !== null,
+        rutasOrigenTransbordo: rutasOrigenTransbordo,
+        rutasTransbordoDestino: rutasTransbordoDestino
+      };
+    }
+    
+    // 🔥 NUEVA FUNCIÓN: Calcular score multi-criterio para transbordo
+    function calcularScoreMulticriterio(origen, transbordo, destino, conectividad, rutasOptimas = null) {
+      // Calcular distancia total
+      const distOrigenTransbordo = calcularDistanciaHaversine(
+        origen.lat, origen.lon,
+        transbordo.lat, transbordo.lon
+      );
+      
+      const distTransbordoDestino = calcularDistanciaHaversine(
+        transbordo.lat, transbordo.lon,
+        destino.lat, destino.lon
+      );
+      
+      const distanciaTotal = distOrigenTransbordo + distTransbordoDestino;
+      
+      // Score base por distancia
+      let score = distanciaTotal;
+      
+      // Factor de eficiencia por tipo de ruta
+      let factorEficiencia = 1.0;
+      let eficiencia = 'media';
+      let razon = 'Transbordo estándar';
+      
+      // 🔥 BONUS POR RUTAS ÓPTIMAS
+      if (conectividad.esOptima && rutasOptimas && rutasOptimas.includes(conectividad.ruta2)) {
+        factorEficiencia = 0.6; // 40% bonus por ruta óptima
+        eficiencia = 'alta';
+        razon = `Transbordo con ruta óptima ${conectividad.ruta2}`;
+        
+        // Bonus extra para A108
+        if (conectividad.ruta2 === 'A108') {
+          factorEficiencia = 0.5; // 50% bonus para A108
+          eficiencia = 'muy_alta';
+          razon = 'Transbordo con ruta A108 (óptima para Campestre)';
+        }
+      }
+      
+      // Aplicar factor de eficiencia
+      score *= factorEficiencia;
+      
+      return {
+        score: score,
+        eficiencia: eficiencia,
+        razon: razon,
+        distanciaTotal: distanciaTotal,
+        factorEficiencia: factorEficiencia
+      };
     }
     
     // 🔥 FUNCIÓN MEJORADA: Verificar ruta directa CON VALIDACIÓN DE EFICIENCIA
