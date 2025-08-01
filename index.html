@@ -2717,7 +2717,7 @@
       console.log('🚌 Iniciando carga de paraderos...');
       
       // Datos de paraderos incluidos directamente en el HTML para evitar problemas de CORS
-      const paraderosData = [ 
+      const paraderosData = window.paraderosData = [ 
         { nombre: "PATIO PORTAL", coords: [10.395392, -75.472826], direccion: "Patio Portal", tipo: "Paradero", rutas_troncales: ["T100E", "T101", "T102", "T103"], rutas_pretroncales: ["X102", "X103"], rutas_alimentadoras: ["A101", "A102", "A114", "A117"], rutas_complementarias: ["C016"]},
         { nombre: "MADRE BERNARDA", coords: [10.395007, -75.478893], direccion: "Barrio Madre Bernarda", tipo: "Paradero", rutas_troncales: ["T100E", "T101", "T102", "T103"], rutas_pretroncales: ["X102", "X103"], rutas_alimentadoras: ["A103", "A104", "A105", "A107", "A108", "A111"], rutas_complementarias: []},
         { nombre: "LA CASTELLANA", coords: [10.394408, -75.486631], direccion: "Barrio La Castellana", tipo: "Paradero", rutas_troncales: ["T100E", "T101", "T103"], rutas_pretroncales: ["X106"], rutas_alimentadoras: [], rutas_complementarias: []},
@@ -2909,6 +2909,32 @@
       
     });
     
+    // =================== CARGA DE DATOS GEOJSON ===================
+    async function cargarDatosParaderos() {
+      try {
+        console.log('🚌 Cargando datos de paraderos GeoJSON...');
+        
+        // Cargar datos de rutas y paraderos
+        const response = await fetch('./rutas_transcaribe.geojson');
+        const data = await response.json();
+        
+        if (data && data.features) {
+          window.rutasTranscaribe = data.features;
+          console.log('✅ Datos de paraderos cargados:', data.features.length, 'elementos');
+          
+          // Mostrar paraderos en el mapa
+          mostrarParaderosGeoJSONEnMapa();
+        } else {
+          console.error('❌ Formato de datos GeoJSON inválido');
+        }
+      } catch (error) {
+        console.error('❌ Error cargando datos de paraderos:', error);
+        
+        // Fallback: inicializar con array vacío para evitar errores
+        window.rutasTranscaribe = [];
+      }
+    }
+    
     // =================== INICIALIZACIÓN ===================
     document.addEventListener('DOMContentLoaded', async function() {
       // Inicializar mapa
@@ -2917,6 +2943,9 @@
         maxZoom: 19,
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
+      
+      // Cargar datos de paraderos GeoJSON
+      await cargarDatosParaderos();
       
       // Cargar estaciones y paraderos
       await cargarEstacionesYParaderos();
@@ -4386,6 +4415,17 @@
       return R * c;
     }
     
+    // Función haversine simplificada (alias para compatibilidad)
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 6371000; // Radio de la Tierra en metros
+      const toRad = x => x * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+    
     // 🎯 FUNCIÓN PARA MOSTRAR INSTRUCCIONES INTELIGENTES
     function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario) {
       console.log('📋 === INSTRUCCIONES INTELIGENTES ===');
@@ -4651,7 +4691,7 @@
       let mejorTransbordo = null;
       let mejorScore = Infinity;
       
-      paraderosTransbordo.forEach(paradero => {
+      for (const paradero of paraderosTransbordo) {
         const coords = paradero.geometry.coordinates;
         const lat = coords[1];
         const lon = coords[0];
@@ -4699,7 +4739,7 @@
             };
           }
         }
-      });
+      }
       
       return mejorTransbordo;
     }
@@ -5063,28 +5103,7 @@
       return partesFiltradas.join(', ');
     }
 
-    // Restaurar la lógica original para los selects usando array estático
-    function poblarSelectParaderos(selectElement) {
-      // Datos de paraderos incluidos directamente en el HTML para evitar problemas de CORS
-     
-      
-      console.log('📋 Paraderos cargados:', paraderosData.length, 'paraderos');
-      console.log('📋 Lista de paraderos:', paraderosData.map(p => p.nombre));
-      
-      selectElement.innerHTML = '<option value="">Selecciona un paradero...</option>';
-      paraderosData.forEach(paradero => {
-        const option = document.createElement('option');
-        option.value = paradero.nombre;
-        option.textContent = paradero.nombre;
-        selectElement.appendChild(option);
-      });
-      
-      console.log('✅ Select poblado con', paraderosData.length, 'opciones');
-    }
-    // Llamar esta función para poblar los selects de inicio y destino después de cargar el GeoJSON
-    // Ejemplo:
-    // poblarSelectParaderos(document.getElementById('startParaderoSelect'));
-    // poblarSelectParaderos(document.getElementById('endParaderoSelect'));
+
 
     // === NUEVA LÓGICA: Marcadores de paraderos desde GeoJSON ===
     function mostrarParaderosGeoJSONEnMapa() {
