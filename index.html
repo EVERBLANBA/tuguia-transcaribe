@@ -4415,6 +4415,23 @@
           const penalizacionDistancia = tieneA108 ? candidato.distancia * 0.1 : candidato.distancia * 0.5;
           scoreInteligente -= penalizacionDistancia;
           
+          // 🔥 NUEVA LÓGICA: Penalizar paraderos es_exclusivo cuando hay opciones más eficientes
+          const esExclusivo = window.rutasTranscaribe?.find(p => 
+            p.properties?.nombre_paradero === candidato.nombre && 
+            p.properties?.es_exclusivo === true
+          );
+          
+          if (esExclusivo && !tieneA108) {
+            // Si es exclusivo pero NO tiene la ruta óptima (A108), penalizar fuertemente
+            const penalizacionExclusivo = 2000; 
+            scoreInteligente -= penalizacionExclusivo;
+            console.log(`  ⚠️ ${candidato.nombre}: EXCLUSIVO sin ruta óptima → -${penalizacionExclusivo} puntos`);
+          } else if (esExclusivo && tieneA108) {
+            // Si es exclusivo PERO tiene la ruta óptima, solo leve penalización
+            scoreInteligente -= 200;
+            console.log(`  ⚠️ ${candidato.nombre}: EXCLUSIVO con A108 → -200 puntos`);
+          }
+          
           if (tieneRutaPreferida) {
             console.log(`  📊 ${candidato.nombre}: Score final = ${scoreInteligente.toFixed(1)} (${tieneA108 ? 'CON A108 🔥' : 'sin A108'})`);
           }
@@ -4703,6 +4720,31 @@
       };
     }
     
+    // 🔥 NUEVA FUNCIÓN: Calcular proximidad geográfica en la trayectoria
+    function calcularProximidadTrayectoria(puntoOrigen, puntoDestino, puntoTransbordo) {
+      // Calcular distancia total: origen→transbordo + transbordo→destino
+      const distanciaTotal = 
+        calcularDistanciaHaversine(puntoOrigen.lat, puntoOrigen.lon, puntoTransbordo.lat, puntoTransbordo.lon) +
+        calcularDistanciaHaversine(puntoTransbordo.lat, puntoTransbordo.lon, puntoDestino.lat, puntoDestino.lon);
+      
+      // Calcular distancia directa: origen→destino  
+      const distanciaDirecta = 
+        calcularDistanciaHaversine(puntoOrigen.lat, puntoOrigen.lon, puntoDestino.lat, puntoDestino.lon);
+      
+      // Factor de eficiencia: Ideal = 1.0 (línea recta), peor > 2.0 (gran desvío)
+      const factorEficiencia = distanciaTotal / distanciaDirecta;
+      
+      // Score: mejor cuando está más cerca de la línea recta (factor menor)
+      const scoreProximidad = Math.max(0, 3000 - (factorEficiencia * 1000));
+      
+      return {
+        factorEficiencia,
+        scoreProximidad,
+        distanciaTotal,
+        distanciaDirecta
+      };
+    }
+
     // 🔥 NUEVA FUNCIÓN: Encontrar mejor transbordo inteligente
     async function encontrarMejorTransbordoInteligente(paraderoOrigen, paraderoDestino, rutasOptimas = null, destinoNombre = '') {
       if (!window.rutasTranscaribe) {
@@ -4755,13 +4797,14 @@
         );
         
         if (conectividad && conectividad.viable) {
-          // Calcular score multi-criterio
+          // 🔥 CALCULAR SCORE MULTI-CRITERIO INTELIGENTE
           const scoreMulticriterio = calcularScoreMulticriterio(
             paraderoOrigen, 
             paraderoTransbordo, 
             paraderoDestino, 
             conectividad,
-            rutasOptimas
+            rutasOptimas,
+            destinoNombre
           );
           
           console.log(`🔄 Transbordo ${paraderoTransbordo.nombre}:`, {
@@ -4797,6 +4840,83 @@
       }
       
       return mejorTransbordo;
+    }
+    
+    // 🔥 NUEVA FUNCIÓN: Calcular score multi-criterio inteligente
+    function calcularScoreMulticriterio(origen, transbordo, destino, conectividad, rutasOptimas = null, destinoNombre = '') {
+      let score = 0;
+      let factores = [];
+      
+      // 1. 🗺️ FACTOR PROXIMIDAD GEOGRÁFICA (30% del peso)
+      const proximidad = calcularProximidadTrayectoria(origen, destino, transbordo);
+      score += proximidad.scoreProximidad * 0.3;
+      factores.push(`Proximidad: ${proximidad.scoreProximidad.toFixed(0)} (factor: ${proximidad.factorEficiencia.toFixed(2)})`);
+      
+      // 2. 🎯 FACTOR RUTAS ÓPTIMAS (40% del peso)
+      let scoreRutasOptimas = 0;
+      if (rutasOptimas && rutasOptimas.length > 0) {
+        // Priorizar fuertemente A108 para destinos como Campestre
+        if (conectividad.ruta2 === 'A108') {
+          scoreRutasOptimas += 4000; // Máxima prioridad
+          factores.push('Ruta2: A108 (ÓPTIMA PARA CAMPESTRE) +4000');
+        } else if (rutasOptimas.includes(conectividad.ruta2)) {
+          scoreRutasOptimas += 2000;
+          factores.push(`Ruta2: ${conectividad.ruta2} (óptima) +2000`);
+        }
+        
+        if (rutasOptimas.includes(conectividad.ruta1)) {
+          scoreRutasOptimas += 1000;
+          factores.push(`Ruta1: ${conectividad.ruta1} (óptima) +1000`);
+        }
+      }
+      score += scoreRutasOptimas * 0.4;
+      
+      // 3. 📏 FACTOR DISTANCIA (20% del peso)
+      const distanciaOrigen = calcularDistanciaHaversine(origen.lat, origen.lon, transbordo.lat, transbordo.lon);
+      const distanciaDestino = calcularDistanciaHaversine(transbordo.lat, transbordo.lon, destino.lat, destino.lon);
+      const scoreDistancia = Math.max(0, 2000 - (distanciaOrigen + distanciaDestino) / 2);
+      score += scoreDistancia * 0.2;
+      factores.push(`Distancia: ${scoreDistancia.toFixed(0)}`);
+      
+      // 4. ⚠️ PENALIZACIÓN POR PARADEROS EXCLUSIVOS INEFICIENTES (10% del peso)
+      const esExclusivo = window.rutasTranscaribe?.find(p => 
+        p.properties?.nombre_paradero === transbordo.nombre && 
+        p.properties?.es_exclusivo === true
+      );
+      
+      let scoreExclusivo = 0;
+      if (esExclusivo) {
+        if (conectividad.ruta2 === 'A108') {
+          scoreExclusivo = -300; // Leve penalización si tiene A108
+          factores.push('Exclusivo con A108: -300');
+        } else {
+          scoreExclusivo = -1500; // Fuerte penalización si no tiene ruta óptima
+          factores.push('Exclusivo sin ruta óptima: -1500');
+        }
+      }
+      score += scoreExclusivo * 0.1;
+      
+      // 5. 🎖️ BONUS ESPECIAL PARA CASOS ESPECÍFICOS
+      if (destinoNombre.toLowerCase().includes('campestre') && conectividad.ruta2 === 'A108') {
+        score += 2000; // Bonus especial Campestre + A108
+        factores.push('BONUS Campestre+A108: +2000');
+      }
+      
+      // Determinar eficiencia
+      let eficiencia = 'baja';
+      if (score >= 8000) eficiencia = 'muy_alta';
+      else if (score >= 6000) eficiencia = 'alta';
+      else if (score >= 4000) eficiencia = 'media';
+      
+      // Score final se invierte (menor es mejor para la selección)
+      const scoreFinal = 10000 - score;
+      
+      return {
+        score: scoreFinal,
+        eficiencia: eficiencia,
+        factores: factores,
+        razon: `Score: ${scoreFinal.toFixed(0)} (${eficiencia}) - ${factores.join(', ')}`
+      };
     }
     
     // 🔥 NUEVA FUNCIÓN: Verificar conectividad inteligente entre tres paraderos
