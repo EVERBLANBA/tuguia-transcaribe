@@ -5281,27 +5281,6 @@
     {
       "type": "Feature",
       "properties": {
-        "nombre_paradero": "Cll 14 Entrada Golf",
-        "coordenadas": "10.382550942793372, -75.49707457375662",
-        "rutas": "X105",
-        "network": "Transcaribe",
-        "tipos_ruta": "Pretroncales",
-        "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-        "name": "Cll 14 Entrada Golf"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -75.49707457375662,
-          10.382550942793372
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "nombre_paradero": "Mz 17 Lt 22",
         "coordenadas": "10.382920303838759, -75.49686536021271",
         "rutas": "X105",
