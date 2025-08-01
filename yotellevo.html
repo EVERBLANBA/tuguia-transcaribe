@@ -808,39 +808,46 @@
             const rutas = paradero.properties.rutas || '';
             const numeroRutas = rutas.split(',').filter(r => r.trim().length > 0).length;
             
-            // 🔥 ALGORITMO INTELIGENTE: PRIORIZAR RUTAS ÓPTIMAS SOBRE DISTANCIA
+            // 🔄 ALGORITMO BALANCEADO: DISTANCIA + CONECTIVIDAD + RUTAS ESPECÍFICAS
             const rutasArray = rutas.split(',').map(r => r.trim()).filter(r => r.length > 0);
             
-            let scoreInteligente = 0;
-            let tieneRutaOptima = false;
+            // 📏 BASE: Scoring por distancia (factor principal)
+            let scoreDistancia = distancia * 2; // Penalización moderada por distancia
             
-            // 🎯 BONUS MASIVO POR RUTAS ESPECÍFICAS
+            // 🚌 BONUS POR CONECTIVIDAD (número de rutas)
+            let bonusConectividad = Math.max(0, (numeroRutas - 1) * 100); // Más rutas = mejor conectividad
+            
+            // 🎯 BONUS MODERADO POR RUTAS IMPORTANTES (solo en contextos específicos)
+            let bonusRutasEspeciales = 0;
+            let tieneRutaImportante = false;
+            
             rutasArray.forEach(ruta => {
-                if (ruta === 'A108') {
-                    scoreInteligente += 50000; // PRIORIDAD ABSOLUTA PARA A108
-                    tieneRutaOptima = true;
-                    console.log(`  🔥 ${paradero.properties.nombre_paradero}: A108 DETECTADO → +50000 puntos`);
-                } else if (ruta === 'A102') scoreInteligente += 800;
-                else if (ruta === 'A101') scoreInteligente += 700;
-                else if (ruta.startsWith('A')) scoreInteligente += 600;
-                else if (ruta.startsWith('T')) scoreInteligente += 500;
-                else if (ruta.startsWith('X')) scoreInteligente += 400;
-                else scoreInteligente += 300;
+                // Rutas troncales - alta prioridad para todos los casos
+                if (ruta.startsWith('T')) {
+                    bonusRutasEspeciales += 800;
+                    tieneRutaImportante = true;
+                }
+                // Rutas express - buena conectividad
+                else if (ruta.startsWith('X')) {
+                    bonusRutasEspeciales += 600;
+                }
+                // Rutas alimentadoras - útiles pero no prioritarias por defecto
+                else if (ruta.startsWith('A')) {
+                    bonusRutasEspeciales += 300;
+                    // Solo dar bonus especial a A108 si el destino lo requiere específicamente
+                    if (ruta === 'A108') {
+                        // TODO: Agregar lógica contextual para destinos específicos
+                        bonusRutasEspeciales += 200; // Bonus moderado, no extremo
+                    }
+                }
+                // Rutas complementarias
+                else if (ruta.startsWith('C')) {
+                    bonusRutasEspeciales += 200;
+                }
             });
             
-            // 📏 PENALIZACIÓN POR DISTANCIA (reducida para rutas óptimas)
-            const penalizacionDistancia = tieneRutaOptima ? distancia * 0.1 : distancia * 2;
-            scoreInteligente -= penalizacionDistancia;
-            
-            // ⚠️ PENALIZAR PARADEROS EXCLUSIVOS SIN RUTAS ÓPTIMAS
-            const esExclusivo = paradero.properties.es_exclusivo === true;
-            if (esExclusivo && !tieneRutaOptima) {
-                scoreInteligente -= 2000;
-                console.log(`  ⚠️ ${paradero.properties.nombre_paradero}: EXCLUSIVO sin ruta óptima → -2000 puntos`);
-            }
-            
-            // Score final invertido (menor = mejor)
-            const scoreFinal = 60000 - scoreInteligente;
+            // 📊 SCORE FINAL BALANCEADO
+            const scoreFinal = scoreDistancia - bonusConectividad - bonusRutasEspeciales;
             
             const paraderoInfo = {
                 nombre: paradero.properties.nombre_paradero || 'Paradero',
@@ -852,11 +859,13 @@
                 tipos_ruta: paradero.properties.tipos_ruta || '',
                 numeroRutas: numeroRutas,
                 scoreFinal: scoreFinal,
-                scoreInteligente: scoreInteligente,
-                tieneRutaOptima: tieneRutaOptima,
+                scoreDistancia: scoreDistancia,
+                bonusConectividad: bonusConectividad,
+                bonusRutasEspeciales: bonusRutasEspeciales,
+                tieneRutaImportante: tieneRutaImportante,
                 tieneA108: rutasArray.includes('A108'),
-                esExclusivo: esExclusivo,
-                penalizacionDistancia: penalizacionDistancia
+                tieneT: rutasArray.some(r => r.startsWith('T')),
+                tieneX: rutasArray.some(r => r.startsWith('X'))
             };
             
             // Log del primer paradero para debugging
@@ -1146,46 +1155,49 @@
             paraderoDestino.lat, paraderoDestino.lon
           );
           
-          // 🔥 SCORING INTELIGENTE PARA TRANSBORDO: PRIORIZAR A108
-          let scoreInteligente = 0;
-          let tieneA108 = false;
-          
-          // 🎯 BONUS MASIVO por rutas óptimas en el transbordo
+          // 📊 SCORING BALANCEADO PARA TRANSBORDO: DISTANCIA + CONECTIVIDAD
           const rutasParaderoArray = typeof paradero.properties.rutas === 'string' 
             ? paradero.properties.rutas.split(',').map(r => r.trim()) 
             : (Array.isArray(paradero.properties.rutas) ? paradero.properties.rutas : []);
-            
+          
+          // Base: distancia total del transbordo
+          const distanciaTotal = distOrigenTransbordo + distTransbordoDestino;
+          
+          // Bonus moderado por tipo de rutas
+          let bonusRutas = 0;
+          let tieneT = false, tieneX = false, tieneA108 = false;
+          
           rutasParaderoArray.forEach(ruta => {
-            if (ruta === 'A108') {
-              scoreInteligente += 10000; // PRIORIDAD MÁXIMA
+            if (ruta.startsWith('T')) {
+              bonusRutas += 500; // Troncales son excelentes para transbordo
+              tieneT = true;
+            } else if (ruta.startsWith('X')) {
+              bonusRutas += 400; // Express son buenos
+              tieneX = true;
+            } else if (ruta === 'A108') {
+              bonusRutas += 300; // A108 útil pero no excesivo
               tieneA108 = true;
-            } else if (ruta === 'A102') scoreInteligente += 800;
-            else if (ruta.startsWith('A')) scoreInteligente += 600;
-            else if (ruta.startsWith('T')) scoreInteligente += 500;
-            else if (ruta.startsWith('X')) scoreInteligente += 400;
-            else scoreInteligente += 300;
+            } else if (ruta.startsWith('A')) {
+              bonusRutas += 200; // Otras alimentadoras
+            } else if (ruta.startsWith('C')) {
+              bonusRutas += 100; // Complementarias
+            }
           });
           
-          // 📏 PENALIZACIÓN POR DISTANCIA (reducida para A108)
-          const penalizacionDistancia = tieneA108 ? 
-            (distOrigenTransbordo + distTransbordoDestino) * 0.1 : 
-            (distOrigenTransbordo + distTransbordoDestino);
+          // Bonus por número de rutas (mejor conectividad)
+          const bonusConectividad = rutasParaderoArray.length * 50;
           
-          // ⚠️ PENALIZAR PARADEROS EXCLUSIVOS SIN A108
-          const esExclusivo = paradero.properties.es_exclusivo === true;
-          if (esExclusivo && !tieneA108) {
-            scoreInteligente -= 2000;
-          }
-          
-          // Score final invertido (menor = mejor)
-          const score = 15000 - scoreInteligente + penalizacionDistancia;
+          // Score final: menor es mejor
+          const score = distanciaTotal - bonusRutas - bonusConectividad;
           
           console.log(`✅ [TRANSBORDO] Transbordo válido en ${paradero.properties.nombre_paradero}:`, {
             score: score.toFixed(1),
+            distanciaTotal: distanciaTotal.toFixed(1) + 'm',
+            bonusRutas: bonusRutas,
+            bonusConectividad: bonusConectividad,
+            tieneT: tieneT,
+            tieneX: tieneX,
             tieneA108: tieneA108,
-            scoreInteligente: scoreInteligente.toFixed(1),
-            distancia: (distOrigenTransbordo + distTransbordoDestino).toFixed(1) + 'm',
-            esExclusivo: esExclusivo,
             rutas: rutasParaderoArray.join(', ')
           });
           
