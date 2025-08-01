@@ -3313,7 +3313,13 @@
             const startLatLng = window.startMarker.getLatLng();
             const endLatLng = endMarker.getLatLng();
             if (startLatLng && endLatLng) {
-              iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
+              console.log('🚀 === INICIANDO NAVEGACIÓN INTELIGENTE ===');
+              console.log('📍 Coordenadas ORIGEN (startLatLng):', [startLatLng.lat, startLatLng.lng]);
+              console.log('🎯 Coordenadas DESTINO (endLatLng):', [endLatLng.lat, endLatLng.lng]);
+              iniciarNavegacionInteligente(
+                [endLatLng.lat, endLatLng.lng], 
+                [startLatLng.lat, startLatLng.lng]
+              );
             }
           }
         }
@@ -3394,7 +3400,13 @@
             const startLatLng = startMarker.getLatLng();
             const endLatLng = window.endMarker.getLatLng();
             if (startLatLng && endLatLng) {
-              iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
+              console.log('🚀 === INICIANDO NAVEGACIÓN INTELIGENTE ===');
+              console.log('📍 Coordenadas ORIGEN (startLatLng):', [startLatLng.lat, startLatLng.lng]);
+              console.log('🎯 Coordenadas DESTINO (endLatLng):', [endLatLng.lat, endLatLng.lng]);
+              iniciarNavegacionInteligente(
+                [endLatLng.lat, endLatLng.lng], 
+                [startLatLng.lat, startLatLng.lng]
+              );
             }
           }
         }
@@ -3716,7 +3728,13 @@
             const startLatLng = window.startMarker.getLatLng();
             const endLatLng = endMarker.getLatLng();
             if (startLatLng && endLatLng) {
-              iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
+              console.log('🚀 === INICIANDO NAVEGACIÓN INTELIGENTE ===');
+              console.log('📍 Coordenadas ORIGEN (startLatLng):', [startLatLng.lat, startLatLng.lng]);
+              console.log('🎯 Coordenadas DESTINO (endLatLng):', [endLatLng.lat, endLatLng.lng]);
+              iniciarNavegacionInteligente(
+                [endLatLng.lat, endLatLng.lng], 
+                [startLatLng.lat, startLatLng.lng]
+              );
             }
           }
         }
@@ -3800,7 +3818,13 @@
             const startLatLng = startMarker.getLatLng();
             const endLatLng = window.endMarker.getLatLng();
             if (startLatLng && endLatLng) {
-              iniciarNavegacionInteligente([endLatLng.lat, endLatLng.lng]);
+              console.log('🚀 === INICIANDO NAVEGACIÓN INTELIGENTE ===');
+              console.log('📍 Coordenadas ORIGEN (startLatLng):', [startLatLng.lat, startLatLng.lng]);
+              console.log('🎯 Coordenadas DESTINO (endLatLng):', [endLatLng.lat, endLatLng.lng]);
+              iniciarNavegacionInteligente(
+                [endLatLng.lat, endLatLng.lng], 
+                [startLatLng.lat, startLatLng.lng]
+              );
             }
           }
         }
@@ -4030,17 +4054,32 @@
 
     // =================== NUEVA LÓGICA INTELIGENTE DE NAVEGACIÓN ===================
     
-    // Función principal de navegación inteligente
-    async function iniciarNavegacionInteligente(destinoCoords) {
+    // 🔥 FUNCIÓN PRINCIPAL DE NAVEGACIÓN INTELIGENTE (MEJORADA)
+    async function iniciarNavegacionInteligente(destinoCoords, origenCoords = null) {
       try {
         console.log('🧠 Iniciando navegación inteligente...');
+        console.log('🎯 Destino:', destinoCoords);
+        console.log('📍 Origen recibido:', origenCoords);
         
-        // 1. Obtener ubicación GPS actual
-        const ubicacionUsuario = await obtenerUbicacionGPS();
-        if (!ubicacionUsuario) {
-          console.error('❌ No se pudo obtener ubicación GPS');
-          iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
-          return;
+        // 1. 🔥 USAR COORDENADAS DEL ORIGEN SELECCIONADO O GPS COMO FALLBACK
+        let ubicacionUsuario = null;
+        
+        if (origenCoords) {
+          // Usar coordenadas del origen seleccionado por el usuario
+          ubicacionUsuario = {
+            lat: origenCoords[0],
+            lng: origenCoords[1]
+          };
+          console.log('✅ Usando origen seleccionado:', ubicacionUsuario);
+        } else {
+          // Fallback: usar GPS real
+          console.log('⚠️ No hay origen seleccionado, usando GPS...');
+          ubicacionUsuario = await obtenerUbicacionGPS();
+          if (!ubicacionUsuario) {
+            console.error('❌ No se pudo obtener ubicación GPS');
+            iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
+            return;
+          }
         }
         
         // 2. 🔥 MEJORADO: Buscar paraderos con análisis de conectividad
@@ -4280,6 +4319,26 @@
                 Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       return R * c;
+    }
+    
+    // 🎯 FUNCIÓN PARA MOSTRAR INSTRUCCIONES INTELIGENTES
+    function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, ubicacionUsuario) {
+      console.log('📋 === INSTRUCCIONES INTELIGENTES ===');
+      console.log('🚌 Paradero de origen:', paraderoCercano);
+      console.log('🎯 Ruta calculada:', rutaOptima);
+      console.log('📍 Ubicación usuario:', ubicacionUsuario);
+      
+      if (!rutaOptima) {
+        console.error('❌ No hay ruta óptima para mostrar');
+        return;
+      }
+      
+      // Mostrar mensaje de instrucciones
+      const mensaje = rutaOptima.mensaje || 'Ruta calculada exitosamente';
+      console.log('💬 Instrucción:', mensaje);
+      
+      // Aquí podrías agregar lógica para mostrar en UI
+      // Por ahora solo logging para debugging
     }
     
     // Función para calcular ruta óptima
