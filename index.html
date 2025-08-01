@@ -4484,7 +4484,7 @@
       }
     }
     
-    // Función para verificar ruta directa
+    // 🔥 FUNCIÓN MEJORADA: Verificar ruta directa CON VALIDACIÓN DE EFICIENCIA
     function verificarRutaDirecta(paraderoOrigen, paraderoDestino) {
       // Convertir rutas de string a array si es necesario
       const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
@@ -4495,19 +4495,145 @@
         paraderoDestino.rutas.split(',').map(r => r.trim()) : 
         (Array.isArray(paraderoDestino.rutas) ? paraderoDestino.rutas : []);
       
-      console.log('🔍 Verificando rutas directas:');
+      console.log('🔍 Verificando rutas directas CON VALIDACIÓN DE EFICIENCIA:');
       console.log('  Origen:', paraderoOrigen.nombre, 'Rutas:', rutasOrigen);
       console.log('  Destino:', paraderoDestino.nombre, 'Rutas:', rutasDestino);
       
+      // 📏 CALCULAR DISTANCIA DIRECTA ENTRE PARADEROS
+      const distanciaDirecta = calcularDistanciaHaversine(
+        paraderoOrigen.lat, paraderoOrigen.lon,
+        paraderoDestino.lat, paraderoDestino.lon
+      );
+      
+      console.log(`📏 Distancia directa: ${distanciaDirecta.toFixed(0)}m`);
+      
+      // 🎯 BUSCAR RUTAS COMUNES Y VALIDAR EFICIENCIA
+      const rutasEficientes = [];
+      
       for (const ruta of rutasOrigen) {
         if (rutasDestino.includes(ruta)) {
-          console.log('✅ Ruta directa encontrada:', ruta);
-          return { ruta: ruta };
+          console.log(`🔍 Evaluando eficiencia de ruta: ${ruta}`);
+          
+          // 🧠 VALIDACIÓN DE EFICIENCIA: Verificar si es realmente directa
+          const eficiencia = await validarEficienciaRuta(ruta, paraderoOrigen, paraderoDestino, distanciaDirecta);
+          
+          if (eficiencia.esEficiente) {
+            console.log(`✅ Ruta ${ruta} ES EFICIENTE: ${eficiencia.razon}`);
+            rutasEficientes.push({
+              ruta: ruta,
+              eficiencia: eficiencia.score,
+              razon: eficiencia.razon
+            });
+          } else {
+            console.log(`❌ Ruta ${ruta} NO ES EFICIENTE: ${eficiencia.razon}`);
+          }
         }
       }
       
-      console.log('❌ No se encontró ruta directa');
+      if (rutasEficientes.length > 0) {
+        // Ordenar por eficiencia y seleccionar la mejor
+        rutasEficientes.sort((a, b) => b.eficiencia - a.eficiencia);
+        const mejorRuta = rutasEficientes[0];
+        
+        console.log(`🏆 MEJOR RUTA EFICIENTE: ${mejorRuta.ruta} (Score: ${mejorRuta.eficiencia})`);
+        return { 
+          ruta: mejorRuta.ruta, 
+          eficiencia: mejorRuta.eficiencia,
+          razon: mejorRuta.razon
+        };
+      }
+      
+      console.log('❌ No se encontró ruta directa EFICIENTE');
       return null;
+    }
+    
+    // 🧠 FUNCIÓN PARA VALIDAR EFICIENCIA DE RUTA
+    async function validarEficienciaRuta(nombreRuta, paraderoOrigen, paraderoDestino, distanciaDirecta) {
+      try {
+        console.log(`🔍 [EFICIENCIA] Validando ruta ${nombreRuta}...`);
+        
+        // 🗺️ ESTRATEGIA 1: Validación por tipo de ruta y distancia
+        let score = 100; // Score base
+        let razon = [];
+        
+        // 📏 FACTOR 1: Distancia entre paraderos
+        if (distanciaDirecta < 500) {
+          score += 50;
+          razon.push('Paraderos muy cercanos');
+        } else if (distanciaDirecta < 1000) {
+          score += 30;
+          razon.push('Paraderos cercanos');
+        } else if (distanciaDirecta > 5000) {
+          score -= 30;
+          razon.push('Paraderos muy lejanos');
+        }
+        
+        // 🚌 FACTOR 2: Tipo de ruta
+        if (nombreRuta.startsWith('A')) {
+          score += 20;
+          razon.push('Ruta alimentadora (directa por naturaleza)');
+        } else if (nombreRuta.startsWith('T')) {
+          score += 15;
+          razon.push('Ruta troncal (eficiente)');
+        } else if (nombreRuta.startsWith('X')) {
+          score += 10;
+          razon.push('Ruta express');
+        }
+        
+        // 🎯 FACTOR 3: Análisis geográfico inteligente
+        const analisisGeo = analizarEficienciaGeografica(paraderoOrigen, paraderoDestino, nombreRuta);
+        score += analisisGeo.bonusScore;
+        razon.push(analisisGeo.razon);
+        
+        // ✅ DETERMINAR SI ES EFICIENTE
+        const esEficiente = score >= 120;
+        
+        return {
+          esEficiente: esEficiente,
+          score: score,
+          razon: razon.join(', ')
+        };
+        
+      } catch (error) {
+        console.error('❌ Error validando eficiencia:', error);
+        return { esEficiente: false, score: 0, razon: 'Error en validación' };
+      }
+    }
+    
+    // 🗺️ ANÁLISIS GEOGRÁFICO DE EFICIENCIA
+    function analizarEficienciaGeografica(origen, destino, ruta) {
+      const deltaLat = destino.lat - origen.lat;
+      const deltaLon = destino.lon - origen.lon;
+      
+      // 🧭 ANÁLISIS DE DIRECCIÓN
+      let bonus = 0;
+      let razon = '';
+      
+      // Norte-Sur vs Este-Oeste
+      if (Math.abs(deltaLat) > Math.abs(deltaLon)) {
+        // Movimiento principalmente Norte-Sur
+        if (ruta.startsWith('A10')) { // A108, A102, etc. van Norte-Sur
+          bonus += 30;
+          razon = 'Ruta alimentadora alineada Norte-Sur';
+        }
+      } else {
+        // Movimiento principalmente Este-Oeste  
+        if (ruta.startsWith('T10') || ruta.startsWith('X10')) {
+          bonus += 25;
+          razon = 'Ruta troncal/express alineada Este-Oeste';
+        }
+      }
+      
+      // 🎯 CASOS ESPECÍFICOS POR ZONA
+      if (origen.lat > 10.38 && destino.lat > 10.38) {
+        // Ambos en zona norte
+        if (ruta === 'A108' || ruta === 'A102') {
+          bonus += 40;
+          razon = 'Zona norte - rutas alimentadoras optimales';
+        }
+      }
+      
+      return { bonusScore: bonus, razon: razon || 'Análisis geográfico neutro' };
     }
     
     // Función para encontrar mejor transbordo
