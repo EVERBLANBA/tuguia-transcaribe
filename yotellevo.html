@@ -777,7 +777,30 @@
         
         let mejorOpcion = null;
         let mejorScore = Infinity;
+        let hayRutaDirecta = false;
         
+        // PRIMERA PASADA: Buscar si alguno tiene ruta directa
+        for (let i = 0; i < top3Paraderos.length; i++) {
+            const paradero = top3Paraderos[i];
+            
+            // Buscar paradero de destino
+            const paraderoDestino = await encontrarParaderoMasCercano({
+                lat: destinoCoords[0],
+                lng: destinoCoords[1]
+            });
+            
+            if (paraderoDestino) {
+                const rutaDirecta = verificarRutaDirecta(paradero, paraderoDestino);
+                if (rutaDirecta && rutaDirecta.todas && rutaDirecta.todas.length > 0) {
+                    hayRutaDirecta = true;
+                    break;
+                }
+            }
+        }
+        
+        console.log(`🔍 ¿Hay alguna ruta directa disponible? ${hayRutaDirecta ? '✅ SÍ' : '❌ NO'}`);
+        
+        // SEGUNDA PASADA: Evaluar con prioridad correcta
         for (let i = 0; i < top3Paraderos.length; i++) {
             const paradero = top3Paraderos[i];
             console.log(`\n🔍 Evaluando paradero ${i + 1}: ${paradero.nombre}`);
@@ -802,24 +825,41 @@
                 transbordo = encontrarMejorTransbordo(paradero, paraderoDestino);
             }
             
-            // Calcular score de esta opción
-            let scoreOpcion = paradero.scoreFinal; // Score base del paradero
+            // 🎯 NUEVA LÓGICA DE PRIORIZACIÓN
+            let scoreOpcion;
+            let prioridad;
             
             if (rutaDirecta && rutaDirecta.todas && rutaDirecta.todas.length > 0) {
-                // Ruta directa: bonus considerable
-                scoreOpcion -= 20;
-                console.log(`✅ Ruta directa disponible: ${rutaDirecta.todas.join(', ')}`);
-            } else if (transbordo) {
-                // Con transbordo: penalty menor
-                scoreOpcion += 10;
-                console.log(`🔄 Transbordo requerido via: ${transbordo.paraderoTransbordo.nombre}`);
+                // 🥇 MÁXIMA PRIORIDAD: Ruta directa
+                prioridad = 1;
+                scoreOpcion = paradero.scoreFinal - 100; // Bonus masivo
+                console.log(`✅ 🥇 RUTA DIRECTA: ${rutaDirecta.todas.join(', ')} - MÁXIMA PRIORIDAD`);
+                
+                // Si hay rutas directas disponibles, SOLO considerar paraderos con ruta directa
+                if (hayRutaDirecta) {
+                    // Entre rutas directas, usar score original (distancia + conectividad)
+                    scoreOpcion = paradero.scoreFinal;
+                }
+                
+            } else if (transbordo && !hayRutaDirecta) {
+                // 🥈 SEGUNDA PRIORIDAD: Transbordo (SOLO si no hay rutas directas)
+                prioridad = 2;
+                scoreOpcion = paradero.scoreFinal + 20;
+                console.log(`🔄 🥈 TRANSBORDO via: ${transbordo.paraderoTransbordo.nombre}`);
+                
+            } else if (!hayRutaDirecta) {
+                // 🥉 TERCERA PRIORIDAD: Sin ruta (SOLO si no hay rutas directas)
+                prioridad = 3;
+                scoreOpcion = paradero.scoreFinal + 100;
+                console.log('❌ 🥉 SIN RUTA DISPONIBLE');
+                
             } else {
-                // Sin ruta: penalty grande
-                scoreOpcion += 50;
-                console.log('❌ Sin ruta disponible');
+                // 🚫 DESCARTADO: Si hay rutas directas disponibles, descartar opciones sin ruta directa
+                console.log('🚫 DESCARTADO: Existe ruta directa en otro paradero');
+                continue;
             }
             
-            console.log(`📊 Score final para ${paradero.nombre}: ${scoreOpcion.toFixed(1)}`);
+            console.log(`📊 Prioridad: ${prioridad} | Score final: ${scoreOpcion.toFixed(1)}`);
             
             if (scoreOpcion < mejorScore) {
                 mejorScore = scoreOpcion;
@@ -828,6 +868,7 @@
                     rutaDirecta: rutaDirecta,
                     transbordo: transbordo,
                     score: scoreOpcion,
+                    prioridad: prioridad,
                     tieneRutaDirecta: !!(rutaDirecta && rutaDirecta.todas && rutaDirecta.todas.length > 0)
                 };
             }
@@ -836,7 +877,11 @@
         if (mejorOpcion) {
             console.log(`\n🏆 MEJOR OPCIÓN SELECCIONADA: ${mejorOpcion.paradero.nombre}`);
             console.log(`📊 Score final: ${mejorOpcion.score.toFixed(1)}`);
+            console.log(`🎯 Prioridad: ${mejorOpcion.prioridad} (1=Ruta Directa, 2=Transbordo, 3=Sin Ruta)`);
             console.log(`🚌 Ruta directa: ${mejorOpcion.tieneRutaDirecta ? 'SÍ' : 'NO'}`);
+            if (mejorOpcion.rutaDirecta && mejorOpcion.rutaDirecta.todas) {
+                console.log(`🟢 Rutas directas disponibles: ${mejorOpcion.rutaDirecta.todas.join(', ')}`);
+            }
             return mejorOpcion.paradero;
         }
         
