@@ -1052,6 +1052,130 @@
       return mejorTransbordo;
     }
     
+    // 🔍 FUNCIÓN DE VALIDACIÓN POST-SELECCIÓN: Mejora conservadora sin tocar lógica actual
+    async function validarYMejorarSeleccionDestino(paraderoOrigen, paraderoDestino, destinoCoords) {
+      // Solo validar si el origen tiene rutas específicas (A, T, X)
+      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
+        paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoOrigen.rutasArray) ? paraderoOrigen.rutasArray : []);
+        
+      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
+        paraderoDestino.rutas.split(',').map(r => r.trim()) : 
+        (Array.isArray(paraderoDestino.rutasArray) ? paraderoDestino.rutasArray : []);
+      
+      // Buscar rutas específicas del origen (A108, A102, etc.)
+      const rutasEspecificas = rutasOrigen.filter(r => r.startsWith('A') || r.startsWith('T') || r.startsWith('X'));
+      
+      if (rutasEspecificas.length === 0) {
+        console.log('🔍 [YO TE LLEVO] Validación: Origen sin rutas específicas, manteniendo selección actual');
+        return null; // No hay rutas específicas, mantener selección actual
+      }
+      
+      // Verificar si ya hay conectividad directa
+      const hayConectividadDirecta = rutasEspecificas.some(r => rutasDestino.includes(r));
+      if (hayConectividadDirecta) {
+        console.log('🔍 [YO TE LLEVO] Validación: Ya hay conectividad directa, manteniendo selección actual');
+        return null; // Ya hay buena conectividad
+      }
+      
+      console.log('🔍 [YO TE LLEVO] Validación: Buscando alternativas con mejor conectividad...', {
+        origenRutas: rutasEspecificas,
+        destinoActual: paraderoDestino.nombre,
+        destinoRutas: rutasDestino
+      });
+      
+      // Buscar paraderos alternativos cercanos al destino con mejor conectividad
+      if (!window.rutasTranscaribe) return null;
+      
+      const paraderosAlternativos = window.rutasTranscaribe.filter(f => 
+        f.geometry && 
+        f.geometry.type === "Point" && 
+        f.properties && 
+        f.properties.network === "Transcaribe" &&
+        f.properties.nombre_paradero &&
+        f.properties.nombre_paradero !== paraderoDestino.nombre // Diferente al actual
+      );
+      
+      let mejorAlternativa = null;
+      let mejorScore = Infinity;
+      const RADIO_MAXIMO = 500; // Máximo 500m de diferencia con la selección actual
+      
+      paraderosAlternativos.forEach(paradero => {
+        const coords = paradero.geometry.coordinates;
+        const lat = coords[1];
+        const lon = coords[0];
+        
+        // Calcular distancia al destino final
+        const distanciaDestino = haversine(
+          lat, lon,
+          destinoCoords[0], destinoCoords[1]
+        );
+        
+        // Solo considerar si está dentro del radio razonable
+        if (distanciaDestino > paraderoDestino.distancia + RADIO_MAXIMO) {
+          return; // Muy lejos, no considerar
+        }
+        
+        const rutasAlternativo = typeof paradero.properties.rutas === 'string' ? 
+          paradero.properties.rutas.split(',').map(r => r.trim()) : [];
+        
+        // Calcular score de conectividad
+        let scoreConectividad = 0;
+        let rutasCompartidas = [];
+        
+        rutasEspecificas.forEach(ruta => {
+          if (rutasAlternativo.includes(ruta)) {
+            rutasCompartidas.push(ruta);
+            // Bonus por tipo de ruta
+            if (ruta.startsWith('A')) scoreConectividad += 1000;
+            else if (ruta.startsWith('T')) scoreConectividad += 1200;
+            else if (ruta.startsWith('X')) scoreConectividad += 800;
+          }
+        });
+        
+        // Solo considerar si tiene conectividad directa
+        if (rutasCompartidas.length === 0) return;
+        
+        // Score final: mejor conectividad, distancia razonable
+        const penalizacionDistancia = distanciaDestino * 0.5;
+        const scoreFinal = -scoreConectividad + penalizacionDistancia;
+        
+        console.log(`🔍 [YO TE LLEVO] Evaluando alternativa: ${paradero.properties.nombre_paradero}`, {
+          distancia: distanciaDestino.toFixed(0) + 'm',
+          rutasCompartidas: rutasCompartidas,
+          scoreConectividad: scoreConectividad,
+          scoreFinal: scoreFinal.toFixed(1)
+        });
+        
+        if (scoreFinal < mejorScore) {
+          mejorScore = scoreFinal;
+          mejorAlternativa = {
+            nombre: paradero.properties.nombre_paradero,
+            lat: lat,
+            lon: lon,
+            distancia: distanciaDestino,
+            rutas: paradero.properties.rutas || '',
+            rutasArray: rutasAlternativo,
+            rutasCompartidas: rutasCompartidas,
+            scoreConectividad: scoreConectividad
+          };
+        }
+      });
+      
+      // Solo recomendar si la mejora es significativa
+      if (mejorAlternativa && mejorAlternativa.scoreConectividad >= 800) {
+        console.log('🎯 [YO TE LLEVO] Alternativa encontrada:', {
+          nombre: mejorAlternativa.nombre,
+          rutasCompartidas: mejorAlternativa.rutasCompartidas,
+          mejora: 'Conectividad directa vs transbordo'
+        });
+        return mejorAlternativa;
+      }
+      
+      console.log('🔍 [YO TE LLEVO] Validación: No se encontró alternativa significativamente mejor');
+      return null; // Mantener selección actual
+    }
+    
     // Función para calcular ruta óptima
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
       console.log('🎯 Iniciando calcularRutaOptima con:', {
@@ -1131,18 +1255,41 @@
         return null;
       }
 
+      // 🔍 VALIDACIÓN POST-SELECCIÓN: Verificar si hay mejor destino con conectividad directa
+      console.log('🔍 [YO TE LLEVO] Iniciando validación post-selección de destino...');
+      let paraderoDestinoFinal = paraderoDestino;
+      const mejorDestino = await validarYMejorarSeleccionDestino(paraderoOrigen, paraderoDestino, destinoCoords);
+      if (mejorDestino && mejorDestino !== paraderoDestino) {
+        console.log('🔄 [YO TE LLEVO] Mejorando selección de destino:', {
+          original: paraderoDestino.nombre,
+          mejorado: mejorDestino.nombre,
+          razon: 'Mejor conectividad directa'
+        });
+        paraderoDestinoFinal = mejorDestino;
+        
+        // Recalcular distancia a pie con nuevo destino
+        console.log('🚶 [YO TE LLEVO] Recalculando distancia a pie...');
+        const nuevaDistanciaAPie = haversine(
+          paraderoDestinoFinal.lat, paraderoDestinoFinal.lon,
+          destinoCoords[0], destinoCoords[1]
+        );
+        console.log('📏 [YO TE LLEVO] Nueva distancia a pie:', nuevaDistanciaAPie.toFixed(1) + 'm');
+      } else {
+        console.log('🔍 [YO TE LLEVO] Manteniendo selección original de destino');
+      }
+
       // Verificar si hay ruta directa
       console.log('🔍 Verificando ruta directa entre paraderos:', {
         origen: paraderoOrigen.nombre,
-        destino: paraderoDestino.nombre
+        destino: paraderoDestinoFinal.nombre
       });
-      const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
+      const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestinoFinal);
       console.log('🟢 Resultado de verificarRutaDirecta:', rutaDirecta);
 
       // Calcular distancia a pie
       console.log('🚶 Calculando distancia a pie al destino...');
       let distanciaAPie = await obtenerDistanciaCaminando(
-        [paraderoDestino.lat, paraderoDestino.lon],
+        [paraderoDestinoFinal.lat, paraderoDestinoFinal.lon],
         destinoCoords
       );
       console.log('📏 Distancia a pie calculada:', distanciaAPie);
@@ -1154,7 +1301,7 @@
           `la ruta ${rutaDirecta.todas[0]}` : 
           `las rutas ${rutaDirecta.todas.join(', ')}`;
 
-        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}`;
+        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestinoFinal.nombre}`;
         
         if (endMode !== 'paradero') {
           mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
@@ -1164,19 +1311,19 @@
         resultado = {
           tipo: 'directa',
           paraderoOrigen: paraderoOrigen,
-          paraderoDestino: paraderoDestino,
+          paraderoDestino: paraderoDestinoFinal,
           ruta: rutaDirecta.todas,
           mensaje: mensaje,
           pasos: rutaDirecta.todas.map(ruta => ({ 
             accion: 'tomar', 
             ruta: ruta, 
             desde: paraderoOrigen, 
-            hasta: paraderoDestino 
+            hasta: paraderoDestinoFinal 
           }))
         };
       } else {
         console.log('🔄 Buscando ruta con transbordo...');
-        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
+        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestinoFinal);
         console.log('🔄 Resultado de búsqueda de transbordo:', transbordo);
 
         if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
@@ -1190,7 +1337,7 @@
             `la ruta ${transbordo.ruta2}`;
 
           let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. ` +
-                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}`;
+                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestinoFinal.nombre}`;
 
           if (endMode !== 'paradero') {
             mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
@@ -1200,7 +1347,7 @@
           resultado = {
             tipo: 'con_transbordo',
             paraderoOrigen: paraderoOrigen,
-            paraderoDestino: paraderoDestino,
+            paraderoDestino: paraderoDestinoFinal,
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             rutas1: transbordo.rutas1,
@@ -1210,7 +1357,7 @@
             pasos: [
               { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
               { accion: 'transbordar', en: transbordo.paraderoTransbordo },
-              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
+              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestinoFinal }
             ]
           };
         } else {
