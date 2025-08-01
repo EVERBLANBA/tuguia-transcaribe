@@ -5278,27 +5278,7 @@
         ]
       }
     },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre_paradero": "Mz 17 Lt 22",
-        "coordenadas": "10.382920303838759, -75.49686536021271",
-        "rutas": "X105",
-        "network": "Transcaribe",
-        "tipos_ruta": "Pretroncales",
-        "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-        "name": "Mz 17 Lt 22"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -75.49686536021271,
-          10.382920303838759
-        ]
-      }
-    },
+    
     {
       "type": "Feature",
       "properties": {
