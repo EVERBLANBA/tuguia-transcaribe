@@ -9203,6 +9203,536 @@
           10.37180925530773
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Espiritu del manglar",
+        "coordenadas": "10.426910258198992, -75.53857057707137",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Espiritu del manglar",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53857057707137,
+          10.426910258198992
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Universidad Rafael Nunez",
+        "coordenadas": "10.426218182713846, -75.53734361362824",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Universidad Rafael Nunez",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53734361362824,
+          10.426218182713846
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Super Wings (Paseo Bolivar)",
+        "coordenadas": "10.428081470521105, -75.53553925365644",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Super Wings (Paseo Bolivar)",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53553925365644,
+          10.428081470521105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Clinica San Jos  de Torices",
+        "coordenadas": "10.432162959195852, -75.53530466315726",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Clinica San Jos  de Torices",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53530466315726,
+          10.432162959195852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Antiguo telecom- D1",
+        "coordenadas": "10.430885253700131, -75.5326883109784",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Antiguo telecom- D1",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5326883109784,
+          10.430885253700131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Lubricantes y filtros del Caribe",
+        "coordenadas": "10.432322641309485, -75.5312628914485",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Lubricantes y filtros del Caribe",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5312628914485,
+          10.432322641309485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Surtimax",
+        "coordenadas": "10.43432787800438, -75.53122678312295",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Surtimax",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53122678312295,
+          10.43432787800438
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mercado de Santa Rita",
+        "coordenadas": "10.436064039197017, -75.52791491409067",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mercado de Santa Rita",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52791491409067,
+          10.436064039197017
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Farmacenter V",
+        "coordenadas": "10.437690481889286, -75.52401551422511",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Farmacenter V",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52401551422511,
+          10.437690481889286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cra 17 calle 64-56",
+        "coordenadas": "10.437630775997551, -75.52301408226988",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cra 17 calle 64-56",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52301408226988,
+          10.437630775997551
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Colegio Liceo Bol var",
+        "coordenadas": "10.437496492832757, -75.5182650185626",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Colegio Liceo Bol var",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5182650185626,
+          10.437496492832757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Conjunto San Juan",
+        "coordenadas": "10.438794703950766, -75.51887192174446",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Conjunto San Juan",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51887192174446,
+          10.438794703950766
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Baluarte del Caribe",
+        "coordenadas": "10.438779757015492, -75.51735460227192",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Baluarte del Caribe",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51735460227192,
+          10.438779757015492
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Institucion Educativa Santa Maria",
+        "coordenadas": "10.439555705981917, -75.51799186227107",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Institucion Educativa Santa Maria",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51799186227107,
+          10.439555705981917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mall Plaza",
+        "coordenadas": "10.425461412076272, -75.54041115111595",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mall Plaza",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54041115111595,
+          10.425461412076272
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Loma del Diamante",
+        "coordenadas": "10.430642268997456, -75.5368384455233",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Loma del Diamante",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5368384455233,
+          10.430642268997456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El punto del movimiento",
+        "coordenadas": "10.429660969148308, -75.53394166530467",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El punto del movimiento",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53394166530467,
+          10.429660969148308
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Super abasto torices",
+        "coordenadas": "10.433712742813904, -75.53232161729306",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Super abasto torices",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53232161729306,
+          10.433712742813904
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Pollo Express",
+        "coordenadas": "10.434314172809078, -75.52931752895212",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Pollo Express",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52931752895212,
+          10.434314172809078
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque San Pedro",
+        "coordenadas": "10.43517939595298, -75.52937116628684",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque San Pedro",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52937116628684,
+          10.43517939595298
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Parque Lemaitre",
+        "coordenadas": "10.437563971550276, -75.52137818464429",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Parque Lemaitre",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52137818464429,
+          10.437563971550276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Drogas la rebaja",
+        "coordenadas": "10.437542860601559, -75.52072371597649",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Drogas la rebaja",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52072371597649,
+          10.437542860601559
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente a las Dunas",
+        "coordenadas": "10.437719120969636, -75.52482020966625",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente a las Dunas",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52482020966625,
+          10.437719120969636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Exodo",
+        "coordenadas": "10.43749870112343, -75.51956737127799",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Exodo",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51956737127799,
+          10.43749870112343
+        ]
+      }
     }
+
+
   ]
 }
