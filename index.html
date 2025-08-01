@@ -4272,20 +4272,85 @@
         console.log(`${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m - Rutas: ${c.rutasArray.join(', ')}`);
       });
       
-      // 🔥 SELECCIONAR EL MEJOR CANDIDATO
+      // 🔥 ALGORITMO INTELIGENTE DE SELECCIÓN CON SCORING
       let paraderoSeleccionado = null;
       
       if (rutasPreferidas && rutasPreferidas.length > 0) {
-        // Si se especifican rutas preferidas, buscar candidatos que las tengan
         console.log('🎯 Buscando paraderos con rutas preferidas:', rutasPreferidas);
+        console.log('🔥 PRIORIDAD ESPECIAL PARA A108:', rutasPreferidas.includes('A108') ? 'SÍ' : 'NO');
         
-        const candidatosConRutasPreferidas = candidatos.filter(c => 
-          c.rutasArray.some(ruta => rutasPreferidas.includes(ruta))
-        );
+        // 📊 CALCULAR SCORE INTELIGENTE PARA CADA CANDIDATO
+        const candidatosConScore = candidatos.map(candidato => {
+          let scoreInteligente = 0;
+          let tieneRutaPreferida = false;
+          let rutasEncontradas = [];
+          
+          // 🎯 BONUS POR RUTAS ESPECÍFICAS (prioridad alta)
+          candidato.rutasArray.forEach(ruta => {
+            if (rutasPreferidas.includes(ruta)) {
+              tieneRutaPreferida = true;
+              rutasEncontradas.push(ruta);
+              
+              // 🏆 SCORING ESPECÍFICO POR RUTA (AGRESIVO PARA A108)
+              if (ruta === 'A108') scoreInteligente += 10000; // 🔥 PRIORIDAD MÁXIMA ABSOLUTA
+              else if (ruta === 'A102') scoreInteligente += 800;
+              else if (ruta === 'A101') scoreInteligente += 700;
+              else if (ruta.startsWith('A')) scoreInteligente += 600; // Otras alimentadoras
+              else if (ruta.startsWith('T')) scoreInteligente += 500; // Troncales
+              else if (ruta.startsWith('X')) scoreInteligente += 400; // Express
+              else scoreInteligente += 300; // Complementarias
+              
+              console.log(`  📍 ${candidato.nombre}: Ruta ${ruta} → +${ruta === 'A108' ? 10000 : 'menor'} puntos`);
+            }
+          });
+          
+          // 📏 PENALIZACIÓN POR DISTANCIA (reducida para A108)
+          const tieneA108 = candidato.rutasArray.includes('A108');
+          const penalizacionDistancia = tieneA108 ? candidato.distancia * 0.1 : candidato.distancia * 0.5;
+          scoreInteligente -= penalizacionDistancia;
+          
+          if (tieneRutaPreferida) {
+            console.log(`  📊 ${candidato.nombre}: Score final = ${scoreInteligente.toFixed(1)} (${tieneA108 ? 'CON A108 🔥' : 'sin A108'})`);
+          }
+          
+          return {
+            ...candidato,
+            scoreInteligente,
+            tieneRutaPreferida,
+            rutasEncontradas,
+            penalizacionDistancia
+          };
+        });
+        
+        // 🔍 FILTRAR SOLO CANDIDATOS CON RUTAS PREFERIDAS
+        const candidatosConRutasPreferidas = candidatosConScore.filter(c => c.tieneRutaPreferida);
         
         if (candidatosConRutasPreferidas.length > 0) {
-          paraderoSeleccionado = candidatosConRutasPreferidas[0];
-          console.log(`✅ Seleccionado con ruta preferida: ${paraderoSeleccionado.nombre}`);
+          // 🔥 VERIFICACIÓN ESPECIAL: ¿HAY ALGÚN CANDIDATO CON A108?
+          const candidatosConA108 = candidatosConRutasPreferidas.filter(c => c.rutasArray.includes('A108'));
+          
+          if (candidatosConA108.length > 0) {
+            console.log(`🎯 🔥 ENCONTRADOS ${candidatosConA108.length} CANDIDATOS CON RUTA A108 - FORZANDO SELECCIÓN`);
+            candidatosConA108.forEach((c, i) => {
+              console.log(`  A108-${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m`);
+            });
+            
+            // Ordenar candidatos con A108 por distancia (ya tienen máxima prioridad)
+            candidatosConA108.sort((a, b) => a.distancia - b.distancia);
+            paraderoSeleccionado = candidatosConA108[0];
+            console.log(`🏆 🔥 SELECCIÓN FORZADA A108: ${paraderoSeleccionado.nombre}`);
+          } else {
+            // 🏆 ORDENAR POR SCORE INTELIGENTE (mayor score = mejor)
+            candidatosConRutasPreferidas.sort((a, b) => b.scoreInteligente - a.scoreInteligente);
+            
+            console.log('🧠 Top 3 candidatos con rutas preferidas (por score):');
+            candidatosConRutasPreferidas.slice(0, 3).forEach((c, i) => {
+              console.log(`${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m - Rutas: ${c.rutasEncontradas.join(', ')} - Score: ${c.scoreInteligente.toFixed(1)}`);
+            });
+            
+            paraderoSeleccionado = candidatosConRutasPreferidas[0];
+            console.log(`🎯 SELECCIONADO POR SCORE INTELIGENTE: ${paraderoSeleccionado.nombre} (Score: ${paraderoSeleccionado.scoreInteligente.toFixed(1)})`);
+          }
         }
       }
       
