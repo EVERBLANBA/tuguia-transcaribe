@@ -9731,8 +9731,94 @@
           10.43749870112343
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Chinatown",
+        "coordenadas": "10.392527633468108, -75.48496758181393",
+        "rutas": "A107,A108,A111,X102",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Chinatown",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48496758181393,
+          10.392527633468108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Aguas De Cartagena",
+        "coordenadas": "10.392364489928712, -75.48508560078957",
+        "rutas": "A107,A108,X102,X103",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Aguas De Cartagena",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.48508560078957,
+          10.392364489928712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Cll 14 Parque Campestre",
+        "coordenadas": "10.381368932905303, -75.4951648719567",
+        "rutas": "X105",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Cll 14 Parque Campestre",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.4951648719567,
+          10.381368932905303
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Milagro Soldadura Diaz",
+        "coordenadas": "10.3811367622853, -75.49449968412101",
+        "rutas": "X105,C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Milagro Soldadura Diaz",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.49449968412101,
+          10.3811367622853
+        ]
+      }
     }
-
-
   ]
 }
