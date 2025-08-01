@@ -4043,12 +4043,79 @@
           return;
         }
         
-        // 2. Encontrar paradero más cercano automáticamente
-        const paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
+        // 2. 🔥 MEJORADO: Buscar paraderos con análisis de conectividad
+        console.log('🎯 Analizando rutas de conectividad...');
+        
+        // 🗺️ RUTAS ESTRATÉGICAS POR ÁREA GEOGRÁFICA
+        const rutasEstrategicas = {
+          // Rutas que conectan el norte (Ternera, etc.) con el centro/sur
+          norte_centro: ['A108', 'A102', 'A101', 'T101', 'T102'],
+          // Rutas que conectan Bocagrande y zona hotelera
+          bocagrande: ['T103', 'X105', 'X101'],
+          // Rutas alimentadoras y complementarias
+          alimentadoras: ['A108', 'A107', 'A106'],
+          complementarias: ['C001', 'C017', 'C018']
+        };
+        
+        // 🎯 DETECTAR ÁREA GEOGRÁFICA DEL ORIGEN
+        const origenLat = ubicacionUsuario.lat;
+        const origenLon = ubicacionUsuario.lng;
+        
+        let rutasRecomendadas = [];
+        
+        // Ternera y zonas norte (lat > 10.38)
+        if (origenLat > 10.38) {
+          rutasRecomendadas = rutasEstrategicas.norte_centro;
+          console.log('📍 Origen detectado: ZONA NORTE (Ternera, etc.) - Recomendando rutas:', rutasRecomendadas);
+        }
+        // Bocagrande y zona hotelera (lon < -75.55)
+        else if (origenLon < -75.55) {
+          rutasRecomendadas = rutasEstrategicas.bocagrande;
+          console.log('📍 Origen detectado: BOCAGRANDE - Recomendando rutas:', rutasRecomendadas);
+        }
+        // Centro y otras áreas
+        else {
+          rutasRecomendadas = [...rutasEstrategicas.norte_centro, ...rutasEstrategicas.alimentadoras];
+          console.log('📍 Origen detectado: CENTRO/OTRAS ÁREAS - Recomendando rutas:', rutasRecomendadas);
+        }
+        
+        // Primero, encontrar paradero de destino para análisis de rutas
+        const paraderoDestinoPrevio = await encontrarParaderoMasCercano({
+          lat: destinoCoords[0],
+          lng: destinoCoords[1]
+        });
+        
+        let rutasPreferidas = rutasRecomendadas; // Iniciar con rutas recomendadas
+        
+        if (paraderoDestinoPrevio && paraderoDestinoPrevio.rutasArray) {
+          // Buscar intersección entre rutas recomendadas y rutas del destino
+          const interseccion = rutasRecomendadas.filter(ruta => 
+            paraderoDestinoPrevio.rutasArray.includes(ruta)
+          );
+          
+          if (interseccion.length > 0) {
+            rutasPreferidas = interseccion;
+            console.log('✅ Rutas de conexión directa encontradas:', interseccion);
+          } else {
+            // Si no hay intersección, combinar rutas recomendadas + rutas destino
+            rutasPreferidas = [...rutasRecomendadas, ...paraderoDestinoPrevio.rutasArray];
+            console.log('🔄 Sin conexión directa, usando rutas combinadas:', rutasPreferidas);
+          }
+          
+          console.log('🎯 Rutas del destino:', paraderoDestinoPrevio.rutasArray);
+        }
+        
+        // Buscar paradero de origen con prioridad en rutas que conecten
+        let paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario, rutasPreferidas);
         if (!paraderoCercano) {
-          console.error('❌ No se encontró paradero cercano');
-          iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
-          return;
+          console.warn('⚠️ No se encontró paradero con rutas preferidas, buscando cualquier paradero...');
+          // Fallback: buscar cualquier paradero cercano
+          paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario);
+          if (!paraderoCercano) {
+            console.error('❌ No se encontró ningún paradero cercano');
+            iniciarSeguimientoReal(destinoCoords); // Fallback a lógica existente
+            return;
+          }
         }
         
         // 3. Calcular ruta óptima automáticamente
@@ -4100,23 +4167,30 @@
       });
     }
     
-    // Función para encontrar paradero más cercano
-    async function encontrarParaderoMasCercano(ubicacionUsuario) {
+    // 🔥 FUNCIÓN MEJORADA: Encontrar paradero más cercano CON VALIDACIÓN DE DATOS
+    async function encontrarParaderoMasCercano(ubicacionUsuario, rutasPreferidas = null) {
+      console.log('🔍 Buscando paradero más cercano para:', {
+        ubicacion: ubicacionUsuario,
+        rutasPreferidas: rutasPreferidas
+      });
+      
       if (!window.rutasTranscaribe || !Array.isArray(window.rutasTranscaribe)) {
         console.error('❌ No hay datos de paraderos disponibles');
         return null;
       }
       
-      let paraderoMasCercano = null;
-      let distanciaMinima = Infinity;
-      
-      // Filtrar solo paraderos Transcaribe
+      // Filtrar solo paraderos Transcaribe válidos
       const paraderosTranscaribe = window.rutasTranscaribe.filter(f => 
         f.geometry && 
         f.geometry.type === "Point" && 
         f.properties && 
-        f.properties.network === "Transcaribe"
+        f.properties.network === "Transcaribe" &&
+        f.properties.nombre_paradero // Asegurar que tenga nombre
       );
+      
+      console.log(`📊 Evaluando ${paraderosTranscaribe.length} paraderos válidos...`);
+      
+      let candidatos = [];
       
       paraderosTranscaribe.forEach(paradero => {
         const coords = paradero.geometry.coordinates;
@@ -4128,21 +4202,72 @@
           lat, lon
         );
         
-        if (distancia < distanciaMinima) {
-          distanciaMinima = distancia;
-                paraderoMasCercano = {
-        nombre: paradero.properties.nombre_paradero || 'Paradero',
-        lat: lat,
-        lon: lon,
-        distancia: distancia,
-        rutas: paradero.properties.rutas || '',
-        tipos_ruta: paradero.properties.tipos_ruta || ''
-      };
+        // 🔍 VALIDAR DATOS DEL PARADERO
+        let rutasParadero = [];
+        if (paradero.properties.rutas) {
+          rutasParadero = typeof paradero.properties.rutas === 'string' 
+            ? paradero.properties.rutas.split(',').map(r => r.trim())
+            : paradero.properties.rutas;
         }
+        
+        const candidato = {
+          nombre: paradero.properties.nombre_paradero,
+          lat: lat,
+          lon: lon,
+          distancia: distancia,
+          rutas: paradero.properties.rutas || '',
+          rutasArray: rutasParadero,
+          tipos_ruta: paradero.properties.tipos_ruta || '',
+          coordsOriginal: coords
+        };
+        
+        candidatos.push(candidato);
       });
       
-      console.log('📍 Paradero más cercano encontrado:', paraderoMasCercano);
-      return paraderoMasCercano;
+      // 🎯 ORDENAR POR DISTANCIA Y FILTRAR CANDIDATOS VÁLIDOS
+      candidatos.sort((a, b) => a.distancia - b.distancia);
+      
+      // Mostrar los 5 candidatos más cercanos para debugging
+      console.log('🏆 Top 5 candidatos más cercanos:');
+      candidatos.slice(0, 5).forEach((c, i) => {
+        console.log(`${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m - Rutas: ${c.rutasArray.join(', ')}`);
+      });
+      
+      // 🔥 SELECCIONAR EL MEJOR CANDIDATO
+      let paraderoSeleccionado = null;
+      
+      if (rutasPreferidas && rutasPreferidas.length > 0) {
+        // Si se especifican rutas preferidas, buscar candidatos que las tengan
+        console.log('🎯 Buscando paraderos con rutas preferidas:', rutasPreferidas);
+        
+        const candidatosConRutasPreferidas = candidatos.filter(c => 
+          c.rutasArray.some(ruta => rutasPreferidas.includes(ruta))
+        );
+        
+        if (candidatosConRutasPreferidas.length > 0) {
+          paraderoSeleccionado = candidatosConRutasPreferidas[0];
+          console.log(`✅ Seleccionado con ruta preferida: ${paraderoSeleccionado.nombre}`);
+        }
+      }
+      
+      // Si no se encontró con rutas preferidas, usar el más cercano
+      if (!paraderoSeleccionado && candidatos.length > 0) {
+        paraderoSeleccionado = candidatos[0];
+        console.log(`📍 Seleccionado más cercano: ${paraderoSeleccionado.nombre}`);
+      }
+      
+      if (paraderoSeleccionado) {
+        console.log('🏆 PARADERO FINAL SELECCIONADO:', {
+          nombre: paraderoSeleccionado.nombre,
+          distancia: paraderoSeleccionado.distancia.toFixed(1) + 'm',
+          rutas: paraderoSeleccionado.rutasArray,
+          coordenadas: [paraderoSeleccionado.lat, paraderoSeleccionado.lon]
+        });
+      } else {
+        console.error('❌ No se encontró ningún paradero válido');
+      }
+      
+      return paraderoSeleccionado;
     }
     
     // Función para calcular distancia usando fórmula de Haversine
@@ -4174,6 +4299,22 @@
         console.error('❌ No se encontró paradero cercano al destino');
         return null;
       }
+      
+      // 🔥 DEFINIR VARIABLES FALTANTES ANTES DE USAR
+      const destinoDisplayName = localStorage.getItem('tuguia_end') || 'destino';
+      const destinoNombreFiltrado = formatearDireccionParaPopup(destinoDisplayName);
+      
+      // Calcular distancia a pie al destino
+      const distanciaAPie = haversine(
+        paraderoDestino.lat, paraderoDestino.lon,
+        destinoCoords[0], destinoCoords[1]
+      );
+      
+      console.log('📏 Variables calculadas:', {
+        destinoDisplayName,
+        destinoNombreFiltrado, 
+        distanciaAPie: distanciaAPie.toFixed(1) + 'm'
+      });
       
       // Verificar si hay ruta directa
       const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
