@@ -326,6 +326,10 @@
     <script src="https://unpkg.com/@mapbox/polyline"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator@1.7.0/dist/leaflet.polylineDecorator.min.js"></script>
     
+    <!-- 🔥 SCRIPTS CRÍTICOS PARA FUNCIONAMIENTO EN SEGUNDO PLANO -->
+    <script src="background-manager.js"></script>
+    <script src="mobile-optimization.js"></script>
+    
     <!-- Sistema de Cache y Monitoreo de API para Yotellevo -->
     <script>
         // =================== SISTEMA DE CACHE Y MONITOREO API ===================
@@ -1330,7 +1334,7 @@
     }
     
     // Función para iniciar seguimiento inteligente
-    function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {
+    async function iniciarSeguimientoInteligente(rutaOptima, paraderoCercano, ubicacionUsuario) {
       if (isIntelligentTrackingActive) return;
       
       isIntelligentTrackingActive = true;
@@ -1393,11 +1397,49 @@
         }, 100);
       }
       
+      // 🔥 ACTIVAR SERVICIOS DE SEGUNDO PLANO CRÍTICOS
+      console.log('🚀 [BACKGROUND] Activando servicios para seguimiento...');
+      
+      // Activar Wake Lock para evitar que se duerma la app
+      if (window.BackgroundManager && window.BackgroundManager.requestWakeLock) {
+        try {
+          await window.BackgroundManager.requestWakeLock();
+          console.log('✅ [WAKE-LOCK] Wake Lock activado para seguimiento');
+        } catch (error) {
+          console.error('❌ [WAKE-LOCK] Error activando Wake Lock:', error);
+        }
+      }
+      
+      // Iniciar tracking de background si está disponible
+      if (window.BackgroundManager && window.BackgroundManager.startBackgroundLocationTracking) {
+        try {
+          await window.BackgroundManager.startBackgroundLocationTracking();
+          console.log('✅ [BACKGROUND-GPS] Tracking de segundo plano activado');
+        } catch (error) {
+          console.error('❌ [BACKGROUND-GPS] Error en tracking de segundo plano:', error);
+        }
+      }
+      
       // Iniciar seguimiento de ubicación
       if (intelligentTrackingWatchId) navigator.geolocation.clearWatch(intelligentTrackingWatchId);
       
+      // Configuración agresiva para geolocalización en segundo plano
+      const gpsOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000, // 10 segundos timeout
+        maximumAge: 2000 // Cache muy corto para datos frescos
+      };
+      
+      console.log('📍 [GPS] Iniciando watchPosition con opciones:', gpsOptions);
+      
       intelligentTrackingWatchId = navigator.geolocation.watchPosition(
         function(pos) {
+          console.log('📡 [GPS] Nueva posición recibida:', {
+            lat: pos.coords.latitude.toFixed(6),
+            lon: pos.coords.longitude.toFixed(6),
+            accuracy: pos.coords.accuracy,
+            timestamp: new Date(pos.timestamp).toLocaleTimeString()
+          });
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
           const current = L.latLng(lat, lon);
@@ -1441,11 +1483,16 @@
                 let progress = totalDist > 0 ? (intelligentTrackingDistance / totalDist) * 100 : 0;
                 document.getElementById('barraProgreso').style.width = progress + '%';
 
+                // 🔍 DEBUG: Log de distancia para debugging
+                console.log(`📏 [DEBUG] Distancia al destino: ${distRestante.toFixed(1)}m | Alarma activada: ${intelligentTrackingAlarmaActivada}`);
+
                 // Lógica para rutas con transbordo
                 if (rutaActualTieneTransbordo && paraderoTransbordoActual) {
                     const distanciaATransbordo = current.distanceTo(
                         L.latLng(paraderoTransbordoActual.lat, paraderoTransbordoActual.lon)
                     );
+
+                    console.log(`🔄 [DEBUG-TRANSBORDO] Distancia a transbordo: ${distanciaATransbordo.toFixed(1)}m | Registrado: ${distanciaTransbordoRegistrada} | Realizado: ${seRealizoTransbordo}`);
 
                     // Registrar paso por el transbordo
                     if (!distanciaTransbordoRegistrada && distanciaATransbordo <= 100) {
@@ -1464,15 +1511,20 @@
                         distRestante <= 300 && 
                         distRestante > 30 && 
                         seRealizoTransbordo) {
-                        console.log('🔔 Activando alerta de proximidad al destino final');
+                        console.log('🚨 [ALARMA] Activando alerta de proximidad al destino final (con transbordo)');
                         intelligentTrackingAlarmaActivada = true;
                         mostrarAlertaProximidad();
+                    } else if (distRestante <= 300 && distRestante > 30 && !seRealizoTransbordo) {
+                        console.log(`⏳ [WAIT] Esperando transbordo. Distancia: ${distRestante.toFixed(1)}m | Transbordo realizado: ${seRealizoTransbordo}`);
                     }
                 } else {
                     // Comportamiento normal para rutas sin transbordo
                     if (!intelligentTrackingAlarmaActivada && distRestante <= 300 && distRestante > 30) {
+                        console.log('🚨 [ALARMA] Activando alerta de proximidad (ruta directa)');
                         intelligentTrackingAlarmaActivada = true;
                         mostrarAlertaProximidad();
+                    } else if (distRestante <= 300 && distRestante > 30) {
+                        console.log(`⏳ [WAIT] Alarma ya activada. Distancia: ${distRestante.toFixed(1)}m`);
                     }
                 }
 
@@ -1495,15 +1547,40 @@
           });
         },
         function(error) {
-          console.error('Error en seguimiento inteligente:', error);
-          document.getElementById('estadoSeguimiento').textContent = '❌ Error de GPS';
+          console.error('❌ [GPS-ERROR] Error en seguimiento inteligente:', {
+            code: error.code,
+            message: error.message,
+            PERMISSION_DENIED: error.PERMISSION_DENIED,
+            POSITION_UNAVAILABLE: error.POSITION_UNAVAILABLE,
+            TIMEOUT: error.TIMEOUT
+          });
+          
+          // Manejo específico de errores
+          let errorMsg = '❌ Error de GPS';
+          if (error.code === error.PERMISSION_DENIED) {
+            errorMsg = '🚫 GPS Denegado';
+            alert('⚠️ Permisos de ubicación denegados. Las alarmas no funcionarán correctamente.');
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            errorMsg = '📍 GPS No disponible';
+          } else if (error.code === error.TIMEOUT) {
+            errorMsg = '⏱️ GPS Timeout';
+            console.log('🔄 [GPS] Reintentando GPS en 5 segundos...');
+          }
+          
+          document.getElementById('estadoSeguimiento').textContent = errorMsg;
           document.getElementById('estadoSeguimiento').style.color = '#dc3545';
+          
+          // Reintentar en caso de timeout
+          if (error.code === error.TIMEOUT) {
+            setTimeout(() => {
+              if (isIntelligentTrackingActive) {
+                console.log('🔄 [GPS] Reintentando seguimiento...');
+                iniciarSeguimientoInteligente(rutaOptimaCalculada, paraderoCercanoEncontrado, ubicacionUsuario);
+              }
+            }, 5000);
+          }
         },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 60000
-        }
+        gpsOptions
       );
       
       console.log('🚀 Seguimiento inteligente iniciado');
@@ -1511,9 +1588,36 @@
     
     // Función para detener seguimiento inteligente
     function detenerSeguimientoInteligente() {
+    console.log('🛑 [STOP] Deteniendo seguimiento inteligente...');
+    
+    // 🔥 LIBERAR RECURSOS DE SEGUNDO PLANO
+    if (window.BackgroundManager) {
+      // Detener tracking de background
+      if (window.BackgroundManager.stopBackgroundTracking) {
+        try {
+          window.BackgroundManager.stopBackgroundTracking();
+          console.log('✅ [BACKGROUND] Tracking de segundo plano detenido');
+        } catch (error) {
+          console.error('❌ [BACKGROUND] Error deteniendo tracking:', error);
+        }
+      }
+      
+      // Liberar Wake Lock
+      if (window.BackgroundManager.releaseWakeLock) {
+        try {
+          window.BackgroundManager.releaseWakeLock();
+          console.log('✅ [WAKE-LOCK] Wake Lock liberado');
+        } catch (error) {
+          console.error('❌ [WAKE-LOCK] Error liberando Wake Lock:', error);
+        }
+      }
+    }
+    
+    // Detener GPS tracking normal
     if (intelligentTrackingWatchId) {
         navigator.geolocation.clearWatch(intelligentTrackingWatchId);
         intelligentTrackingWatchId = null;
+        console.log('✅ [GPS] WatchPosition detenido');
     }
     
     isIntelligentTrackingActive = false;
@@ -2097,6 +2201,51 @@ function detenerAlarmaProximidad() {
 // Inicializar la aplicación cuando el DOM esté listo
 window.addEventListener('DOMContentLoaded', async function() {
   console.log('🟣 [INIT] DOMContentLoaded en yotellevo.html');
+  
+  // 🔥 INICIALIZACIÓN CRÍTICA DE SERVICIOS DE SEGUNDO PLANO
+  console.log('🚀 [BACKGROUND] Inicializando servicios de segundo plano...');
+  
+  // Verificar si BackgroundManager está disponible
+  if (window.BackgroundManager) {
+    console.log('✅ [BACKGROUND] BackgroundManager disponible');
+    
+    // Solicitar permisos explícitamente
+    try {
+      await window.BackgroundManager.requestPermissions();
+      console.log('✅ [BACKGROUND] Permisos solicitados');
+    } catch (error) {
+      console.error('❌ [BACKGROUND] Error solicitando permisos:', error);
+    }
+    
+    // Activar optimizaciones móviles si están disponibles
+    if (window.MobileOptimizer && window.MobileOptimizer.init) {
+      try {
+        await window.MobileOptimizer.init();
+        console.log('✅ [MOBILE] Optimizaciones móviles activadas');
+      } catch (error) {
+        console.error('❌ [MOBILE] Error en optimizaciones:', error);
+      }
+    }
+  } else {
+    console.error('❌ [BACKGROUND] BackgroundManager NO disponible - verificar script');
+  }
+  
+  // Solicitar permisos de notificación explícitamente
+  if ('Notification' in window && Notification.permission === 'default') {
+    console.log('📱 [NOTIFICATION] Solicitando permisos de notificación...');
+    const permission = await Notification.requestPermission();
+    console.log(`📱 [NOTIFICATION] Permiso resultado: ${permission}`);
+  }
+  
+  // Verificar soporte para geolocalización
+  if (!navigator.geolocation) {
+    console.error('❌ [GPS] Geolocalización no disponible');
+    alert('⚠️ Tu dispositivo no soporta geolocalización. Las alarmas de proximidad no funcionarán.');
+  } else {
+    console.log('✅ [GPS] Geolocalización disponible');
+  }
+  
+  console.log('🟣 [INIT] Servicios de segundo plano inicializados');
   
   // Esperar a que los datos de paraderos se carguen
   if (!window.rutasTranscaribe || window.rutasTranscaribe.length === 0) {
