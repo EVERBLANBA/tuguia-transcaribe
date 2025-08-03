@@ -9,7 +9,7 @@
       "properties": {
         "nombre_paradero": "MUELLE DE LA BODEGUITA",
         "coordenadas": "10.420105, -75.551386",
-        "rutas": "T100E,T101,T103,X101,X102,X103,X104,X105,X106",
+        "rutas": "T100E,T101,T103,X101,X102,X103,X104,X105,X106,C017,C018",
         "network": "Transcaribe",
         "tipos_ruta": "Pretroncales",
         "fuente": "csv_2025",
@@ -419,7 +419,7 @@
       "properties": {
         "nombre_paradero": "CHAMBACU",
         "coordenadas": "10.425853, -75.540498",
-        "rutas": "T101,T102,T103,X101,X104",
+        "rutas": "T101,T102,T103,X101,X104,C018",
         "network": "Transcaribe",
         "fuente": "csv_2025",
         "highway": "bus_stop",
