@@ -893,7 +893,7 @@
         return top3Paraderos[0]; // Fallback al más cercano
     }
 
-    // Función para generar HTML de los paraderos evaluados
+    // Función para generar HTML de los paraderos evaluados (ORIGEN)
     function generarHTMLParaderosEvaluados(top3Paraderos, paraderoSeleccionado) {
         if (!top3Paraderos || top3Paraderos.length === 0) return '';
         
@@ -926,12 +926,55 @@
         return `
             <div style="background: rgba(255,255,255,0.95); border: 2px solid #007bff; border-radius: 12px; padding: 1rem; margin: 1rem 0;">
                 <h4 style="margin: 0 0 1rem 0; color: #007bff; display: flex; align-items: center; gap: 0.5rem;">
-                    🧠 Análisis Inteligente de Paraderos
+                    🧠 Análisis Inteligente de Paraderos Origen
                 </h4>
                 <div style="background: #d1ecf1; color: #0c5460; border-radius: 6px; padding: 0.5rem; margin-bottom: 1rem; font-size: 0.9em;">
-                    <strong>🔍 Evaluamos los 3 mejores paraderos</strong> considerando distancia y conectividad para darte la mejor opción.
+                    <strong>🔍 Evaluamos los 3 mejores paraderos de origen</strong> considerando distancia y conectividad para darte la mejor opción.
                 </div>
                 ${htmlParaderos}
+            </div>
+        `;
+    }
+
+    // NUEVA FUNCIÓN: Generar HTML de los paraderos de destino evaluados
+    function generarHTMLParaderosDestinoEvaluados(top3ParaderosDestino, paraderoDestinoSeleccionado) {
+        if (!top3ParaderosDestino || top3ParaderosDestino.length === 0) return '';
+        
+        const htmlParaderosDestino = top3ParaderosDestino.map((paradero, index) => {
+            const esSeleccionado = paradero.nombre === paraderoDestinoSeleccionado.nombre;
+            const rutasArray = paradero.rutas.split(',').filter(r => r.trim().length > 0);
+            const iconoEstado = esSeleccionado ? '🏆' : index === 0 ? '🥇' : index === 1 ? '🥈' : '🥉';
+            const colorFondo = esSeleccionado ? '#e8f5e8' : '#f8f9fa';
+            const colorBorde = esSeleccionado ? '#28a745' : '#dee2e6';
+            
+            return `
+                <div style="background: ${colorFondo}; border: 2px solid ${colorBorde}; border-radius: 8px; padding: 0.8rem; margin-bottom: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 1.2em;">${iconoEstado}</span>
+                        <strong style="color: #333;">${paradero.nombre}</strong>
+                        ${esSeleccionado ? '<span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: auto;">SELECCIONADO</span>' : ''}
+                    </div>
+                    <div style="font-size: 0.9em; color: #666;">
+                        📏 Distancia: <strong>${paradero.distancia.toFixed(0)}m</strong> | 
+                        🚌 Rutas: <strong>${paradero.numeroRutas}</strong> | 
+                        📊 Score: <strong>${paradero.scoreFinal.toFixed(1)}</strong>
+                    </div>
+                    <div style="font-size: 0.85em; color: #555; margin-top: 0.3rem;">
+                        🚌 ${rutasArray.length > 0 ? rutasArray.join(', ') : 'Sin rutas'}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        return `
+            <div style="background: rgba(255,255,255,0.95); border: 2px solid #dc3545; border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                <h4 style="margin: 0 0 1rem 0; color: #dc3545; display: flex; align-items: center; gap: 0.5rem;">
+                    🎯 Análisis Inteligente de Paraderos Destino
+                </h4>
+                <div style="background: #f8d7da; color: #721c24; border-radius: 6px; padding: 0.5rem; margin-bottom: 1rem; font-size: 0.9em;">
+                    <strong>🎯 Evaluamos los 3 mejores paraderos de destino</strong> considerando distancia y conectividad para optimizar tu llegada.
+                </div>
+                ${htmlParaderosDestino}
             </div>
         `;
     }
@@ -1052,130 +1095,6 @@
       return mejorTransbordo;
     }
     
-    // 🔍 FUNCIÓN DE VALIDACIÓN POST-SELECCIÓN: Mejora conservadora sin tocar lógica actual
-    async function validarYMejorarSeleccionDestino(paraderoOrigen, paraderoDestino, destinoCoords) {
-      // Solo validar si el origen tiene rutas específicas (A, T, X)
-      const rutasOrigen = typeof paraderoOrigen.rutas === 'string' ? 
-        paraderoOrigen.rutas.split(',').map(r => r.trim()) : 
-        (Array.isArray(paraderoOrigen.rutasArray) ? paraderoOrigen.rutasArray : []);
-        
-      const rutasDestino = typeof paraderoDestino.rutas === 'string' ? 
-        paraderoDestino.rutas.split(',').map(r => r.trim()) : 
-        (Array.isArray(paraderoDestino.rutasArray) ? paraderoDestino.rutasArray : []);
-      
-      // Buscar rutas específicas del origen (A108, A102, etc.)
-      const rutasEspecificas = rutasOrigen.filter(r => r.startsWith('A') || r.startsWith('T') || r.startsWith('X'));
-      
-      if (rutasEspecificas.length === 0) {
-        console.log('🔍 [YO TE LLEVO] Validación: Origen sin rutas específicas, manteniendo selección actual');
-        return null; // No hay rutas específicas, mantener selección actual
-      }
-      
-      // Verificar si ya hay conectividad directa
-      const hayConectividadDirecta = rutasEspecificas.some(r => rutasDestino.includes(r));
-      if (hayConectividadDirecta) {
-        console.log('🔍 [YO TE LLEVO] Validación: Ya hay conectividad directa, manteniendo selección actual');
-        return null; // Ya hay buena conectividad
-      }
-      
-      console.log('🔍 [YO TE LLEVO] Validación: Buscando alternativas con mejor conectividad...', {
-        origenRutas: rutasEspecificas,
-        destinoActual: paraderoDestino.nombre,
-        destinoRutas: rutasDestino
-      });
-      
-      // Buscar paraderos alternativos cercanos al destino con mejor conectividad
-      if (!window.rutasTranscaribe) return null;
-      
-      const paraderosAlternativos = window.rutasTranscaribe.filter(f => 
-        f.geometry && 
-        f.geometry.type === "Point" && 
-        f.properties && 
-        f.properties.network === "Transcaribe" &&
-        f.properties.nombre_paradero &&
-        f.properties.nombre_paradero !== paraderoDestino.nombre // Diferente al actual
-      );
-      
-      let mejorAlternativa = null;
-      let mejorScore = Infinity;
-      const RADIO_MAXIMO = 500; // Máximo 500m de diferencia con la selección actual
-      
-      paraderosAlternativos.forEach(paradero => {
-        const coords = paradero.geometry.coordinates;
-        const lat = coords[1];
-        const lon = coords[0];
-        
-        // Calcular distancia al destino final
-        const distanciaDestino = haversine(
-          lat, lon,
-          destinoCoords[0], destinoCoords[1]
-        );
-        
-        // Solo considerar si está dentro del radio razonable
-        if (distanciaDestino > paraderoDestino.distancia + RADIO_MAXIMO) {
-          return; // Muy lejos, no considerar
-        }
-        
-        const rutasAlternativo = typeof paradero.properties.rutas === 'string' ? 
-          paradero.properties.rutas.split(',').map(r => r.trim()) : [];
-        
-        // Calcular score de conectividad
-        let scoreConectividad = 0;
-        let rutasCompartidas = [];
-        
-        rutasEspecificas.forEach(ruta => {
-          if (rutasAlternativo.includes(ruta)) {
-            rutasCompartidas.push(ruta);
-            // Bonus por tipo de ruta
-            if (ruta.startsWith('A')) scoreConectividad += 1000;
-            else if (ruta.startsWith('T')) scoreConectividad += 1200;
-            else if (ruta.startsWith('X')) scoreConectividad += 800;
-          }
-        });
-        
-        // Solo considerar si tiene conectividad directa
-        if (rutasCompartidas.length === 0) return;
-        
-        // Score final: mejor conectividad, distancia razonable
-        const penalizacionDistancia = distanciaDestino * 0.5;
-        const scoreFinal = -scoreConectividad + penalizacionDistancia;
-        
-        console.log(`🔍 [YO TE LLEVO] Evaluando alternativa: ${paradero.properties.nombre_paradero}`, {
-          distancia: distanciaDestino.toFixed(0) + 'm',
-          rutasCompartidas: rutasCompartidas,
-          scoreConectividad: scoreConectividad,
-          scoreFinal: scoreFinal.toFixed(1)
-        });
-        
-        if (scoreFinal < mejorScore) {
-          mejorScore = scoreFinal;
-          mejorAlternativa = {
-            nombre: paradero.properties.nombre_paradero,
-            lat: lat,
-            lon: lon,
-            distancia: distanciaDestino,
-            rutas: paradero.properties.rutas || '',
-            rutasArray: rutasAlternativo,
-            rutasCompartidas: rutasCompartidas,
-            scoreConectividad: scoreConectividad
-          };
-        }
-      });
-      
-      // Solo recomendar si la mejora es significativa
-      if (mejorAlternativa && mejorAlternativa.scoreConectividad >= 800) {
-        console.log('🎯 [YO TE LLEVO] Alternativa encontrada:', {
-          nombre: mejorAlternativa.nombre,
-          rutasCompartidas: mejorAlternativa.rutasCompartidas,
-          mejora: 'Conectividad directa vs transbordo'
-        });
-        return mejorAlternativa;
-      }
-      
-      console.log('🔍 [YO TE LLEVO] Validación: No se encontró alternativa significativamente mejor');
-      return null; // Mantener selección actual
-    }
-    
     // Función para calcular ruta óptima
     async function calcularRutaOptima(paraderoOrigen, destinoCoords) {
       console.log('🎯 Iniciando calcularRutaOptima con:', {
@@ -1255,41 +1174,18 @@
         return null;
       }
 
-      // 🔍 VALIDACIÓN POST-SELECCIÓN: Verificar si hay mejor destino con conectividad directa
-      console.log('🔍 [YO TE LLEVO] Iniciando validación post-selección de destino...');
-      let paraderoDestinoFinal = paraderoDestino;
-      const mejorDestino = await validarYMejorarSeleccionDestino(paraderoOrigen, paraderoDestino, destinoCoords);
-      if (mejorDestino && mejorDestino !== paraderoDestino) {
-        console.log('🔄 [YO TE LLEVO] Mejorando selección de destino:', {
-          original: paraderoDestino.nombre,
-          mejorado: mejorDestino.nombre,
-          razon: 'Mejor conectividad directa'
-        });
-        paraderoDestinoFinal = mejorDestino;
-        
-        // Recalcular distancia a pie con nuevo destino
-        console.log('🚶 [YO TE LLEVO] Recalculando distancia a pie...');
-        const nuevaDistanciaAPie = haversine(
-          paraderoDestinoFinal.lat, paraderoDestinoFinal.lon,
-          destinoCoords[0], destinoCoords[1]
-        );
-        console.log('📏 [YO TE LLEVO] Nueva distancia a pie:', nuevaDistanciaAPie.toFixed(1) + 'm');
-      } else {
-        console.log('🔍 [YO TE LLEVO] Manteniendo selección original de destino');
-      }
-
       // Verificar si hay ruta directa
       console.log('🔍 Verificando ruta directa entre paraderos:', {
         origen: paraderoOrigen.nombre,
-        destino: paraderoDestinoFinal.nombre
+        destino: paraderoDestino.nombre
       });
-      const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestinoFinal);
+      const rutaDirecta = verificarRutaDirecta(paraderoOrigen, paraderoDestino);
       console.log('🟢 Resultado de verificarRutaDirecta:', rutaDirecta);
 
       // Calcular distancia a pie
       console.log('🚶 Calculando distancia a pie al destino...');
       let distanciaAPie = await obtenerDistanciaCaminando(
-        [paraderoDestinoFinal.lat, paraderoDestinoFinal.lon],
+        [paraderoDestino.lat, paraderoDestino.lon],
         destinoCoords
       );
       console.log('📏 Distancia a pie calculada:', distanciaAPie);
@@ -1301,7 +1197,7 @@
           `la ruta ${rutaDirecta.todas[0]}` : 
           `las rutas ${rutaDirecta.todas.join(', ')}`;
 
-        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestinoFinal.nombre}`;
+        let mensaje = `Toma ${rutasTexto} en ${paraderoOrigen.nombre}. Te llevará directamente a ${paraderoDestino.nombre}`;
         
         if (endMode !== 'paradero') {
           mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
@@ -1311,19 +1207,19 @@
         resultado = {
           tipo: 'directa',
           paraderoOrigen: paraderoOrigen,
-          paraderoDestino: paraderoDestinoFinal,
+          paraderoDestino: paraderoDestino,
           ruta: rutaDirecta.todas,
           mensaje: mensaje,
           pasos: rutaDirecta.todas.map(ruta => ({ 
             accion: 'tomar', 
             ruta: ruta, 
             desde: paraderoOrigen, 
-            hasta: paraderoDestinoFinal 
+            hasta: paraderoDestino 
           }))
         };
       } else {
         console.log('🔄 Buscando ruta con transbordo...');
-        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestinoFinal);
+        const transbordo = encontrarMejorTransbordo(paraderoOrigen, paraderoDestino);
         console.log('🔄 Resultado de búsqueda de transbordo:', transbordo);
 
         if (transbordo && transbordo.ruta1 && transbordo.ruta2) {
@@ -1337,7 +1233,7 @@
             `la ruta ${transbordo.ruta2}`;
 
           let mensaje = `Toma ${rutas1Texto} hasta ${transbordo.paraderoTransbordo.nombre}. ` +
-                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestinoFinal.nombre}`;
+                       `Allí cambia a ${rutas2Texto} hasta ${paraderoDestino.nombre}`;
 
           if (endMode !== 'paradero') {
             mensaje += `, desde allí te desplazas a pie ${Math.round(distanciaAPie)} metros para llegar a ${nombreDestino}`;
@@ -1347,7 +1243,7 @@
           resultado = {
             tipo: 'con_transbordo',
             paraderoOrigen: paraderoOrigen,
-            paraderoDestino: paraderoDestinoFinal,
+            paraderoDestino: paraderoDestino,
             paraderoTransbordo: transbordo.paraderoTransbordo,
             ruta1: transbordo.ruta1,
             rutas1: transbordo.rutas1,
@@ -1357,7 +1253,7 @@
             pasos: [
               { accion: 'tomar', rutas: transbordo.rutas1, desde: paraderoOrigen, hasta: transbordo.paraderoTransbordo },
               { accion: 'transbordar', en: transbordo.paraderoTransbordo },
-              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestinoFinal }
+              { accion: 'tomar', rutas: transbordo.rutas2, desde: transbordo.paraderoTransbordo, hasta: paraderoDestino }
             ]
           };
         } else {
@@ -1377,7 +1273,7 @@
     }
     
     // Función para mostrar instrucciones inteligentes
-    function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida, top3Paraderos = null) {
+    function mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida, top3Paraderos = null, top3ParaderosDestino = null, paraderoDestino = null) {
       // Determinar el texto del punto de partida
       let textoPartida = puntoPartida.nombre || 'Punto de partida';
       
@@ -1385,6 +1281,12 @@
       let infoParaderosEvaluados = '';
       if (top3Paraderos && top3Paraderos.length > 0) {
         infoParaderosEvaluados = generarHTMLParaderosEvaluados(top3Paraderos, paraderoCercano);
+      }
+      
+      // NUEVO: Generar HTML de paraderos de destino evaluados
+      let infoParaderosDestinoEvaluados = '';
+      if (top3ParaderosDestino && top3ParaderosDestino.length > 0 && paraderoDestino) {
+        infoParaderosDestinoEvaluados = generarHTMLParaderosDestinoEvaluados(top3ParaderosDestino, paraderoDestino);
       }
       
       let instruccionesHTML = `
@@ -1397,6 +1299,7 @@
             <span style='font-size:1.2em;'>🚌</span> <strong>Paradero seleccionado:</strong> <span style='color:#ffe082;'>${paraderoCercano.nombre} (${Math.round(paraderoCercano.distancia)}m)</span>
           </div>
           ${infoParaderosEvaluados}
+          ${infoParaderosDestinoEvaluados}
           <div style="background: rgba(255,255,255,0.18); color: #fff; padding: 1.1rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 1.07rem;">
             <strong style='display:flex;align-items:center;gap:7px;'><span style='font-size:1.2em;'>📋</span> Instrucciones:</strong>
             <div style='margin-top:0.5em;'>${rutaOptima.mensaje}</div>
@@ -1897,23 +1800,46 @@
             }
 
             // 2. NUEVA LÓGICA: Encontrar los 3 mejores paraderos y seleccionar el óptimo
-            console.log('🧠 === ANÁLISIS INTELIGENTE DE PARADEROS ===');
+            console.log('🧠 === ANÁLISIS INTELIGENTE DE PARADEROS ORIGEN ===');
             
-            // 2a. Obtener los 3 mejores paraderos candidatos
+            // 2a. Obtener los 3 mejores paraderos candidatos de origen
             const top3Paraderos = await encontrarMejoresParaderos(puntoPartida, destinoCoords);
             if (!top3Paraderos || top3Paraderos.length === 0) {
-                console.error('❌ No se encontraron paraderos candidatos');
+                console.error('❌ No se encontraron paraderos candidatos de origen');
                 return;
             }
             
             // 2b. Evaluar rutas para cada candidato y seleccionar el mejor
             const paraderoCercano = await seleccionarMejorParadero(top3Paraderos, destinoCoords);
             if (!paraderoCercano) {
-                console.error('❌ No se pudo seleccionar el mejor paradero');
+                console.error('❌ No se pudo seleccionar el mejor paradero de origen');
                 return;
             }
             
-            console.log('🏆 Paradero seleccionado:', paraderoCercano.nombre);
+            console.log('🏆 Paradero de origen seleccionado:', paraderoCercano.nombre);
+            
+            // NUEVO: ANÁLISIS INTELIGENTE DE PARADEROS DESTINO
+            console.log('🎯 === ANÁLISIS INTELIGENTE DE PARADEROS DESTINO ===');
+            
+            // 2c. Obtener los 3 mejores paraderos candidatos de destino
+            const top3ParaderosDestino = await encontrarMejoresParaderos({
+                lat: destinoCoords[0],
+                lng: destinoCoords[1]
+            }, destinoCoords);
+            
+            if (!top3ParaderosDestino || top3ParaderosDestino.length === 0) {
+                console.error('❌ No se encontraron paraderos candidatos de destino');
+                return;
+            }
+            
+            // 2d. Seleccionar el mejor paradero de destino
+            const paraderoDestino = await seleccionarMejorParadero(top3ParaderosDestino, destinoCoords);
+            if (!paraderoDestino) {
+                console.error('❌ No se pudo seleccionar el mejor paradero de destino');
+                return;
+            }
+            
+            console.log('🏆 Paradero de destino seleccionado:', paraderoDestino.nombre);
             
             // 3. Calcular ruta óptima desde el paradero seleccionado
             const rutaOptima = await calcularRutaOptima(paraderoCercano, destinoCoords);
@@ -1939,10 +1865,12 @@
             console.log('📋 [DEBUG] Llamando a mostrarInstruccionesInteligentes con:', {
                 rutaOptima: rutaOptima?.tipo,
                 paraderoCercano: paraderoCercano?.nombre,
+                paraderoDestino: paraderoDestino?.nombre,
                 puntoPartida: puntoPartida?.nombre,
-                top3Length: top3Paraderos?.length
+                top3Length: top3Paraderos?.length,
+                top3DestinoLength: top3ParaderosDestino?.length
             });
-            mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida, top3Paraderos);
+            mostrarInstruccionesInteligentes(rutaOptima, paraderoCercano, puntoPartida, top3Paraderos, top3ParaderosDestino, paraderoDestino);
             
         } catch (error) {
             console.error('❌ Error en navegación inteligente:', error);
