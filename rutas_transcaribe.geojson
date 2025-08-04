@@ -9778,6 +9778,380 @@
           10.3811367622853
         ]
       }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Avenida venezuela",
+        "coordenadas": "10.425793517153128, -75.54576203428623",
+        "rutas": "C018",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Avenida venezuela",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54576203428623,
+          10.425793517153128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Muelle De Los Pegasos",
+        "coordenadas": "10.42004088968848, -75.54831107843339",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Muelle De Los Pegasos",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54831107843339,
+          10.42004088968848
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Centro Convenciones",
+        "coordenadas": "10.42005581210815, -75.54827314617638",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Centro Convenciones",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54827314617638,
+          10.42005581210815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Fatima- Dadis",
+        "coordenadas": "10.418667995572461, -75.54620204534672",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Fatima- Dadis",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54620204534672,
+          10.418667995572461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 17 Lt 48",
+        "coordenadas": "10.415478941936431, -75.54181543353849",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 17 Lt 48",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54181543353849,
+          10.415478941936431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Saludarte",
+        "coordenadas": "10.416250909081826, -75.54058394517482",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Saludarte",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54058394517482,
+          10.416250909081826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Edificio Olga",
+        "coordenadas": "10.41500866193638, -75.53841870125272",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Edificio Olga",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53841870125272,
+          10.41500866193638
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "El Candil",
+        "coordenadas": "10.413305005301908, -75.53928931984831",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "El Candil",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53928931984831,
+          10.413305005301908
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Edificio Michael",
+        "coordenadas": "10.412439863759973, -75.53685341833287",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Edificio Michael",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53685341833287,
+          10.412439863759973
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Mz 28 Lt 35",
+        "coordenadas": "10.41131738757833, -75.5330597208571",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Mz 28 Lt 35",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.5330597208571,
+          10.41131738757833
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Dian",
+        "coordenadas": "10.409345220661136, -75.53462803692427",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Dian",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53462803692427,
+          10.409345220661136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Portus",
+        "coordenadas": "10.409108382862158, -75.53143765099217",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Portus",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.53143765099217,
+          10.409108382862158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Sociedad Portuaria",
+        "coordenadas": "10.407868426381443, -75.52944915588556",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Sociedad Portuaria",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52944915588556,
+          10.407868426381443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Frente Sociedad Portuaria",
+        "coordenadas": "10.407691468127549, -75.52908892866806",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Frente Sociedad Portuaria",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.52908892866806,
+          10.407691468127549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Iglesia Tercera Orden",
+        "coordenadas": "10.420621148701766, -75.54795826542347",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Iglesia Tercera Orden",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.54795826542347,
+          10.420621148701766
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "Floristeria Alheli",
+        "coordenadas": "10.410211787816685, -75.535115949463",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Floristeria Alheli",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.535115949463,
+          10.410211787816685
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre_paradero": "TCC",
+        "coordenadas": "10.400904738324037, -75.51897115308456",
+        "rutas": "C001",
+        "network": "Transcaribe",
+        "tipos_ruta": "Complementarias",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "TCC",
+        "es_exclusivo": false
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.51897115308456,
+          10.400904738324037
+        ]
+      }
     }
   ]
 }
