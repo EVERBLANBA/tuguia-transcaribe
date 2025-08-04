@@ -9,7 +9,7 @@
       "properties": {
         "nombre_paradero": "MUELLE DE LA BODEGUITA",
         "coordenadas": "10.420105, -75.551386",
-        "rutas": "T100E,T101,T103,X101,X102,X103,X104,X105,X106,C017,C018",
+        "rutas": "T100E,T101,T103,X101,X102,X103,X104,X105,X106,C001,C017,C018",
         "network": "Transcaribe",
         "tipos_ruta": "Pretroncales",
         "fuente": "csv_2025",
