@@ -8,6 +8,7 @@ class BackgroundManager {
         this.backgroundSyncEnabled = false;
         this.locationWatchId = null;
         this.heartbeatInterval = null;
+        this.notificationPermission = 'default';
         
         this.init();
     }
@@ -19,7 +20,8 @@ class BackgroundManager {
             backgroundSync: 'sync' in window.ServiceWorkerRegistration.prototype,
             wakeLock: 'wakeLock' in navigator,
             notification: 'Notification' in window,
-            vibration: 'vibrate' in navigator
+            vibration: 'vibrate' in navigator,
+            permissions: 'permissions' in navigator
         };
         
         console.log('📱 Soporte de segundo plano:', support);
@@ -34,38 +36,147 @@ class BackgroundManager {
         }
         
         try {
-            // Registrar Service Worker
-            this.registration = await navigator.serviceWorker.register('./sw.js');
-            console.log('✅ Service Worker registrado');
+            // Registrar Service Worker con manejo de errores mejorado
+            this.registration = await this.registerServiceWorker();
             
-            // Configurar eventos
-            this.setupServiceWorkerEvents();
-            
-            // Solicitar permisos necesarios
-            await this.requestPermissions();
+            if (this.registration) {
+                console.log('✅ Service Worker registrado correctamente');
+                
+                // Configurar eventos
+                this.setupServiceWorkerEvents();
+                
+                // Solicitar permisos necesarios
+                await this.requestPermissions();
+                
+                // Configurar listeners de visibilidad
+                this.setupVisibilityListeners();
+                
+            } else {
+                console.error('❌ No se pudo registrar el Service Worker');
+            }
             
         } catch (error) {
-            console.error('❌ Error registrando Service Worker:', error);
+            console.error('❌ Error en inicialización del Background Manager:', error);
         }
     }
     
-    // =================== PERMISOS ===================
+    // =================== REGISTRO DE SERVICE WORKER MEJORADO ===================
+    async registerServiceWorker() {
+        try {
+            const registration = await navigator.serviceWorker.register('./sw.js', {
+                scope: './',
+                updateViaCache: 'none'
+            });
+            
+            // Esperar a que el Service Worker esté listo
+            await navigator.serviceWorker.ready;
+            
+            // Verificar si hay una nueva versión
+            registration.addEventListener('updatefound', () => {
+                console.log('🔄 Nueva versión del Service Worker disponible');
+                const newWorker = registration.installing;
+                
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log('📱 Nueva versión instalada, actualizar para aplicar cambios');
+                        // Aquí se podría mostrar un mensaje al usuario para actualizar
+                    }
+                });
+            });
+            
+            return registration;
+            
+        } catch (error) {
+            console.error('❌ Error registrando Service Worker:', error);
+            return null;
+        }
+    }
+    
+    // =================== PERMISOS MEJORADOS ===================
     async requestPermissions() {
-        // Permiso para notificaciones
-        if (this.isSupported.notification && Notification.permission === 'default') {
-            const permission = await Notification.requestPermission();
-            console.log('🔔 Permiso de notificaciones:', permission);
+        // Permiso para notificaciones con manejo mejorado
+        if (this.isSupported.notification) {
+            this.notificationPermission = Notification.permission;
+            
+            if (this.notificationPermission === 'default') {
+                try {
+                    this.notificationPermission = await Notification.requestPermission();
+                    console.log('🔔 Permiso de notificaciones:', this.notificationPermission);
+                    
+                    if (this.notificationPermission === 'granted') {
+                        // Configurar notificaciones por defecto
+                        this.setupDefaultNotifications();
+                    }
+                } catch (error) {
+                    console.error('❌ Error solicitando permisos de notificación:', error);
+                }
+            }
         }
         
         // Permiso para ubicación persistente
-        if ('permissions' in navigator) {
+        if (this.isSupported.permissions) {
             try {
                 const result = await navigator.permissions.query({ name: 'geolocation' });
                 console.log('📍 Permiso de ubicación:', result.state);
+                
+                // Escuchar cambios en el permiso
+                result.addEventListener('change', () => {
+                    console.log('📍 Cambio en permiso de ubicación:', result.state);
+                });
             } catch (e) {
                 console.log('📍 No se pudo verificar permiso de ubicación');
             }
         }
+    }
+    
+    // =================== CONFIGURACIÓN DE NOTIFICACIONES POR DEFECTO ===================
+    setupDefaultNotifications() {
+        // Notificación de bienvenida
+        if (this.notificationPermission === 'granted') {
+            this.showNotification(
+                'Tu Guía Cartagena',
+                '¡Bienvenido! Tu aplicación está lista para navegar',
+                {
+                    icon: './logoagapai-ok2.png',
+                    badge: './pin-verde-destino.png',
+                    tag: 'welcome'
+                }
+            );
+        }
+    }
+    
+    // =================== LISTENERS DE VISIBILIDAD ===================
+    setupVisibilityListeners() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.handleAppBackgrounded();
+            } else {
+                this.handleAppForegrounded();
+            }
+        });
+        
+        // Detectar cuando la app se cierra
+        window.addEventListener('beforeunload', () => {
+            this.handleAppClosing();
+        });
+    }
+    
+    // =================== MANEJO DE CIERRE DE APP ===================
+    handleAppClosing() {
+        console.log('🚪 App cerrando, guardando estado...');
+        
+        // Guardar estado actual
+        if (window.TuGuiaState) {
+            window.TuGuiaState.saveToStorage();
+        }
+        
+        // Detener tracking si está activo
+        if (this.locationWatchId) {
+            this.stopBackgroundTracking();
+        }
+        
+        // Liberar Wake Lock
+        this.releaseWakeLock();
     }
     
     // =================== WAKE LOCK (MANTENER PANTALLA) ===================
@@ -227,15 +338,15 @@ class BackgroundManager {
     
     // =================== NOTIFICACIONES ===================
     showNotification(title, body, options = {}) {
-        if (!this.isSupported.notification || Notification.permission !== 'granted') {
+        if (!this.isSupported.notification || this.notificationPermission !== 'granted') {
             console.log('📢 Notificación (sin permiso):', title, body);
             return;
         }
         
         const notification = new Notification(title, {
             body,
-            icon: '/logoagapai-ok2.png',
-            badge: '/logoagapai-ok2.png',
+            icon: options.icon || '/logoagapai-ok2.png',
+            badge: options.badge || '/logoagapai-ok2.png',
             vibrate: options.urgent ? [200, 100, 200, 100, 200] : [100, 50, 100],
             silent: !options.urgent,
             requireInteraction: options.urgent,
@@ -382,85 +493,179 @@ class BackgroundManager {
                 case 'BACKGROUND_SYNC_FAILED':
                     console.warn('⚠️ Falló sync en segundo plano:', data);
                     break;
+                    
+                case 'NOTIFICATION_CLICKED':
+                    console.log('👆 Notificación clickeada:', data);
+                    this.handleNotificationClick(data);
+                    break;
+                    
+                case 'LOCATION_UPDATE':
+                    console.log('📍 Actualización de ubicación desde SW:', data);
+                    this.handleLocationUpdate(data);
+                    break;
             }
         });
         
         // Detectar cuando la app va a segundo plano
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                console.log('📱 App enviada a segundo plano');
                 this.handleAppBackgrounded();
             } else {
-                console.log('📱 App volvió a primer plano');
                 this.handleAppForegrounded();
             }
         });
     }
     
-    // Manejar cuando la app va a segundo plano
-    handleAppBackgrounded() {
-        // Asegurar que el tracking siga funcionando
-        if (this.locationWatchId) {
-            console.log('🎯 Manteniendo tracking activo en segundo plano');
-            
-            // Enviar mensaje al Service Worker
-            if (this.registration && this.registration.active) {
-                this.registration.active.postMessage({
-                    type: 'APP_BACKGROUNDED',
-                    timestamp: Date.now()
-                });
-            }
+    // =================== MANEJO DE CLICKS EN NOTIFICACIONES ===================
+    handleNotificationClick(data) {
+        const { action, url } = data;
+        
+        switch (action) {
+            case 'open':
+                window.focus();
+                if (url) {
+                    window.location.href = url;
+                }
+                break;
+                
+            case 'stop_tracking':
+                this.stopBackgroundTracking();
+                break;
+                
+            case 'resume_tracking':
+                this.startBackgroundLocationTracking();
+                break;
         }
     }
     
-    // Manejar cuando la app vuelve a primer plano
-    handleAppForegrounded() {
-        console.log('📱 App volvió a primer plano');
+    // =================== MANEJO DE APP EN SEGUNDO PLANO ===================
+    handleAppBackgrounded() {
+        console.log('📱 App en segundo plano');
         
-        // Notificar al Service Worker
-        if (this.registration && this.registration.active) {
-            this.registration.active.postMessage({
-                type: 'APP_FOREGROUNDED',
-                timestamp: Date.now()
-            });
+        // Activar tracking en segundo plano si hay una ruta activa
+        if (this.getDestinationFromState()) {
+            this.startBackgroundLocationTracking();
         }
         
-        // Verificar si hay datos pendientes de sincronizar
+        // Activar Wake Lock para mantener la pantalla
+        this.requestWakeLock();
+        
+        // Iniciar heartbeat para mantener la app activa
+        this.startHeartbeat();
+    }
+    
+    // =================== MANEJO DE APP EN PRIMER PLANO ===================
+    handleAppForegrounded() {
+        console.log('📱 App en primer plano');
+        
+        // Detener tracking en segundo plano
+        this.stopBackgroundTracking();
+        
+        // Liberar Wake Lock
+        this.releaseWakeLock();
+        
+        // Detener heartbeat
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
+        }
+        
+        // Sincronizar datos pendientes
         this.syncPendingData();
     }
     
-    // Sincronizar datos pendientes
+    // =================== SINCRONIZACIÓN DE DATOS PENDIENTES ===================
     async syncPendingData() {
         try {
-            const pendingData = localStorage.getItem('pending-location-data');
+            // Obtener datos pendientes del localStorage
+            const pendingData = localStorage.getItem('tuguia_pending_sync');
+            
             if (pendingData) {
                 const data = JSON.parse(pendingData);
-                console.log(`🔄 Sincronizando ${data.length} puntos de ubicación pendientes`);
+                console.log('🔄 Sincronizando datos pendientes:', data);
                 
-                // Aquí enviarías los datos al servidor
-                // Por ahora solo los limpiamos
-                localStorage.removeItem('pending-location-data');
+                // Aquí se podrían enviar los datos a un servidor
+                // Por ahora solo los eliminamos del localStorage
+                localStorage.removeItem('tuguia_pending_sync');
+                
+                console.log('✅ Datos sincronizados');
             }
         } catch (error) {
-            console.error('Error sincronizando datos pendientes:', error);
+            console.error('❌ Error sincronizando datos:', error);
+        }
+    }
+    
+    // =================== MÉTODOS PÚBLICOS ===================
+    
+    // Iniciar tracking manualmente
+    async startTracking() {
+        console.log('🎯 Iniciando tracking manual...');
+        
+        const destination = this.getDestinationFromState();
+        if (!destination) {
+            console.warn('⚠️ No hay destino configurado');
+            return false;
+        }
+        
+        await this.startBackgroundLocationTracking();
+        return true;
+    }
+    
+    // Detener tracking manualmente
+    async stopTracking() {
+        console.log('🛑 Deteniendo tracking manual...');
+        await this.stopBackgroundTracking();
+    }
+    
+    // Verificar estado del tracking
+    isTracking() {
+        return this.locationWatchId !== null;
+    }
+    
+    // Obtener estado de permisos
+    getPermissionStatus() {
+        return {
+            notification: this.notificationPermission,
+            geolocation: this.isSupported.geolocation ? 'supported' : 'not_supported',
+            serviceWorker: this.registration ? 'registered' : 'not_registered'
+        };
+    }
+    
+    // Enviar notificación de prueba
+    async testNotification() {
+        if (this.notificationPermission === 'granted') {
+            this.showNotification(
+                'Tu Guía Cartagena',
+                'Esta es una notificación de prueba',
+                {
+                    icon: './logoagapai-ok2.png',
+                    badge: './pin-verde-destino.png',
+                    tag: 'test'
+                }
+            );
+            return true;
+        } else {
+            console.warn('⚠️ Permisos de notificación no otorgados');
+            return false;
         }
     }
 }
 
-// =================== EXPORTAR Y AUTOREGISTRAR ===================
+// =================== INICIALIZACIÓN GLOBAL ===================
 
 // Crear instancia global
-const backgroundManager = new BackgroundManager();
-
-// Exportar para uso manual
 if (typeof window !== 'undefined') {
-    window.BackgroundManager = backgroundManager;
+    window.backgroundManager = new BackgroundManager();
+    
+    // Exponer métodos útiles globalmente
+    window.startBackgroundTracking = () => window.backgroundManager.startTracking();
+    window.stopBackgroundTracking = () => window.backgroundManager.stopTracking();
+    window.isBackgroundTracking = () => window.backgroundManager.isTracking();
+    window.testNotification = () => window.backgroundManager.testNotification();
+    window.getPermissionStatus = () => window.backgroundManager.getPermissionStatus();
 }
 
-// Exponer métodos principales globalmente para fácil acceso
-window.startBackgroundTracking = () => backgroundManager.startBackgroundLocationTracking();
-window.stopBackgroundTracking = () => backgroundManager.stopBackgroundTracking();
-
+// Exportar para uso como módulo
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = BackgroundManager;
 }

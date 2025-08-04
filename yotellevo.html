@@ -3009,5 +3009,374 @@ window.addEventListener('DOMContentLoaded', async function() {
   procesarInformacion();
 });
   </script>
+  
+  <!-- =================== INTEGRACIÓN DE BACKGROUND MANAGER =================== -->
+  <script>
+    // =================== INICIALIZACIÓN DEL BACKGROUND MANAGER ===================
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🔧 Inicializando Background Manager en Yo te llevo...');
+      
+      // Cargar funciones de testing inmediatamente
+      loadYoTeLlevoTestingFunctionsDirectly();
+      
+      // Verificar si el background manager ya está disponible
+      if (window.backgroundManager) {
+        console.log('✅ Background Manager ya inicializado');
+        return;
+      }
+      
+      // Cargar el background manager si no está disponible
+      const script = document.createElement('script');
+      script.src = './background-manager.js';
+      script.onload = function() {
+        console.log('✅ Background Manager cargado en Yo te llevo');
+        
+        // Esperar a que se inicialice
+        setTimeout(() => {
+          if (window.backgroundManager) {
+            console.log('🎯 Background Manager listo en Yo te llevo');
+            
+            // Configurar eventos de integración específicos para Yo te llevo
+            setupYoTeLlevoBackgroundIntegration();
+            
+            // Cargar el archivo de testing
+            loadYoTeLlevoBackgroundTest();
+          } else {
+            console.warn('⚠️ Background Manager no disponible en Yo te llevo');
+          }
+        }, 1000);
+      };
+      script.onerror = function() {
+        console.error('❌ Error cargando Background Manager en Yo te llevo');
+      };
+      document.head.appendChild(script);
+    });
+    
+    // =================== CARGAR ARCHIVO DE TESTING ===================
+    function loadYoTeLlevoBackgroundTest() {
+      const testScript = document.createElement('script');
+      testScript.src = './background-test.js';
+      testScript.onload = function() {
+        console.log('✅ Background Test Suite cargado en Yo te llevo');
+        
+        // Esperar un poco más para asegurar que las funciones estén disponibles
+        setTimeout(() => {
+          if (window.runBackgroundTests) {
+            console.log('🎯 Funciones de testing disponibles en Yo te llevo');
+            console.log('📝 Comandos disponibles:');
+            console.log('   - runBackgroundTests()');
+            console.log('   - getBackgroundStatus()');
+            console.log('   - testNotification()');
+            console.log('   - startBackgroundTracking()');
+            console.log('   - stopBackgroundTracking()');
+          } else {
+            console.warn('⚠️ Funciones de testing no disponibles aún en Yo te llevo');
+            // Cargar funciones de testing directamente
+            loadYoTeLlevoTestingFunctionsDirectly();
+          }
+        }, 2000);
+      };
+      testScript.onerror = function() {
+        console.error('❌ Error cargando Background Test Suite en Yo te llevo');
+        // Cargar funciones de testing directamente
+        loadYoTeLlevoTestingFunctionsDirectly();
+      };
+      document.head.appendChild(testScript);
+    }
+    
+    // =================== FUNCIONES DE TESTING DIRECTAS PARA YO TE LLEVO ===================
+    function loadYoTeLlevoTestingFunctionsDirectly() {
+      console.log('🔧 Cargando funciones de testing directamente en Yo te llevo...');
+      
+      // Función para ejecutar todas las pruebas
+      window.runBackgroundTests = async function() {
+        console.log('🧪 Iniciando pruebas de funcionalidades de segundo plano...');
+        
+        const results = [];
+        
+        // Prueba 1: Service Worker
+        try {
+          const swRegistration = await navigator.serviceWorker.getRegistration();
+          const swResult = swRegistration ? '✅ Service Worker registrado' : '❌ Service Worker no registrado';
+          console.log(swResult);
+          results.push({ test: 'Service Worker', passed: !!swRegistration });
+        } catch (error) {
+          console.log('❌ Error verificando Service Worker:', error.message);
+          results.push({ test: 'Service Worker', passed: false });
+        }
+        
+        // Prueba 2: Notificaciones
+        const notificationResult = Notification.permission === 'granted' ? '✅ Permisos de notificación otorgados' : '❌ Permisos de notificación no otorgados';
+        console.log(notificationResult);
+        results.push({ test: 'Notificaciones', passed: Notification.permission === 'granted' });
+        
+        // Prueba 3: Background Manager
+        const bgManagerResult = window.backgroundManager ? '✅ Background Manager disponible' : '❌ Background Manager no disponible';
+        console.log(bgManagerResult);
+        results.push({ test: 'Background Manager', passed: !!window.backgroundManager });
+        
+        // Prueba 4: Geolocalización
+        try {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+          });
+          console.log('✅ Geolocalización funcionando');
+          results.push({ test: 'Geolocalización', passed: true });
+        } catch (error) {
+          console.log('❌ Error en geolocalización:', error.message);
+          results.push({ test: 'Geolocalización', passed: false });
+        }
+        
+        // Prueba 5: Wake Lock
+        const wakeLockResult = 'wakeLock' in navigator ? '✅ Wake Lock soportado' : '❌ Wake Lock no soportado';
+        console.log(wakeLockResult);
+        results.push({ test: 'Wake Lock', passed: 'wakeLock' in navigator });
+        
+        // Mostrar resumen
+        const passed = results.filter(r => r.passed).length;
+        const total = results.length;
+        console.log(`\n📊 RESULTADOS: ${passed}/${total} pruebas exitosas`);
+        
+        return results;
+      };
+      
+      // Función para obtener estado
+      window.getBackgroundStatus = function() {
+        return {
+          serviceWorker: !!navigator.serviceWorker,
+          notifications: Notification.permission,
+          backgroundManager: !!window.backgroundManager,
+          geolocation: !!navigator.geolocation,
+          wakeLock: 'wakeLock' in navigator,
+          isTracking: window.backgroundManager ? window.backgroundManager.isTracking() : false
+        };
+      };
+      
+      // Función para probar notificación
+      window.testNotification = function() {
+        if (Notification.permission === 'granted') {
+          new Notification('🧪 Prueba de Notificación', {
+            body: 'Esta es una notificación de prueba',
+            icon: './logoagapai-ok2.png',
+            badge: './pin-verde-destino.png'
+          });
+          console.log('✅ Notificación de prueba enviada');
+        } else {
+          console.log('❌ Permisos de notificación no otorgados');
+        }
+      };
+      
+      console.log('✅ Funciones de testing cargadas directamente en Yo te llevo');
+      console.log('📝 Comandos disponibles:');
+      console.log('   - runBackgroundTests()');
+      console.log('   - getBackgroundStatus()');
+      console.log('   - testNotification()');
+    }
+    
+    // =================== CONFIGURACIÓN DE INTEGRACIÓN ESPECÍFICA PARA YO TE LLEVO ===================
+    function setupYoTeLlevoBackgroundIntegration() {
+      if (!window.backgroundManager) return;
+      
+      console.log('🔗 Configurando integración con Background Manager en Yo te llevo...');
+      
+      // Escuchar eventos de ubicación en segundo plano
+      window.addEventListener('backgroundLocationUpdate', (event) => {
+        console.log('📍 Actualización de ubicación en segundo plano (Yo te llevo):', event.detail);
+        
+        // Actualizar marcador de usuario si existe
+        if (window.marcadorUsuario) {
+          const { lat, lng } = event.detail;
+          window.marcadorUsuario.setLatLng([lat, lng]);
+          
+          // Centrar mapa en la nueva ubicación
+          if (window.mapaDestino) {
+            window.mapaDestino.setView([lat, lng], window.mapaDestino.getZoom());
+          }
+        }
+        
+        // Verificar proximidad al destino en Yo te llevo
+        checkYoTeLlevoDestinationProximity(event.detail);
+      });
+      
+      // Escuchar cambios en el estado de tracking
+      window.addEventListener('trackingStateChanged', (event) => {
+        console.log('🎯 Estado de tracking cambiado (Yo te llevo):', event.detail);
+        updateYoTeLlevoTrackingUI(event.detail);
+      });
+      
+      // Configurar controles específicos de Yo te llevo
+      setupYoTeLlevoTrackingControls();
+    }
+    
+    // =================== VERIFICACIÓN DE PROXIMIDAD AL DESTINO EN YO TE LLEVO ===================
+    function checkYoTeLlevoDestinationProximity(currentLocation) {
+      // Obtener coordenadas del destino desde el estado
+      const destinoCoords = window.destinoCoords;
+      if (!destinoCoords) return;
+      
+      const distance = calculateYoTeLlevoDistance(
+        currentLocation.lat, currentLocation.lng,
+        destinoCoords[0], destinoCoords[1]
+      );
+      
+      console.log(`📏 Distancia al destino (Yo te llevo): ${distance.toFixed(0)} metros`);
+      
+      // Mostrar notificación si está cerca
+      if (distance <= 300 && distance > 50) {
+        showYoTeLlevoProximityNotification(distance);
+      } else if (distance <= 50) {
+        showYoTeLlevoArrivalNotification();
+      }
+    }
+    
+    // =================== NOTIFICACIONES DE PROXIMIDAD EN YO TE LLEVO ===================
+    function showYoTeLlevoProximityNotification(distance) {
+      if (window.backgroundManager && window.backgroundManager.notificationPermission === 'granted') {
+        window.backgroundManager.showNotification(
+          '¡Casi llegas!',
+          `Faltan ${distance.toFixed(0)} metros para tu destino`,
+          {
+            urgent: true,
+            icon: './pin-morado.png',
+            badge: './pin-verde-destino.png'
+          }
+        );
+      }
+    }
+    
+    function showYoTeLlevoArrivalNotification() {
+      if (window.backgroundManager && window.backgroundManager.notificationPermission === 'granted') {
+        window.backgroundManager.showNotification(
+          '¡Has llegado!',
+          'Ya estás en tu destino',
+          {
+            urgent: true,
+            icon: './pin-morado.png',
+            badge: './pin-verde-destino.png'
+          }
+        );
+        
+        // Detener tracking automáticamente
+        if (window.backgroundManager.isTracking()) {
+          window.backgroundManager.stopTracking();
+        }
+      }
+    }
+    
+    // =================== ACTUALIZACIÓN DE UI DE TRACKING EN YO TE LLEVO ===================
+    function updateYoTeLlevoTrackingUI(trackingState) {
+      // Buscar elementos de UI relacionados con tracking en Yo te llevo
+      const trackingElements = document.querySelectorAll('[data-tracking-status]');
+      
+      trackingElements.forEach(element => {
+        if (trackingState.isTracking) {
+          element.classList.add('tracking-active');
+          element.classList.remove('tracking-inactive');
+          element.textContent = 'Seguimiento activo';
+        } else {
+          element.classList.remove('tracking-active');
+          element.classList.add('tracking-inactive');
+          element.textContent = 'Seguimiento inactivo';
+        }
+      });
+    }
+    
+    // =================== CONFIGURACIÓN DE CONTROLES DE TRACKING EN YO TE LLEVO ===================
+    function setupYoTeLlevoTrackingControls() {
+      // Buscar botones de tracking en la UI de Yo te llevo
+      const startTrackingBtn = document.querySelector('[data-action="start-tracking"]');
+      const stopTrackingBtn = document.querySelector('[data-action="stop-tracking"]');
+      const testNotificationBtn = document.querySelector('[data-action="test-notification"]');
+      
+      if (startTrackingBtn) {
+        startTrackingBtn.addEventListener('click', async () => {
+          if (window.backgroundManager) {
+            const success = await window.backgroundManager.startTracking();
+            if (success) {
+              console.log('✅ Tracking iniciado en Yo te llevo');
+              updateYoTeLlevoTrackingUI({ isTracking: true });
+            } else {
+              console.warn('⚠️ No se pudo iniciar el tracking en Yo te llevo');
+            }
+          }
+        });
+      }
+      
+      if (stopTrackingBtn) {
+        stopTrackingBtn.addEventListener('click', async () => {
+          if (window.backgroundManager) {
+            await window.backgroundManager.stopTracking();
+            console.log('🛑 Tracking detenido en Yo te llevo');
+            updateYoTeLlevoTrackingUI({ isTracking: false });
+          }
+        });
+      }
+      
+      if (testNotificationBtn) {
+        testNotificationBtn.addEventListener('click', async () => {
+          if (window.backgroundManager) {
+            const success = await window.backgroundManager.testNotification();
+            if (success) {
+              console.log('✅ Notificación de prueba enviada desde Yo te llevo');
+            } else {
+              console.warn('⚠️ No se pudo enviar la notificación desde Yo te llevo');
+            }
+          }
+        });
+      }
+    }
+    
+    // =================== FUNCIÓN DE CÁLCULO DE DISTANCIA PARA YO TE LLEVO ===================
+    function calculateYoTeLlevoDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371000; // Radio de la Tierra en metros
+      const toRad = (x) => x * Math.PI / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+    
+    // =================== FUNCIONES GLOBALES PARA DEBUGGING EN YO TE LLEVO ===================
+    // Exponer funciones útiles globalmente
+    window.startYoTeLlevoBackgroundTracking = () => {
+      if (window.backgroundManager) {
+        return window.backgroundManager.startTracking();
+      } else {
+        console.warn('⚠️ Background Manager no disponible en Yo te llevo');
+        return false;
+      }
+    };
+    
+    window.stopYoTeLlevoBackgroundTracking = () => {
+      if (window.backgroundManager) {
+        return window.backgroundManager.stopTracking();
+      } else {
+        console.warn('⚠️ Background Manager no disponible en Yo te llevo');
+        return false;
+      }
+    };
+    
+    window.testYoTeLlevoNotification = () => {
+      if (window.backgroundManager) {
+        return window.backgroundManager.testNotification();
+      } else {
+        console.warn('⚠️ Background Manager no disponible en Yo te llevo');
+        return false;
+      }
+    };
+    
+    window.getYoTeLlevoBackgroundStatus = () => {
+      if (window.backgroundManager) {
+        return window.backgroundManager.getPermissionStatus();
+      } else {
+        return { error: 'Background Manager no disponible en Yo te llevo' };
+      }
+    };
+    
+    console.log('🔧 Integración de Background Manager configurada en Yo te llevo');
+  </script>
 </body>
 </html> 
