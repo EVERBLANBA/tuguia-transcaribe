@@ -12,6 +12,17 @@
   "categories": ["navigation", "travel", "utilities"],
   "lang": "es",
   
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+  
+  "permissions": [
+    "notifications",
+    "geolocation",
+    "background-sync"
+  ],
+  
   "icons": [
     {
       "src": "./logoagapai-ok2.png",

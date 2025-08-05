@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Notificaciones - Tu Guía Cartagena</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #fff;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button.danger {
+            background: #f44336;
+        }
+        
+        button.danger:hover {
+            background: #da190b;
+        }
+        
+        button.warning {
+            background: #ff9800;
+        }
+        
+        button.warning:hover {
+            background: #e68900;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.3);
+        }
+        
+        .status.warning {
+            background: rgba(255, 152, 0, 0.3);
+        }
+        
+        input[type="number"] {
+            padding: 8px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            width: 100px;
+        }
+        
+        .coords-input {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .coords-input label {
+            margin-right: 10px;
+            min-width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Prueba de Notificaciones</h1>
+        
+        <div class="test-section">
+            <h3>📍 Configurar Destino</h3>
+            <div class="coords-input">
+                <label>Latitud:</label>
+                <input type="number" id="latInput" value="10.400000" step="0.000001">
+            </div>
+            <div class="coords-input">
+                <label>Longitud:</label>
+                <input type="number" id="lngInput" value="-75.560000" step="0.000001">
+            </div>
+            <div class="coords-input">
+                <label>Descripción:</label>
+                <input type="text" id="descInput" value="Destino de Prueba" style="width: 200px;">
+            </div>
+            <button onclick="setDestination()">📍 Configurar Destino</button>
+            <button onclick="debugDestination()" class="warning">🔍 Ver Destino Actual</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Pruebas de Notificaciones</h3>
+            <button onclick="testBasicNotification()">🔔 Notificación Básica</button>
+            <button onclick="testProximityNotification()" class="warning">🚨 Notificación de Proximidad</button>
+            <button onclick="testArrivalNotification()" class="danger">🎉 Notificación de Llegada</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📍 Información de Ubicación</h3>
+            <button onclick="debugLocation()">📍 Obtener Ubicación Actual</button>
+            <button onclick="startTracking()">🎯 Iniciar Tracking</button>
+            <button onclick="stopTracking()" class="danger">🛑 Detener Tracking</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Estado del Sistema</h3>
+            <button onclick="checkStatus()">📊 Ver Estado</button>
+            <button onclick="checkPermissions()">🔐 Ver Permisos</button>
+            <button onclick="debugBackgroundManager()" class="warning">🔧 Debug Detallado</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <!-- Cargar Background Manager -->
+    <script>
+        // =================== DIAGNÓSTICO DE CARGA ===================
+        console.log('🔍 Iniciando diagnóstico de carga...');
+        
+        // Verificar si el archivo se está cargando
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error cargando script:', e.filename, e.message);
+        });
+        
+        // Verificar después de un tiempo si el Background Manager está disponible
+        setTimeout(() => {
+            console.log('🔍 Verificando Background Manager...');
+            console.log('window.backgroundManager:', window.backgroundManager);
+            console.log('typeof window.backgroundManager:', typeof window.backgroundManager);
+            
+            if (window.backgroundManager) {
+                console.log('✅ Background Manager disponible');
+                console.log('📱 Soporte:', window.backgroundManager.isSupported);
+            } else {
+                console.error('❌ Background Manager no disponible');
+                console.log('🔍 Intentando crear instancia manual...');
+                
+                // Intentar crear una instancia manual si la clase está disponible
+                if (typeof BackgroundManager !== 'undefined') {
+                    try {
+                        window.backgroundManager = new BackgroundManager();
+                        console.log('✅ Instancia creada manualmente');
+                    } catch (error) {
+                        console.error('❌ Error creando instancia manual:', error);
+                    }
+                } else {
+                    console.error('❌ Clase BackgroundManager no definida');
+                }
+            }
+        }, 1000);
+    </script>
+    
+    <script src="./background-manager.js"></script>
+    <script src="./notification-manager.js"></script>
+    
+    <script>
+        // =================== FUNCIONES DE PRUEBA ===================
+        
+        function setDestination() {
+            const lat = parseFloat(document.getElementById('latInput').value);
+            const lng = parseFloat(document.getElementById('lngInput').value);
+            const desc = document.getElementById('descInput').value;
+            
+            if (window.setDestination) {
+                try {
+                    const success = window.setDestination(lat, lng, desc);
+                    if (success) {
+                        showStatus('✅ Destino configurado correctamente', 'success');
+                    } else {
+                        showStatus('❌ Error configurando destino', 'error');
+                    }
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    const success = window.backgroundManager.setDestination(lat, lng, desc);
+                    if (success) {
+                        showStatus('✅ Destino configurado correctamente', 'success');
+                    } else {
+                        showStatus('❌ Error configurando destino', 'error');
+                    }
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: configurar destino manualmente
+                try {
+                    localStorage.setItem('destino_lat', lat.toString());
+                    localStorage.setItem('destino_lng', lng.toString());
+                    localStorage.setItem('destino_descripcion', desc);
+                    window.destinoCoords = [lat, lng];
+                    window.destinoDescripcion = desc;
+                    
+                    showStatus('✅ Destino configurado manualmente', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error configurando destino: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        function debugDestination() {
+            if (window.debugDestination) {
+                try {
+                    const destination = window.debugDestination();
+                    if (destination) {
+                        showStatus(`📍 Destino: ${destination.lat}, ${destination.lng}`, 'success');
+                    } else {
+                        showStatus('❌ No hay destino configurado', 'warning');
+                    }
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    const destination = window.backgroundManager.debugDestination();
+                    if (destination) {
+                        showStatus(`📍 Destino: ${destination.lat}, ${destination.lng}`, 'success');
+                    } else {
+                        showStatus('❌ No hay destino configurado', 'warning');
+                    }
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: verificar localStorage
+                const destinoLat = localStorage.getItem('destino_lat');
+                const destinoLng = localStorage.getItem('destino_lng');
+                if (destinoLat && destinoLng) {
+                    showStatus(`📍 Destino (localStorage): ${destinoLat}, ${destinoLng}`, 'success');
+                } else {
+                    showStatus('❌ No hay destino configurado', 'warning');
+                }
+            }
+        }
+        
+        function testBasicNotification() {
+            if (window.testNotification) {
+                try {
+                    window.testNotification();
+                    showStatus('🔔 Notificación de prueba enviada', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: probar notificación directamente
+                if (Notification.permission === 'granted') {
+                    new Notification('🧪 Prueba Directa', {
+                        body: 'Esta es una notificación de prueba directa',
+                        icon: './logoagapai-ok2.png',
+                        badge: './pin-verde-destino.png'
+                    });
+                    showStatus('🔔 Notificación de prueba enviada (directa)', 'success');
+                } else {
+                    showStatus('❌ Permisos de notificación no otorgados', 'error');
+                }
+            }
+        }
+        
+        function testProximityNotification() {
+            if (window.testProximityNotification) {
+                try {
+                    window.testProximityNotification();
+                    showStatus('🚨 Prueba de notificación de proximidad iniciada', 'warning');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    window.backgroundManager.testProximityNotification();
+                    showStatus('🚨 Prueba de notificación de proximidad iniciada', 'warning');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: probar notificación de proximidad directamente
+                if (Notification.permission === 'granted') {
+                    new Notification('🚨 ¡Casi llegas!', {
+                        body: 'Faltan 300 metros para tu destino',
+                        icon: './pin-verde-destino.png',
+                        badge: './pin-morado.png',
+                        vibrate: [200, 100, 200, 100, 200],
+                        requireInteraction: true
+                    });
+                    showStatus('🚨 Notificación de proximidad enviada (directa)', 'warning');
+                } else {
+                    showStatus('❌ Permisos de notificación no otorgados', 'error');
+                }
+            }
+        }
+        
+        function testArrivalNotification() {
+            if (window.testArrivalNotification) {
+                try {
+                    window.testArrivalNotification();
+                    showStatus('🎉 Prueba de notificación de llegada iniciada', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    window.backgroundManager.testArrivalNotification();
+                    showStatus('🎉 Prueba de notificación de llegada iniciada', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: probar notificación de llegada directamente
+                if (Notification.permission === 'granted') {
+                    new Notification('🎉 ¡Has llegado!', {
+                        body: 'Ya estás en tu destino',
+                        icon: './pin-verde-destino.png',
+                        badge: './pin-morado.png',
+                        vibrate: [1500, 300, 1500, 300, 1500],
+                        requireInteraction: true
+                    });
+                    showStatus('🎉 Notificación de llegada enviada (directa)', 'success');
+                } else {
+                    showStatus('❌ Permisos de notificación no otorgados', 'error');
+                }
+            }
+        }
+        
+        function debugLocation() {
+            if (window.debugLocation) {
+                window.debugLocation();
+                showStatus('📍 Obteniendo ubicación actual...', 'warning');
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    window.backgroundManager.debugLocation();
+                    showStatus('📍 Obteniendo ubicación actual...', 'warning');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                // Fallback: probar geolocalización directamente
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const location = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                                accuracy: position.coords.accuracy
+                            };
+                            showStatus(`📍 Ubicación: ${location.lat}, ${location.lng} (precisión: ${location.accuracy}m)`, 'success');
+                        },
+                        (error) => {
+                            showStatus(`❌ Error obteniendo ubicación: ${error.message}`, 'error');
+                        },
+                        { timeout: 10000 }
+                    );
+                    showStatus('📍 Obteniendo ubicación actual...', 'warning');
+                } else {
+                    showStatus('❌ Geolocalización no soportada', 'error');
+                }
+            }
+        }
+        
+        function startTracking() {
+            if (window.startBackgroundTracking) {
+                try {
+                    window.startBackgroundTracking();
+                    showStatus('🎯 Tracking iniciado', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    window.backgroundManager.startTracking();
+                    showStatus('🎯 Tracking iniciado', 'success');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                showStatus('❌ Background Manager no disponible', 'error');
+            }
+        }
+        
+        function stopTracking() {
+            if (window.stopBackgroundTracking) {
+                try {
+                    window.stopBackgroundTracking();
+                    showStatus('🛑 Tracking detenido', 'warning');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else if (window.backgroundManager) {
+                // Usar el Background Manager directamente
+                try {
+                    window.backgroundManager.stopTracking();
+                    showStatus('🛑 Tracking detenido', 'warning');
+                } catch (error) {
+                    showStatus(`❌ Error: ${error.message}`, 'error');
+                }
+            } else {
+                showStatus('❌ Background Manager no disponible', 'error');
+            }
+        }
+        
+        function checkStatus() {
+            if (window.getCompleteStatus) {
+                const completeStatus = window.getCompleteStatus();
+                if (!completeStatus) {
+                    showStatus('❌ Background Manager no disponible', 'error');
+                    return;
+                }
+                
+                let statusText = '📊 Estado del sistema:\n';
+                statusText += `🔔 Notificaciones: ${completeStatus.notification}\n`;
+                statusText += `📍 Geolocalización: ${completeStatus.geolocation}\n`;
+                statusText += `⚙️ Service Worker: ${completeStatus.serviceWorker}\n`;
+                statusText += `🔆 Wake Lock: ${completeStatus.wakeLock}\n`;
+                statusText += `📳 Vibración: ${completeStatus.vibration}\n`;
+                statusText += `🎯 Tracking: ${completeStatus.tracking ? 'Activo' : 'Inactivo'}\n`;
+                statusText += `📍 Watch ID: ${completeStatus.watchId || 'Ninguno'}\n`;
+                statusText += `💓 Heartbeat: ${completeStatus.heartbeatInterval}\n`;
+                
+                statusText += `\n📱 Soporte del navegador:\n`;
+                const support = completeStatus.browserSupport;
+                statusText += `🔔 Notificaciones: ${support.notification ? '✅' : '❌'}\n`;
+                statusText += `📍 Geolocalización: ${support.geolocation ? '✅' : '❌'}\n`;
+                statusText += `⚙️ Service Worker: ${support.serviceWorker ? '✅' : '❌'}\n`;
+                statusText += `🔆 Wake Lock: ${support.wakeLock ? '✅' : '❌'}\n`;
+                statusText += `📳 Vibración: ${support.vibration ? '✅' : '❌'}\n`;
+                statusText += `🔄 Background Sync: ${support.backgroundSync ? '✅' : '❌'}\n`;
+                statusText += `🔐 Permisos API: ${support.permissions ? '✅' : '❌'}`;
+                
+                showStatus(statusText, 'success');
+            } else if (window.backgroundManager) {
+                // Fallback: usar información directa del Background Manager
+                const bm = window.backgroundManager;
+                const status = bm.getPermissionStatus();
+                
+                let statusText = '📊 Estado del sistema (directo):\n';
+                statusText += `🔔 Notificaciones: ${status.notification}\n`;
+                statusText += `📍 Geolocalización: ${status.geolocation}\n`;
+                statusText += `⚙️ Service Worker: ${status.serviceWorker}\n`;
+                statusText += `🔆 Wake Lock: ${status.wakeLock}\n`;
+                statusText += `📳 Vibración: ${status.vibration}\n`;
+                statusText += `🎯 Tracking: ${bm.isTracking() ? 'Activo' : 'Inactivo'}\n`;
+                statusText += `📍 Watch ID: ${bm.locationWatchId || 'Ninguno'}\n`;
+                
+                statusText += `\n📱 Soporte del navegador:\n`;
+                const support = bm.isSupported;
+                statusText += `🔔 Notificaciones: ${support.notification ? '✅' : '❌'}\n`;
+                statusText += `📍 Geolocalización: ${support.geolocation ? '✅' : '❌'}\n`;
+                statusText += `⚙️ Service Worker: ${support.serviceWorker ? '✅' : '❌'}\n`;
+                statusText += `🔆 Wake Lock: ${support.wakeLock ? '✅' : '❌'}\n`;
+                statusText += `📳 Vibración: ${support.vibration ? '✅' : '❌'}\n`;
+                statusText += `🔄 Background Sync: ${support.backgroundSync ? '✅' : '❌'}\n`;
+                statusText += `🔐 Permisos API: ${support.permissions ? '✅' : '❌'}`;
+                
+                showStatus(statusText, 'success');
+            } else {
+                showStatus('❌ Background Manager no disponible', 'error');
+            }
+        }
+        
+        function checkPermissions() {
+            if (Notification.permission === 'granted') {
+                showStatus('✅ Permisos de notificación otorgados', 'success');
+            } else if (Notification.permission === 'denied') {
+                showStatus('❌ Permisos de notificación denegados', 'error');
+            } else {
+                showStatus('⚠️ Permisos de notificación no solicitados', 'warning');
+            }
+        }
+        
+        function showStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+        
+        // =================== INICIALIZACIÓN ===================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Página de prueba de notificaciones cargada');
+            
+            // Verificar si el Background Manager está disponible
+            setTimeout(() => {
+                if (window.backgroundManager) {
+                    showStatus('✅ Background Manager disponible', 'success');
+                    
+                    // Mostrar información de debugging
+                    console.log('🔧 Background Manager:', window.backgroundManager);
+                    console.log('📱 Soporte:', window.backgroundManager.isSupported);
+                    console.log('🔔 Permisos:', window.backgroundManager.notificationPermission);
+                    
+                } else {
+                    showStatus('❌ Background Manager no disponible', 'error');
+                    console.error('❌ Background Manager no encontrado');
+                }
+            }, 2000);
+        });
+        
+        // Función para debugging detallado
+        function debugBackgroundManager() {
+            if (window.backgroundManager) {
+                const bm = window.backgroundManager;
+                let debugInfo = '🔧 Background Manager Debug:\n';
+                debugInfo += `📱 Soporte: ${JSON.stringify(bm.isSupported)}\n`;
+                debugInfo += `🔔 Permisos: ${bm.notificationPermission}\n`;
+                debugInfo += `⚙️ Service Worker: ${bm.registration ? 'Registrado' : 'No registrado'}\n`;
+                debugInfo += `🎯 Tracking: ${bm.isTracking() ? 'Activo' : 'Inactivo'}\n`;
+                debugInfo += `📍 Watch ID: ${bm.locationWatchId || 'Ninguno'}`;
+                
+                showStatus(debugInfo, 'success');
+            } else {
+                showStatus('❌ Background Manager no disponible', 'error');
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -21,7 +21,8 @@ class BackgroundManager {
             wakeLock: 'wakeLock' in navigator,
             notification: 'Notification' in window,
             vibration: 'vibrate' in navigator,
-            permissions: 'permissions' in navigator
+            permissions: 'permissions' in navigator,
+            geolocation: this.checkGeolocationSupport()
         };
         
         console.log('📱 Soporte de segundo plano:', support);
@@ -372,7 +373,10 @@ class BackgroundManager {
     checkDestinationProximity(currentLocation) {
         // Obtener destino del estado
         const destination = this.getDestinationFromState();
-        if (!destination) return;
+        if (!destination) {
+            console.log('⚠️ No hay destino configurado para verificar proximidad');
+            return;
+        }
         
         // Calcular distancia
         const distance = this.calculateDistance(
@@ -385,11 +389,19 @@ class BackgroundManager {
         // Alertas por proximidad
         if (distance <= 300 && !this.alerted300m) {
             this.alerted300m = true;
-            this.showNotification(
-                '¡Casi llegas!',
-                'Faltan menos de 300 metros para tu destino',
-                { urgent: true }
-            );
+            console.log('🚨 ¡ALERTA DE PROXIMIDAD! Faltan menos de 300 metros');
+            
+            // Usar notification manager si está disponible
+            if (window.notificationManager) {
+                window.notificationManager.showProximityNotification(distance);
+            } else {
+                // Fallback al método local
+                this.showNotification(
+                    '¡Casi llegas!',
+                    `Faltan ${distance.toFixed(0)} metros para tu destino`,
+                    { urgent: true }
+                );
+            }
             
             // Vibración fuerte
             if (this.isSupported.vibration) {
@@ -399,19 +411,69 @@ class BackgroundManager {
         
         if (distance <= 50 && !this.alerted50m) {
             this.alerted50m = true;
-            this.showNotification(
-                '¡Has llegado!',
-                'Ya estás en tu destino',
-                { 
-                    urgent: true,
-                    onClick: () => this.stopBackgroundTracking()
-                }
-            );
+            console.log('🎉 ¡HAS LLEGADO! Ya estás en tu destino');
+            
+            // Usar notification manager si está disponible
+            if (window.notificationManager) {
+                window.notificationManager.showArrivalNotification();
+            } else {
+                // Fallback al método local
+                this.showNotification(
+                    '¡Has llegado!',
+                    'Ya estás en tu destino',
+                    { 
+                        urgent: true,
+                        onClick: () => this.stopBackgroundTracking()
+                    }
+                );
+            }
             
             // Vibración muy fuerte
             if (this.isSupported.vibration) {
                 navigator.vibrate([1500, 300, 1500, 300, 1500]);
             }
+            
+            // Detener tracking automáticamente después de un tiempo
+            setTimeout(() => {
+                this.stopBackgroundTracking();
+            }, 10000); // 10 segundos
+        }
+    }
+    
+    // =================== CONFIGURAR DESTINO ===================
+    setDestination(lat, lng, description = '') {
+        try {
+            // Guardar en localStorage
+            localStorage.setItem('destino_lat', lat.toString());
+            localStorage.setItem('destino_lng', lng.toString());
+            localStorage.setItem('destino_descripcion', description);
+            
+            // Guardar en window para acceso rápido
+            window.destinoCoords = [lat, lng];
+            window.destinoDescripcion = description;
+            
+            // Limpiar flags de alerta
+            this.alerted300m = false;
+            this.alerted50m = false;
+            
+            console.log('📍 Destino configurado:', { lat, lng, description });
+            
+            // Guardar en estado de la aplicación
+            const state = {
+                route: {
+                    end: {
+                        coords: [lat, lng],
+                        description: description
+                    }
+                },
+                timestamp: Date.now()
+            };
+            localStorage.setItem('tuguia_state', JSON.stringify(state));
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error configurando destino:', error);
+            return false;
         }
     }
     
@@ -430,18 +492,55 @@ class BackgroundManager {
     
     getDestinationFromState() {
         try {
+            // Intentar obtener destino de múltiples fuentes
             const state = localStorage.getItem('tuguia_state');
             if (state) {
                 const data = JSON.parse(state);
-                return data.route?.end?.coords ? {
-                    lat: data.route.end.coords[0],
-                    lng: data.route.end.coords[1]
-                } : null;
+                if (data.route?.end?.coords) {
+                    console.log('📍 Destino encontrado en tuguia_state:', data.route.end.coords);
+                    return {
+                        lat: data.route.end.coords[0],
+                        lng: data.route.end.coords[1]
+                    };
+                }
             }
-        } catch (e) {
-            console.error('Error obteniendo destino:', e);
+            
+            // Intentar obtener destino de window.endMarker
+            if (window.endMarker) {
+                const latLng = window.endMarker.getLatLng();
+                console.log('📍 Destino encontrado en window.endMarker:', latLng);
+                return {
+                    lat: latLng.lat,
+                    lng: latLng.lng
+                };
+            }
+            
+            // Intentar obtener destino de window.destinoCoords
+            if (window.destinoCoords && window.destinoCoords.length === 2) {
+                console.log('📍 Destino encontrado en window.destinoCoords:', window.destinoCoords);
+                return {
+                    lat: window.destinoCoords[0],
+                    lng: window.destinoCoords[1]
+                };
+            }
+            
+            // Intentar obtener destino de localStorage directo
+            const destinoLat = localStorage.getItem('destino_lat');
+            const destinoLng = localStorage.getItem('destino_lng');
+            if (destinoLat && destinoLng) {
+                console.log('📍 Destino encontrado en localStorage:', [destinoLat, destinoLng]);
+                return {
+                    lat: parseFloat(destinoLat),
+                    lng: parseFloat(destinoLng)
+                };
+            }
+            
+            console.log('⚠️ No se encontró destino configurado');
+            return null;
+        } catch (error) {
+            console.error('❌ Error obteniendo destino del estado:', error);
+            return null;
         }
-        return null;
     }
     
     notifyLocationUpdate(locationData) {
@@ -627,8 +726,31 @@ class BackgroundManager {
         return {
             notification: this.notificationPermission,
             geolocation: this.isSupported.geolocation ? 'supported' : 'not_supported',
-            serviceWorker: this.registration ? 'registered' : 'not_registered'
+            serviceWorker: this.registration ? 'registered' : 'not_registered',
+            wakeLock: this.isSupported.wakeLock ? 'supported' : 'not_supported',
+            vibration: this.isSupported.vibration ? 'supported' : 'not_supported'
         };
+    }
+    
+    // Verificar soporte de geolocalización de manera más robusta
+    checkGeolocationSupport() {
+        if (!navigator.geolocation) {
+            console.log('❌ Geolocalización no disponible en navigator');
+            return false;
+        }
+        
+        // Verificar métodos específicos
+        const hasGetCurrentPosition = typeof navigator.geolocation.getCurrentPosition === 'function';
+        const hasWatchPosition = typeof navigator.geolocation.watchPosition === 'function';
+        const hasClearWatch = typeof navigator.geolocation.clearWatch === 'function';
+        
+        console.log('📍 Verificación de geolocalización:', {
+            hasGetCurrentPosition,
+            hasWatchPosition,
+            hasClearWatch
+        });
+        
+        return hasGetCurrentPosition && hasWatchPosition && hasClearWatch;
     }
     
     // Enviar notificación de prueba
@@ -649,6 +771,90 @@ class BackgroundManager {
             return false;
         }
     }
+    
+    // =================== FUNCIONES DE TESTING ===================
+    async testProximityNotification() {
+        console.log('🧪 Probando notificación de proximidad...');
+        
+        // Simular ubicación actual
+        const currentLocation = {
+            lat: 10.397562,
+            lng: -75.559672
+        };
+        
+        // Configurar destino de prueba (300 metros de distancia)
+        const testDestination = {
+            lat: 10.400000,
+            lng: -75.560000
+        };
+        
+        // Guardar destino de prueba
+        this.setDestination(testDestination.lat, testDestination.lng, 'Destino de Prueba');
+        
+        // Verificar proximidad
+        this.checkDestinationProximity(currentLocation);
+        
+        console.log('✅ Prueba de proximidad completada');
+    }
+    
+    async testArrivalNotification() {
+        console.log('🧪 Probando notificación de llegada...');
+        
+        // Simular ubicación muy cerca del destino
+        const currentLocation = {
+            lat: 10.400001,
+            lng: -75.560001
+        };
+        
+        // Configurar destino de prueba
+        const testDestination = {
+            lat: 10.400000,
+            lng: -75.560000
+        };
+        
+        // Guardar destino de prueba
+        this.setDestination(testDestination.lat, testDestination.lng, 'Destino de Prueba');
+        
+        // Verificar proximidad
+        this.checkDestinationProximity(currentLocation);
+        
+        console.log('✅ Prueba de llegada completada');
+    }
+    
+    // =================== FUNCIONES DE DEBUGGING ===================
+    debugDestination() {
+        const destination = this.getDestinationFromState();
+        console.log('📍 Destino actual:', destination);
+        
+        if (destination) {
+            console.log('✅ Destino configurado correctamente');
+            console.log('📊 Coordenadas:', destination);
+        } else {
+            console.log('❌ No hay destino configurado');
+        }
+        
+        return destination;
+    }
+    
+    debugLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log('📍 Ubicación actual:', {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    });
+                },
+                (error) => {
+                    console.error('❌ Error obteniendo ubicación:', error);
+                },
+                { timeout: 10000 }
+            );
+        } else {
+            console.log('❌ Geolocalización no soportada');
+        }
+    }
 }
 
 // =================== INICIALIZACIÓN GLOBAL ===================
@@ -663,6 +869,45 @@ if (typeof window !== 'undefined') {
     window.isBackgroundTracking = () => window.backgroundManager.isTracking();
     window.testNotification = () => window.backgroundManager.testNotification();
     window.getPermissionStatus = () => window.backgroundManager.getPermissionStatus();
+    
+    // Funciones de testing
+    window.testProximityNotification = () => window.backgroundManager.testProximityNotification();
+    window.testArrivalNotification = () => window.backgroundManager.testArrivalNotification();
+    window.debugDestination = () => window.backgroundManager.debugDestination();
+    window.debugLocation = () => window.backgroundManager.debugLocation();
+    window.setDestination = (lat, lng, desc) => window.backgroundManager.setDestination(lat, lng, desc);
+    
+    // Funciones adicionales de debugging
+    window.getBackgroundManager = () => window.backgroundManager;
+    window.checkSupport = () => window.backgroundManager.isSupported;
+    window.getRegistration = () => window.backgroundManager.registration;
+    
+    // Función mejorada para obtener estado completo
+    window.getCompleteStatus = () => {
+        if (!window.backgroundManager) return null;
+        
+        const bm = window.backgroundManager;
+        const status = bm.getPermissionStatus();
+        const isTracking = bm.isTracking();
+        
+        return {
+            // Estado actual
+            notification: status.notification,
+            geolocation: status.geolocation,
+            serviceWorker: status.serviceWorker,
+            wakeLock: status.wakeLock,
+            vibration: status.vibration,
+            tracking: isTracking,
+            
+            // Soporte del navegador (desde la instancia real)
+            browserSupport: bm.isSupported,
+            
+            // Información adicional
+            watchId: bm.locationWatchId,
+            registration: bm.registration ? 'Registrado' : 'No registrado',
+            heartbeatInterval: bm.heartbeatInterval ? 'Activo' : 'Inactivo'
+        };
+    };
 }
 
 // Exportar para uso como módulo
