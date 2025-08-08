@@ -290,6 +290,27 @@
     {
       "type": "Feature",
       "properties": {
+        "nombre_paradero": "PATIO PORTAL (TG)",
+        "coordenadas": "10.393269647446601, -75.47088742054622",
+        "rutas": "T101,T102,T103,T100E,X102,X103,A101,A102,A114,A117,C016",
+        "network": "Transcaribe",
+        "fuente": "csv_2025",
+        "highway": "bus_stop",
+        "public_transport": "platform",
+        "name": "Patio Portal (TG)",
+        "es_exclusivo": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.47088742054622,
+          10.393269647446601
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "nombre_paradero": "LOS ANGELES",
         "coordenadas": "10.395071, -75.49033",
         "rutas": "T102,T103",
@@ -4417,27 +4438,7 @@
         ]
       }
     },
-    {
-      "type": "Feature",
-      "properties": {
-        "nombre_paradero": "Cancha 2",
-        "coordenadas": "10.382287772392937, -75.49581662021555",
-        "rutas": "A108,C001",
-        "network": "Transcaribe",
-        "tipos_ruta": "Alimentadoras, Complementarias",
-        "fuente": "csv_2025",
-        "highway": "bus_stop",
-        "public_transport": "platform",
-        "name": "Cancha 2"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -75.49581662021555,
-          10.382287772392937
-        ]
-      }
-    },
+    
     {
       "type": "Feature",
       "properties": {
