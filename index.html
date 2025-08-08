@@ -5635,6 +5635,12 @@
                 setTimeout(() => {
                     if (window.backgroundManager) {
                         console.log('🎯 Background Manager listo');
+                        // Inicializar para registrar SW y pedir permisos temprano
+                        try {
+                            window.backgroundManager.init();
+                        } catch (e) {
+                            console.warn('⚠️ No se pudo inicializar Background Manager inmediatamente:', e);
+                        }
                         
                         // Configurar eventos de integración
                         setupBackgroundIntegration();

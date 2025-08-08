@@ -329,6 +329,18 @@
     <!-- 🔥 SCRIPTS CRÍTICOS PARA FUNCIONAMIENTO EN SEGUNDO PLANO -->
     <script src="background-manager.js"></script>
     <script src="mobile-optimization.js"></script>
+    <script>
+      // Asegurar inicialización temprana del gestor de segundo plano
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (window.backgroundManager && !window.backgroundManager.isInitialized) {
+          try {
+            await window.backgroundManager.init();
+          } catch (e) {
+            console.warn('No se pudo inicializar backgroundManager al cargar:', e);
+          }
+        }
+      });
+    </script>
     
     <!-- Sistema de Cache y Monitoreo de API para Yotellevo -->
     <script>
@@ -1396,6 +1408,19 @@
       rutaOptimaCalculada = rutaOptima;
       paraderoCercanoEncontrado = paraderoCercano;
       
+      // Configurar destino en el gestor de segundo plano para alertas de proximidad
+      try {
+        if (window.backgroundManager && rutaOptima && rutaOptima.paraderoDestino) {
+          window.backgroundManager.setDestination(
+            rutaOptima.paraderoDestino.lat,
+            rutaOptima.paraderoDestino.lon,
+            'Destino final'
+          );
+        }
+      } catch (e) {
+        console.warn('No se pudo configurar el destino en backgroundManager:', e);
+      }
+      
       // Crear panel de seguimiento
       const seguimientoHTML = `
         <div style="background: #fffbe6; border: 2.5px solid #bdbdbd; border-radius: 14px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 1.5px 6px rgba(189,189,189,0.10);">
@@ -1451,9 +1476,9 @@
       console.log('🚀 [BACKGROUND] Activando servicios para seguimiento...');
       
       // Activar Wake Lock para evitar que se duerma la app
-      if (window.BackgroundManager && window.BackgroundManager.requestWakeLock) {
+      if (window.backgroundManager && window.backgroundManager.requestWakeLock) {
         try {
-          await window.BackgroundManager.requestWakeLock();
+          await window.backgroundManager.requestWakeLock();
           console.log('✅ [WAKE-LOCK] Wake Lock activado para seguimiento');
         } catch (error) {
           console.error('❌ [WAKE-LOCK] Error activando Wake Lock:', error);
@@ -1461,9 +1486,9 @@
       }
       
       // Iniciar tracking de background si está disponible
-      if (window.BackgroundManager && window.BackgroundManager.startBackgroundLocationTracking) {
+      if (window.backgroundManager && window.backgroundManager.startBackgroundLocationTracking) {
         try {
-          await window.BackgroundManager.startBackgroundLocationTracking();
+          await window.backgroundManager.startBackgroundLocationTracking();
           console.log('✅ [BACKGROUND-GPS] Tracking de segundo plano activado');
         } catch (error) {
           console.error('❌ [BACKGROUND-GPS] Error en tracking de segundo plano:', error);
@@ -1641,11 +1666,11 @@
     console.log('🛑 [STOP] Deteniendo seguimiento inteligente...');
     
     // 🔥 LIBERAR RECURSOS DE SEGUNDO PLANO
-    if (window.BackgroundManager) {
+    if (window.backgroundManager) {
       // Detener tracking de background
-      if (window.BackgroundManager.stopBackgroundTracking) {
+      if (window.backgroundManager.stopBackgroundTracking) {
         try {
-          window.BackgroundManager.stopBackgroundTracking();
+          window.backgroundManager.stopBackgroundTracking();
           console.log('✅ [BACKGROUND] Tracking de segundo plano detenido');
         } catch (error) {
           console.error('❌ [BACKGROUND] Error deteniendo tracking:', error);
@@ -1653,9 +1678,9 @@
       }
       
       // Liberar Wake Lock
-      if (window.BackgroundManager.releaseWakeLock) {
+      if (window.backgroundManager.releaseWakeLock) {
         try {
-          window.BackgroundManager.releaseWakeLock();
+          window.backgroundManager.releaseWakeLock();
           console.log('✅ [WAKE-LOCK] Wake Lock liberado');
         } catch (error) {
           console.error('❌ [WAKE-LOCK] Error liberando Wake Lock:', error);
