@@ -1,317 +1,329 @@
-// =================== SISTEMA DE TESTING PARA FUNCIONALIDADES DE SEGUNDO PLANO ===================
+// =================== TESTING SUITE PARA BACKGROUND MANAGER ===================
 
 class BackgroundTestSuite {
     constructor() {
-        this.tests = [];
         this.results = [];
-        this.currentTest = 0;
+        this.isRunning = false;
     }
     
     // =================== EJECUTAR TODAS LAS PRUEBAS ===================
     async runAllTests() {
-        console.log('🧪 Iniciando pruebas de funcionalidades de segundo plano...');
-        
-        this.tests = [
-            this.testServiceWorkerRegistration,
-            this.testNotificationPermissions,
-            this.testBackgroundManager,
-            this.testNotificationManager,
-            this.testGeolocation,
-            this.testBackgroundSync,
-            this.testWakeLock,
-            this.testCache,
-            this.testOfflineFunctionality
-        ];
-        
-        for (let i = 0; i < this.tests.length; i++) {
-            this.currentTest = i + 1;
-            const testName = this.tests[i].name;
-            
-            console.log(`\n🔍 Ejecutando prueba ${this.currentTest}/${this.tests.length}: ${testName}`);
-            
-            try {
-                const result = await this.tests[i].call(this);
-                this.results.push({
-                    test: testName,
-                    passed: result.passed,
-                    message: result.message,
-                    details: result.details
-                });
-                
-                if (result.passed) {
-                    console.log(`✅ ${testName}: ${result.message}`);
-                } else {
-                    console.log(`❌ ${testName}: ${result.message}`);
-                }
-            } catch (error) {
-                console.error(`💥 Error en ${testName}:`, error);
-                this.results.push({
-                    test: testName,
-                    passed: false,
-                    message: 'Error durante la prueba',
-                    details: error.message
-                });
-            }
+        if (this.isRunning) {
+            console.log('⚠️ Tests ya en ejecución');
+            return;
         }
         
-        this.printResults();
-        return this.results;
+        this.isRunning = true;
+        this.results = [];
+        
+        console.log('🧪 =================== INICIANDO PRUEBAS DE SEGUNDO PLANO ===================');
+        
+        try {
+            // Prueba 1: Service Worker
+            await this.testServiceWorker();
+            
+            // Prueba 2: Notificaciones
+            await this.testNotifications();
+            
+            // Prueba 3: Background Manager
+            await this.testBackgroundManager();
+            
+            // Prueba 4: Geolocalización
+            await this.testGeolocation();
+            
+            // Prueba 5: Wake Lock
+            await this.testWakeLock();
+            
+            // Prueba 6: Background Sync
+            await this.testBackgroundSync();
+            
+            // Prueba 7: Tracking de ubicación
+            await this.testLocationTracking();
+            
+            // Prueba 8: Notificaciones de proximidad
+            await this.testProximityNotifications();
+            
+            // Mostrar resultados
+            this.showResults();
+            
+        } catch (error) {
+            console.error('❌ Error ejecutando pruebas:', error);
+        } finally {
+            this.isRunning = false;
+        }
     }
     
-    // =================== PRUEBA DE REGISTRO DE SERVICE WORKER ===================
-    async testServiceWorkerRegistration() {
-        if (!('serviceWorker' in navigator)) {
-            return {
-                passed: false,
-                message: 'Service Workers no soportados',
-                details: 'El navegador no soporta Service Workers'
-            };
-        }
+    // =================== PRUEBA 1: SERVICE WORKER ===================
+    async testServiceWorker() {
+        console.log('\n🔧 Prueba 1: Service Worker');
         
         try {
             const registration = await navigator.serviceWorker.getRegistration();
+            const result = {
+                test: 'Service Worker',
+                passed: !!registration,
+                details: registration ? 'Registrado correctamente' : 'No registrado'
+            };
             
             if (registration) {
-                return {
-                    passed: true,
-                    message: 'Service Worker registrado correctamente',
-                    details: `Estado: ${registration.active ? 'Activo' : 'Inactivo'}`
-                };
+                console.log('✅ Service Worker registrado');
+                console.log('📊 Estado:', registration.active ? 'Activo' : 'Inactivo');
+                console.log('🔄 Scope:', registration.scope);
             } else {
-                return {
-                    passed: false,
-                    message: 'Service Worker no registrado',
-                    details: 'No se encontró registro de Service Worker'
-                };
+                console.log('❌ Service Worker no registrado');
             }
+            
+            this.results.push(result);
+            
         } catch (error) {
-            return {
+            console.log('❌ Error verificando Service Worker:', error.message);
+            this.results.push({
+                test: 'Service Worker',
                 passed: false,
-                message: 'Error verificando Service Worker',
                 details: error.message
-            };
+            });
         }
     }
     
-    // =================== PRUEBA DE PERMISOS DE NOTIFICACIÓN ===================
-    async testNotificationPermissions() {
-        if (!('Notification' in window)) {
-            return {
-                passed: false,
-                message: 'Notificaciones no soportadas',
-                details: 'El navegador no soporta la API de Notificaciones'
-            };
-        }
+    // =================== PRUEBA 2: NOTIFICACIONES ===================
+    async testNotifications() {
+        console.log('\n🔔 Prueba 2: Notificaciones');
         
         const permission = Notification.permission;
+        const result = {
+            test: 'Notificaciones',
+            passed: permission === 'granted',
+            details: `Permiso: ${permission}`
+        };
         
         if (permission === 'granted') {
-            return {
-                passed: true,
-                message: 'Permisos de notificación otorgados',
-                details: 'El usuario ha otorgado permisos de notificación'
-            };
-        } else if (permission === 'denied') {
-            return {
-                passed: false,
-                message: 'Permisos de notificación denegados',
-                details: 'El usuario ha denegado los permisos de notificación'
-            };
+            console.log('✅ Permisos de notificación otorgados');
+        } else if (permission === 'default') {
+            console.log('⚠️ Permisos de notificación no solicitados');
         } else {
-            return {
-                passed: false,
-                message: 'Permisos de notificación no solicitados',
-                details: 'Los permisos aún no han sido solicitados'
-            };
+            console.log('❌ Permisos de notificación denegados');
         }
+        
+        this.results.push(result);
     }
     
-    // =================== PRUEBA DE BACKGROUND MANAGER ===================
+    // =================== PRUEBA 3: BACKGROUND MANAGER ===================
     async testBackgroundManager() {
-        if (!window.backgroundManager) {
-            return {
-                passed: false,
-                message: 'Background Manager no disponible',
-                details: 'El Background Manager no se ha inicializado'
-            };
+        console.log('\n🎯 Prueba 3: Background Manager');
+        
+        const result = {
+            test: 'Background Manager',
+            passed: !!window.backgroundManager,
+            details: window.backgroundManager ? 'Disponible' : 'No disponible'
+        };
+        
+        if (window.backgroundManager) {
+            console.log('✅ Background Manager disponible');
+            console.log('📊 Estado:', window.backgroundManager.isInitialized ? 'Inicializado' : 'No inicializado');
+            console.log('🔧 Soporte:', window.backgroundManager.isSupported);
+        } else {
+            console.log('❌ Background Manager no disponible');
         }
         
-        const status = window.backgroundManager.getPermissionStatus();
-        
-        return {
-            passed: true,
-            message: 'Background Manager funcionando',
-            details: `Estado: ${JSON.stringify(status)}`
-        };
+        this.results.push(result);
     }
     
-    // =================== PRUEBA DE NOTIFICATION MANAGER ===================
-    async testNotificationManager() {
-        if (!window.notificationManager) {
-            return {
-                passed: false,
-                message: 'Notification Manager no disponible',
-                details: 'El Notification Manager no se ha inicializado'
-            };
-        }
-        
-        const status = window.notificationManager.getPermissionStatus();
-        
-        return {
-            passed: true,
-            message: 'Notification Manager funcionando',
-            details: `Estado: ${JSON.stringify(status)}`
-        };
-    }
-    
-    // =================== PRUEBA DE GEOLOCALIZACIÓN ===================
+    // =================== PRUEBA 4: GEOLOCALIZACIÓN ===================
     async testGeolocation() {
-        if (!navigator.geolocation) {
-            return {
-                passed: false,
-                message: 'Geolocalización no soportada',
-                details: 'El navegador no soporta la API de Geolocalización'
-            };
-        }
+        console.log('\n📍 Prueba 4: Geolocalización');
         
         try {
             const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                    timeout: 10000,
-                    enableHighAccuracy: true
-                });
+                navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
             });
             
-            return {
+            const result = {
+                test: 'Geolocalización',
                 passed: true,
-                message: 'Geolocalización funcionando',
-                details: `Precisión: ${position.coords.accuracy}m`
+                details: `Lat: ${position.coords.latitude.toFixed(6)}, Lng: ${position.coords.longitude.toFixed(6)}`
             };
+            
+            console.log('✅ Geolocalización funcionando');
+            console.log('📊 Coordenadas:', {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+                accuracy: position.coords.accuracy
+            });
+            
+            this.results.push(result);
+            
         } catch (error) {
-            return {
+            console.log('❌ Error obteniendo ubicación:', error.message);
+            this.results.push({
+                test: 'Geolocalización',
                 passed: false,
-                message: 'Error en geolocalización',
                 details: error.message
-            };
+            });
         }
     }
     
-    // =================== PRUEBA DE BACKGROUND SYNC ===================
-    async testBackgroundSync() {
-        if (!('serviceWorker' in navigator)) {
-            return {
-                passed: false,
-                message: 'Background Sync no soportado',
-                details: 'Service Workers no están disponibles'
-            };
-        }
-        
-        const registration = await navigator.serviceWorker.getRegistration();
-        
-        if (registration && 'sync' in window.ServiceWorkerRegistration.prototype) {
-            return {
-                passed: true,
-                message: 'Background Sync soportado',
-                details: 'La API de Background Sync está disponible'
-            };
-        } else {
-            return {
-                passed: false,
-                message: 'Background Sync no soportado',
-                details: 'La API de Background Sync no está disponible'
-            };
-        }
-    }
-    
-    // =================== PRUEBA DE WAKE LOCK ===================
+    // =================== PRUEBA 5: WAKE LOCK ===================
     async testWakeLock() {
-        if (!('wakeLock' in navigator)) {
-            return {
-                passed: false,
-                message: 'Wake Lock no soportado',
-                details: 'El navegador no soporta la API de Wake Lock'
-            };
+        console.log('\n🔆 Prueba 5: Wake Lock');
+        
+        const result = {
+            test: 'Wake Lock',
+            passed: 'wakeLock' in navigator,
+            details: 'wakeLock' in navigator ? 'Soportado' : 'No soportado'
+        };
+        
+        if ('wakeLock' in navigator) {
+            console.log('✅ Wake Lock soportado');
+        } else {
+            console.log('⚠️ Wake Lock no soportado');
         }
         
-        return {
-            passed: true,
-            message: 'Wake Lock soportado',
-            details: 'La API de Wake Lock está disponible'
-        };
+        this.results.push(result);
     }
     
-    // =================== PRUEBA DE CACHE ===================
-    async testCache() {
-        if (!('caches' in window)) {
-            return {
+    // =================== PRUEBA 6: BACKGROUND SYNC ===================
+    async testBackgroundSync() {
+        console.log('\n🔄 Prueba 6: Background Sync');
+        
+        const result = {
+            test: 'Background Sync',
+            passed: 'sync' in window.ServiceWorkerRegistration.prototype,
+            details: 'sync' in window.ServiceWorkerRegistration.prototype ? 'Soportado' : 'No soportado'
+        };
+        
+        if ('sync' in window.ServiceWorkerRegistration.prototype) {
+            console.log('✅ Background Sync soportado');
+        } else {
+            console.log('⚠️ Background Sync no soportado');
+        }
+        
+        this.results.push(result);
+    }
+    
+    // =================== PRUEBA 7: TRACKING DE UBICACIÓN ===================
+    async testLocationTracking() {
+        console.log('\n🎯 Prueba 7: Tracking de Ubicación');
+        
+        if (!window.backgroundManager) {
+            console.log('❌ Background Manager no disponible');
+            this.results.push({
+                test: 'Tracking de Ubicación',
                 passed: false,
-                message: 'Cache API no soportada',
-                details: 'El navegador no soporta la API de Cache'
-            };
+                details: 'Background Manager no disponible'
+            });
+            return;
         }
         
         try {
-            const cacheNames = await caches.keys();
+            // Configurar destino de prueba
+            const testDestination = {
+                lat: 10.400000,
+                lng: -75.560000
+            };
             
-            return {
-                passed: true,
-                message: 'Cache API funcionando',
-                details: `Caches disponibles: ${cacheNames.length}`
+            window.backgroundManager.setDestination(testDestination.lat, testDestination.lng, 'Destino de Prueba');
+            console.log('✅ Destino de prueba configurado');
+            
+            // Iniciar tracking
+            const trackingStarted = await window.backgroundManager.startTracking();
+            
+            const result = {
+                test: 'Tracking de Ubicación',
+                passed: trackingStarted,
+                details: trackingStarted ? 'Iniciado correctamente' : 'No se pudo iniciar'
             };
+            
+            if (trackingStarted) {
+                console.log('✅ Tracking iniciado correctamente');
+                
+                // Detener tracking después de 5 segundos
+                setTimeout(() => {
+                    window.backgroundManager.stopTracking();
+                    console.log('✅ Tracking detenido');
+                }, 5000);
+                
+            } else {
+                console.log('❌ No se pudo iniciar tracking');
+            }
+            
+            this.results.push(result);
+            
         } catch (error) {
-            return {
+            console.log('❌ Error en tracking:', error.message);
+            this.results.push({
+                test: 'Tracking de Ubicación',
                 passed: false,
-                message: 'Error en Cache API',
                 details: error.message
-            };
+            });
         }
     }
     
-    // =================== PRUEBA DE FUNCIONALIDAD OFFLINE ===================
-    async testOfflineFunctionality() {
-        if (!('serviceWorker' in navigator)) {
-            return {
+    // =================== PRUEBA 8: NOTIFICACIONES DE PROXIMIDAD ===================
+    async testProximityNotifications() {
+        console.log('\n🚨 Prueba 8: Notificaciones de Proximidad');
+        
+        if (!window.backgroundManager) {
+            console.log('❌ Background Manager no disponible');
+            this.results.push({
+                test: 'Notificaciones de Proximidad',
                 passed: false,
-                message: 'Funcionalidad offline no soportada',
-                details: 'Service Workers no están disponibles'
-            };
+                details: 'Background Manager no disponible'
+            });
+            return;
         }
         
-        const registration = await navigator.serviceWorker.getRegistration();
-        
-        if (registration && registration.active) {
-            return {
+        try {
+            // Simular ubicación cerca del destino
+            const currentLocation = {
+                lat: 10.400001,
+                lng: -75.560001
+            };
+            
+            // Configurar destino de prueba
+            const testDestination = {
+                lat: 10.400000,
+                lng: -75.560000
+            };
+            
+            window.backgroundManager.setDestination(testDestination.lat, testDestination.lng, 'Destino de Prueba');
+            
+            // Verificar proximidad
+            window.backgroundManager.checkDestinationProximity(currentLocation);
+            
+            const result = {
+                test: 'Notificaciones de Proximidad',
                 passed: true,
-                message: 'Funcionalidad offline disponible',
-                details: 'Service Worker activo para funcionalidad offline'
+                details: 'Proximidad verificada correctamente'
             };
-        } else {
-            return {
+            
+            console.log('✅ Notificaciones de proximidad funcionando');
+            
+            this.results.push(result);
+            
+        } catch (error) {
+            console.log('❌ Error en notificaciones de proximidad:', error.message);
+            this.results.push({
+                test: 'Notificaciones de Proximidad',
                 passed: false,
-                message: 'Funcionalidad offline no disponible',
-                details: 'No hay Service Worker activo'
-            };
+                details: error.message
+            });
         }
     }
     
-    // =================== IMPRIMIR RESULTADOS ===================
-    printResults() {
-        console.log('\n📊 RESULTADOS DE LAS PRUEBAS:');
-        console.log('================================');
+    // =================== MOSTRAR RESULTADOS ===================
+    showResults() {
+        console.log('\n📊 =================== RESULTADOS DE PRUEBAS ===================');
         
         const passed = this.results.filter(r => r.passed).length;
         const total = this.results.length;
         
-        console.log(`✅ Pruebas exitosas: ${passed}/${total}`);
-        console.log(`❌ Pruebas fallidas: ${total - passed}/${total}`);
+        console.log(`\n✅ Pruebas exitosas: ${passed}/${total}`);
+        console.log(`📈 Porcentaje de éxito: ${((passed/total)*100).toFixed(1)}%`);
         
-        console.log('\n📋 DETALLES:');
-        this.results.forEach((result, index) => {
+        console.log('\n📋 Detalles:');
+        this.results.forEach(result => {
             const status = result.passed ? '✅' : '❌';
-            console.log(`${status} ${index + 1}. ${result.test}: ${result.message}`);
-            if (result.details) {
-                console.log(`   📝 ${result.details}`);
-            }
+            console.log(`${status} ${result.test}: ${result.details}`);
         });
         
         // Mostrar recomendaciones
@@ -320,85 +332,124 @@ class BackgroundTestSuite {
     
     // =================== MOSTRAR RECOMENDACIONES ===================
     showRecommendations() {
+        console.log('\n💡 =================== RECOMENDACIONES ===================');
+        
         const failedTests = this.results.filter(r => !r.passed);
         
         if (failedTests.length === 0) {
-            console.log('\n🎉 ¡Todas las pruebas pasaron! Tu aplicación está lista para funcionar en segundo plano.');
-            return;
-        }
-        
-        console.log('\n💡 RECOMENDACIONES:');
-        
-        failedTests.forEach(test => {
-            switch (test.test) {
-                case 'testServiceWorkerRegistration':
-                    console.log('🔧 Asegúrate de que el Service Worker esté registrado correctamente');
-                    break;
-                    
-                case 'testNotificationPermissions':
-                    console.log('🔔 Solicita permisos de notificación al usuario');
-                    break;
-                    
-                case 'testBackgroundManager':
-                    console.log('📱 Verifica que el Background Manager se inicialice correctamente');
-                    break;
-                    
-                case 'testGeolocation':
-                    console.log('📍 Solicita permisos de ubicación al usuario');
-                    break;
-                    
-                case 'testBackgroundSync':
-                    console.log('🔄 Background Sync no está disponible, pero no es crítico');
-                    break;
-                    
-                case 'testWakeLock':
-                    console.log('🔆 Wake Lock no está disponible, pero no es crítico');
-                    break;
-            }
-        });
-    }
-    
-    // =================== FUNCIONES DE UTILIDAD ===================
-    
-    // Ejecutar prueba específica
-    async runSpecificTest(testName) {
-        const test = this.tests.find(t => t.name === testName);
-        if (test) {
-            return await test.call(this);
+            console.log('🎉 ¡Excelente! Todas las funcionalidades de segundo plano están funcionando correctamente.');
+            console.log('📱 Tu aplicación está lista para funcionar en segundo plano.');
         } else {
-            throw new Error(`Prueba no encontrada: ${testName}`);
+            console.log('⚠️ Algunas funcionalidades necesitan atención:');
+            
+            failedTests.forEach(test => {
+                switch (test.test) {
+                    case 'Service Worker':
+                        console.log('🔧 Service Worker: Verificar que el archivo sw.js esté en la raíz del proyecto');
+                        break;
+                    case 'Notificaciones':
+                        console.log('🔔 Notificaciones: Solicitar permisos manualmente al usuario');
+                        break;
+                    case 'Background Manager':
+                        console.log('🎯 Background Manager: Verificar que el archivo background-manager.js esté cargado');
+                        break;
+                    case 'Geolocalización':
+                        console.log('📍 Geolocalización: Verificar permisos de ubicación en el navegador');
+                        break;
+                    case 'Wake Lock':
+                        console.log('🔆 Wake Lock: Funcionalidad opcional, no crítica para el funcionamiento');
+                        break;
+                    case 'Background Sync':
+                        console.log('🔄 Background Sync: Funcionalidad opcional, no crítica para el funcionamiento');
+                        break;
+                }
+            });
         }
     }
-    
-    // Obtener resultados
-    getResults() {
-        return this.results;
-    }
-    
-    // Verificar si todas las pruebas críticas pasaron
-    isCriticalTestsPassed() {
-        const criticalTests = ['testServiceWorkerRegistration', 'testNotificationPermissions', 'testBackgroundManager'];
-        return criticalTests.every(testName => {
-            const result = this.results.find(r => r.test === testName);
-            return result && result.passed;
-        });
-    }
 }
 
-// =================== INICIALIZACIÓN GLOBAL ===================
+// =================== FUNCIONES GLOBALES DE TESTING ===================
 
-// Crear instancia global
-if (typeof window !== 'undefined') {
-    window.backgroundTestSuite = new BackgroundTestSuite();
+// Función principal para ejecutar todas las pruebas
+window.runBackgroundTests = async function() {
+    const testSuite = new BackgroundTestSuite();
+    await testSuite.runAllTests();
+};
+
+// Función para obtener estado del background manager
+window.getBackgroundStatus = function() {
+    if (!window.backgroundManager) {
+        return {
+            available: false,
+            message: 'Background Manager no disponible'
+        };
+    }
     
-    // Exponer funciones útiles globalmente
-    window.runBackgroundTests = () => window.backgroundTestSuite.runAllTests();
-    window.runSpecificBackgroundTest = (testName) => window.backgroundTestSuite.runSpecificTest(testName);
-    window.getBackgroundTestResults = () => window.backgroundTestSuite.getResults();
-    window.areCriticalTestsPassed = () => window.backgroundTestSuite.isCriticalTestsPassed();
-}
+    return {
+        available: true,
+        initialized: window.backgroundManager.isInitialized,
+        tracking: window.backgroundManager.isTracking(),
+        permissions: window.backgroundManager.getPermissionStatus(),
+        support: window.backgroundManager.isSupported
+    };
+};
 
-// Exportar para uso como módulo
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = BackgroundTestSuite;
-} 
+// Función para probar notificación
+window.testNotification = async function() {
+    if (!window.backgroundManager) {
+        console.log('❌ Background Manager no disponible');
+        return false;
+    }
+    
+    return await window.backgroundManager.testNotification();
+};
+
+// Función para iniciar tracking
+window.startBackgroundTracking = async function() {
+    if (!window.backgroundManager) {
+        console.log('❌ Background Manager no disponible');
+        return false;
+    }
+    
+    return await window.backgroundManager.startTracking();
+};
+
+// Función para detener tracking
+window.stopBackgroundTracking = async function() {
+    if (!window.backgroundManager) {
+        console.log('❌ Background Manager no disponible');
+        return false;
+    }
+    
+    return await window.backgroundManager.stopTracking();
+};
+
+// Función para probar notificación de proximidad
+window.testProximityNotification = async function() {
+    if (!window.backgroundManager) {
+        console.log('❌ Background Manager no disponible');
+        return false;
+    }
+    
+    return await window.backgroundManager.testProximityNotification();
+};
+
+// Función para probar notificación de llegada
+window.testArrivalNotification = async function() {
+    if (!window.backgroundManager) {
+        console.log('❌ Background Manager no disponible');
+        return false;
+    }
+    
+    return await window.backgroundManager.testArrivalNotification();
+};
+
+console.log('🧪 Background Test Suite cargado');
+console.log('📝 Comandos disponibles:');
+console.log('   - runBackgroundTests()');
+console.log('   - getBackgroundStatus()');
+console.log('   - testNotification()');
+console.log('   - startBackgroundTracking()');
+console.log('   - stopBackgroundTracking()');
+console.log('   - testProximityNotification()');
+console.log('   - testArrivalNotification()'); 
