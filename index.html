@@ -2268,9 +2268,17 @@
       <div style="background: rgba(255,255,255,0.95); border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 12px 20px; font-size: 1rem; color: #0a2342; font-weight: 500; margin-bottom: 8px; min-width: 220px; text-align: center;">
         ¿No sabes como llegar?
       </div>
-      <a href="yotellevo.html" style="text-decoration: none;" onclick="guardarPuntosEnLocalStorage()">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center;">
+        <a href="yotellevo.html" id="yotellevoLink" style="text-decoration: none;" onclick="guardarPuntosEnLocalStorage()">
         <button id="yoTeLlevoBtn" style="background: linear-gradient(90deg, #007bff 60%, #00c6ff 100%); color: white; border: none; border-radius: 12px; padding: 8px 22px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background 0.2s;">¡Yo te llevo!</button>
       </a>
+        <label for="modoSeleccionIndex" style="font-size:0.95rem;color:#4a5568;">Preferencia:</label>
+        <select id="modoSeleccionIndex" style="padding:6px 10px;border:1px solid #cbd5e0;border-radius:8px;background:#fff;color:#2d3748;">
+          <option value="rapido" selected>Más rápido</option>
+          <option value="menos_caminata">Menos caminata</option>
+          <option value="menos_transbordos">Menos transbordos</option>
+        </select>
+      </div>
     </div>
     
     <div class="info" id="info">Escribe las direcciones, nombres de restaurantes, hoteles, tiendas o negocios, o selecciónalas en el mapa.</div>
@@ -5323,6 +5331,28 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      // Preferencia por defecto y actualización del link
+      const prefSelect = document.getElementById('modoSeleccionIndex');
+      const yoyoLink = document.getElementById('yotellevoLink');
+      function applyPrefToLink() {
+        const mode = (prefSelect?.value) || 'rapido';
+        try { localStorage.setItem('tuguia_pref', mode); } catch(e) {}
+        if (yoyoLink) {
+          const base = 'yotellevo.html';
+          yoyoLink.href = `${base}?pref=${encodeURIComponent(mode)}`;
+        }
+      }
+      if (prefSelect) {
+        // cargar desde localStorage si existe, si no, 'rapido'
+        const saved = localStorage.getItem('tuguia_pref');
+        if (saved && prefSelect.querySelector(`option[value="${saved}"]`)) {
+          prefSelect.value = saved;
+        } else {
+          prefSelect.value = 'rapido';
+        }
+        applyPrefToLink();
+        prefSelect.addEventListener('change', applyPrefToLink);
+      }
       // ... otros inicializadores ...
       const startParaderoSelect = document.getElementById('startParaderoSelect');
       const endParaderoSelect = document.getElementById('endParaderoSelect');
