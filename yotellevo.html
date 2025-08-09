@@ -330,6 +330,8 @@
     <!-- 🔥 SCRIPTS CRÍTICOS PARA FUNCIONAMIENTO EN SEGUNDO PLANO -->
     <script src="background-manager.js"></script>
     <script src="mobile-optimization.js"></script>
+    <!-- Bridge nativo (Capacitor) para tracking/alertas con pantalla apagada cuando esté disponible -->
+    <script src="capacitor-bridge.js"></script>
     <script>
       // Asegurar inicialización temprana del gestor de segundo plano
       document.addEventListener('DOMContentLoaded', async () => {
@@ -3777,9 +3779,13 @@ window.addEventListener('DOMContentLoaded', async function() {
       console.log(`📏 Distancia al destino (Yo te llevo): ${distance.toFixed(0)} metros`);
       
       // Mostrar notificación si está cerca
-      if (distance <= 300 && distance > 50) {
+      // Evitar duplicar notificaciones: si BackgroundManager ya alerta internamente, no repetir aquí
+      const bm = window.backgroundManager;
+      if (!bm) return;
+
+      if (distance <= 300 && distance > 50 && !bm.alerted300m) {
         showYoTeLlevoProximityNotification(distance);
-      } else if (distance <= 50) {
+      } else if (distance <= 50 && !bm.alerted50m) {
         showYoTeLlevoArrivalNotification();
       }
     }
