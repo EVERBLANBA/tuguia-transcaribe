@@ -3209,6 +3209,26 @@
       L.popup().setLatLng([stop.lat, stop.lon]).setContent(popup).openOn(map);
     }
     // =================== UBICACIÓN Y AUTOCOMPLETADO ===================
+    // Reverse geocoding de respaldo con Nominatim (OSM)
+    async function reverseGeocodeNominatim(lat, lon) {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=es`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'TuGuia/1.0' } });
+        const data = await res.json();
+        // Tomar un nombre amigable; caer a formatted display_name filtrado
+        const a = data.address || {};
+        const barrio = a.neighbourhood || a.suburb || a.village || a.city_district || a.city || '';
+        let direccion = '';
+        if (data.display_name) {
+          direccion = (typeof formatearDireccionParaPopup === 'function') ? formatearDireccionParaPopup(data.display_name) : data.display_name;
+        }
+        return direccion || barrio || 'Ubicación detectada';
+      } catch (e) {
+        console.warn('[Nominatim] reverse fallback error:', e?.message);
+        return 'Ubicación detectada';
+      }
+    }
+
     function detectarUbicacionActual() {
       const input = document.getElementById('startUbicacionInput');
       if (!navigator.geolocation) {
@@ -3234,60 +3254,50 @@
         // Centrar mapa en la ubicación actual
         map.setView([lat, lon], 15);
         
-        // Obtener la dirección usando Google Geocoding API
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBUadVPYtXGXPX1vWMR5nc3lgSrW-FzUls`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('Respuesta Geocoding API:', data); // <-- Línea agregada para depuración
-            let direccion = '';
-            if (data.results && data.results.length > 0) {
-              // Buscar barrio o dirección relevante
-              const addressComponents = data.results[0].address_components;
-              let barrio = '';
-              const barrioComp = addressComponents.find(comp =>
-                comp.types.includes('neighborhood') ||
-                comp.types.includes('sublocality') ||
-                comp.types.includes('locality')
-              );
-              if (barrioComp) barrio = barrioComp.long_name;
-              if (data.results[0].formatted_address) {
-                direccion = formatearDireccionParaPopup(data.results[0].formatted_address);
-              } else if (barrio) {
-                direccion = barrio;
-              } else {
-                direccion = 'Ubicación detectada';
-              }
-              input.value = direccion;
-              // Guardar coordenadas en localStorage para uso interno
-              localStorage.setItem('tuguia_start_coords', `${lat}, ${lon}`);
-              // === MODIFICADO: Guardar objeto con nombre y coords ===
-              if (document.querySelector('input[name="startMode"]:checked').value === 'ubicacion') {
-                localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [parseFloat(lat), parseFloat(lon)] }));
-              }
-            } else {
-              direccion = 'Ubicación detectada';
-              input.value = direccion;
-              if (document.querySelector('input[name="startMode"]:checked').value === 'ubicacion') {
-                localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [parseFloat(lat), parseFloat(lon)] }));
-              }
+      // Obtener la dirección usando Google Geocoding API con fallback a Nominatim
+      fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyBUadVPYtXGXPX1vWMR5nc3lgSrW-FzUls`)
+        .then(response => response.json())
+        .then(async (data) => {
+          console.log('Respuesta Geocoding API:', data);
+          let direccion = '';
+          if (data.results && data.results.length > 0) {
+            const addressComponents = data.results[0].address_components;
+            let barrio = '';
+            const barrioComp = addressComponents.find(comp =>
+              comp.types.includes('neighborhood') ||
+              comp.types.includes('sublocality') ||
+              comp.types.includes('locality')
+            );
+            if (barrioComp) barrio = barrioComp.long_name;
+            if (data.results[0].formatted_address) {
+              direccion = (typeof formatearDireccionParaPopup === 'function')
+                ? formatearDireccionParaPopup(data.results[0].formatted_address)
+                : data.results[0].formatted_address;
             }
-            // ACTUALIZAR POPUP DEL MARCADOR CON LA DIRECCIÓN REAL
-            if (window.startMarker) {
-              window.startMarker.bindPopup("<img src='pin-morado.png' style='width:22px;vertical-align:middle;margin-right:6px;'>Origen: " + direccion).openPopup();
-            }
-          })
-          .catch(error => {
-            console.error('Error obteniendo dirección:', error);
-            const direccion = 'Ubicación detectada';
-            input.value = direccion;
-            if (document.querySelector('input[name="startMode"]:checked').value === 'ubicacion') {
-              localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [parseFloat(lat), parseFloat(lon)] }));
-            }
-            // Asegurarse de mostrar el popup aunque haya error
-            if (window.startMarker) {
-              window.startMarker.bindPopup("<img src='pin-morado.png' style='width:22px;vertical-align:middle;margin-right:6px;'>Origen: " + direccion).openPopup();
-            }
-          });
+            if (!direccion) direccion = barrio || await reverseGeocodeNominatim(lat, lon);
+          } else {
+            direccion = await reverseGeocodeNominatim(lat, lon);
+          }
+          input.value = direccion || 'Ubicación detectada';
+          localStorage.setItem('tuguia_start_coords', `${lat}, ${lon}`);
+          if (document.querySelector('input[name="startMode"]:checked').value === 'ubicacion') {
+            localStorage.setItem('tuguia_start', JSON.stringify({ nombre: input.value, coords: [parseFloat(lat), parseFloat(lon)] }));
+          }
+          if (window.startMarker) {
+            window.startMarker.bindPopup("<img src='pin-morado.png' style='width:22px;vertical-align:middle;margin-right:6px;'>Origen: " + input.value).openPopup();
+          }
+        })
+        .catch(async (error) => {
+          console.error('Error obteniendo dirección (Google):', error);
+          const direccion = await reverseGeocodeNominatim(lat, lon);
+          input.value = direccion;
+          if (document.querySelector('input[name="startMode"]:checked').value === 'ubicacion') {
+            localStorage.setItem('tuguia_start', JSON.stringify({ nombre: direccion, coords: [parseFloat(lat), parseFloat(lon)] }));
+          }
+          if (window.startMarker) {
+            window.startMarker.bindPopup("<img src='pin-morado.png' style='width:22px;vertical-align:middle;margin-right:6px;'>Origen: " + direccion).openPopup();
+          }
+        });
       }, function(error) {
         console.error('Error de geolocalización:', error);
         switch(error.code) {
@@ -4219,6 +4229,10 @@
           
           console.log('🎯 Rutas del destino:', paraderoDestinoPrevio.rutasArray);
         }
+        // Normalizar rutasPreferidas para comparaciones robustas
+        rutasPreferidas = rutasPreferidas
+          .map(r => (typeof r === 'string' ? r.trim().toUpperCase() : String(r).toUpperCase()))
+          .filter(Boolean);
         
         // Buscar paradero de origen con prioridad en rutas que conecten
         let paraderoCercano = await encontrarParaderoMasCercano(ubicacionUsuario, rutasPreferidas);
@@ -4320,9 +4334,10 @@
         // 🔍 VALIDAR DATOS DEL PARADERO
         let rutasParadero = [];
         if (paradero.properties.rutas) {
-          rutasParadero = typeof paradero.properties.rutas === 'string' 
-            ? paradero.properties.rutas.split(',').map(r => r.trim())
-            : paradero.properties.rutas;
+          rutasParadero = (typeof paradero.properties.rutas === 'string' 
+            ? paradero.properties.rutas.split(',')
+            : paradero.properties.rutas
+          ).map(r => (typeof r === 'string' ? r.trim().toUpperCase() : String(r).toUpperCase()));
         }
         
         const candidato = {
@@ -4349,6 +4364,7 @@
       });
       
       // 🔥 ALGORITMO INTELIGENTE DE SELECCIÓN CON SCORING
+      const PREFERIR_MAS_CERCANO = true; // Regla solicitada: priorizar el paradero más cercano
       let paraderoSeleccionado = null;
       
       if (rutasPreferidas && rutasPreferidas.length > 0) {
@@ -4382,7 +4398,8 @@
           
           // 📏 PENALIZACIÓN POR DISTANCIA (reducida para A108)
           const tieneA108 = candidato.rutasArray.includes('A108');
-          const penalizacionDistancia = tieneA108 ? candidato.distancia * 0.1 : candidato.distancia * 0.5;
+          // Penalización más fuerte para favorecer cercanía cuando no hay A108
+          const penalizacionDistancia = tieneA108 ? candidato.distancia * 0.1 : candidato.distancia * 1.0;
           scoreInteligente -= penalizacionDistancia;
           
           if (tieneRutaPreferida) {
@@ -4402,30 +4419,46 @@
         const candidatosConRutasPreferidas = candidatosConScore.filter(c => c.tieneRutaPreferida);
         
         if (candidatosConRutasPreferidas.length > 0) {
-          // 🔥 VERIFICACIÓN ESPECIAL: ¿HAY ALGÚN CANDIDATO CON A108?
-          const candidatosConA108 = candidatosConRutasPreferidas.filter(c => c.rutasArray.includes('A108'));
-          
-          if (candidatosConA108.length > 0) {
-            console.log(`🎯 🔥 ENCONTRADOS ${candidatosConA108.length} CANDIDATOS CON RUTA A108 - FORZANDO SELECCIÓN`);
-            candidatosConA108.forEach((c, i) => {
-              console.log(`  A108-${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m`);
-            });
-            
-            // Ordenar candidatos con A108 por distancia (ya tienen máxima prioridad)
-            candidatosConA108.sort((a, b) => a.distancia - b.distancia);
-            paraderoSeleccionado = candidatosConA108[0];
-            console.log(`🏆 🔥 SELECCIÓN FORZADA A108: ${paraderoSeleccionado.nombre}`);
-          } else {
-            // 🏆 ORDENAR POR SCORE INTELIGENTE (mayor score = mejor)
-            candidatosConRutasPreferidas.sort((a, b) => b.scoreInteligente - a.scoreInteligente);
-            
-            console.log('🧠 Top 3 candidatos con rutas preferidas (por score):');
-            candidatosConRutasPreferidas.slice(0, 3).forEach((c, i) => {
-              console.log(`${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m - Rutas: ${c.rutasEncontradas.join(', ')} - Score: ${c.scoreInteligente.toFixed(1)}`);
-            });
-            
+          if (PREFERIR_MAS_CERCANO) {
+            // Elegir estrictamente el más cercano entre los que tienen rutas preferidas
+            candidatosConRutasPreferidas.sort((a, b) => a.distancia - b.distancia);
             paraderoSeleccionado = candidatosConRutasPreferidas[0];
-            console.log(`🎯 SELECCIONADO POR SCORE INTELIGENTE: ${paraderoSeleccionado.nombre} (Score: ${paraderoSeleccionado.scoreInteligente.toFixed(1)})`);
+            console.log(`📍 SELECCIONADO POR CERCANÍA (con rutas preferidas): ${paraderoSeleccionado.nombre}`);
+          } else {
+            // 🔥 VERIFICACIÓN ESPECIAL: ¿HAY ALGÚN CANDIDATO CON A108?
+            const candidatosConA108 = candidatosConRutasPreferidas.filter(c => c.rutasArray.includes('A108'));
+            if (candidatosConA108.length > 0) {
+              console.log(`🎯 🔥 ENCONTRADOS ${candidatosConA108.length} CANDIDATOS CON RUTA A108 - FORZANDO SELECCIÓN`);
+              candidatosConA108.forEach((c, i) => {
+                console.log(`  A108-${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m`);
+              });
+              candidatosConA108.sort((a, b) => a.distancia - b.distancia);
+              paraderoSeleccionado = candidatosConA108[0];
+              console.log(`🏆 🔥 SELECCIÓN FORZADA A108: ${paraderoSeleccionado.nombre}`);
+            } else {
+              // 🏆 ORDENAR PRIORIZANDO RUTAS ENCONTRADAS, LUEGO SCORE Y COMO DESEMPATE DISTANCIA
+              candidatosConRutasPreferidas.sort((a, b) => {
+                const keyA = Array.from(new Set(a.rutasEncontradas.map(r => String(r).toUpperCase()))).sort().join('|');
+                const keyB = Array.from(new Set(b.rutasEncontradas.map(r => String(r).toUpperCase()))).sort().join('|');
+                if (keyA === keyB && keyA.length > 0) {
+                  return a.distancia - b.distancia;
+                }
+                const rutasA = a.rutasEncontradas.length;
+                const rutasB = b.rutasEncontradas.length;
+                if (rutasA !== rutasB) return rutasB - rutasA;
+                const diffScore = b.scoreInteligente - a.scoreInteligente;
+                if (Math.abs(diffScore) < 500) {
+                  return a.distancia - b.distancia;
+                }
+                return diffScore;
+              });
+              console.log('🧠 Top 3 candidatos con rutas preferidas (por score):');
+              candidatosConRutasPreferidas.slice(0, 3).forEach((c, i) => {
+                console.log(`${i + 1}. ${c.nombre} - ${c.distancia.toFixed(0)}m - Rutas: ${c.rutasEncontradas.join(', ')} - Score: ${c.scoreInteligente.toFixed(1)}`);
+              });
+              paraderoSeleccionado = candidatosConRutasPreferidas[0];
+              console.log(`🎯 SELECCIONADO POR SCORE INTELIGENTE: ${paraderoSeleccionado.nombre} (Score: ${paraderoSeleccionado.scoreInteligente.toFixed(1)})`);
+            }
           }
         }
       }
