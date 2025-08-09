@@ -80,7 +80,29 @@ class NotificationManager {
             console.log('📢 Notificación (sin permiso):', title, body);
             return null;
         }
-        
+
+        // Delegar a BackgroundManager si está disponible para aprovechar SW/bridge nativo
+        try {
+            if (window.backgroundManager && typeof window.backgroundManager.showNotification === 'function') {
+                const merged = {
+                    icon: options.icon || this.defaultIcon,
+                    badge: options.badge || this.defaultBadge,
+                    tag: options.tag || 'default',
+                    requireInteraction: options.requireInteraction || false,
+                    silent: options.silent || false,
+                    vibrate: options.vibrate || [100, 50, 100],
+                    data: options.data || {},
+                    actions: options.actions || [],
+                    urgent: !!options.urgent
+                };
+                window.backgroundManager.showNotification(title, body, merged);
+                return { delegated: true };
+            }
+        } catch (e) {
+            console.warn('⚠️ Delegación a BackgroundManager falló, usando Notification API:', e?.message);
+        }
+
+        // Fallback a Notification API
         try {
             const notificationOptions = {
                 body,
@@ -93,18 +115,11 @@ class NotificationManager {
                 data: options.data || {},
                 actions: options.actions || []
             };
-            
             const notification = new Notification(title, notificationOptions);
-            
-            // Configurar eventos de la notificación
             this.setupNotificationEvents(notification, options);
-            
-            // Guardar referencia
             this.notifications.set(notificationOptions.tag, notification);
-            
-            console.log('✅ Notificación enviada:', title);
+            console.log('✅ Notificación enviada (fallback):', title);
             return notification;
-            
         } catch (error) {
             console.error('❌ Error enviando notificación:', error);
             return null;

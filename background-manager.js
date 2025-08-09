@@ -295,8 +295,26 @@ class BackgroundManager {
             console.log(`💓 Heartbeat: ${new Date(now).toLocaleTimeString()}`);
             
             if (this.locationWatchId === null) {
-                console.warn('⚠️ Tracking perdido - modo inteligente: requiere reinicio manual');
-                return;
+                // Intento de auto-recuperación del tracking
+                if (this.retryCount < this.maxRetries) {
+                    console.warn('⚠️ Tracking perdido - reintentando iniciar tracking (auto)');
+                    this.startBackgroundLocationTracking()
+                        .then((ok) => {
+                            if (ok) {
+                                console.log('✅ Tracking reestablecido automáticamente');
+                                this.retryCount = 0;
+                            } else {
+                                this.retryCount++;
+                                console.warn(`⚠️ Reintento de tracking fallido (${this.retryCount}/${this.maxRetries})`);
+                            }
+                        })
+                        .catch(() => {
+                            this.retryCount++;
+                            console.warn(`⚠️ Reintento de tracking lanzó error (${this.retryCount}/${this.maxRetries})`);
+                        });
+                } else {
+                    console.warn('⚠️ Tracking perdido - se alcanzó el máximo de reintentos automáticos');
+                }
             }
             
             if (navigator.serviceWorker.controller) {
@@ -317,20 +335,42 @@ class BackgroundManager {
             console.log('📢 Notificación (sin permiso):', title, body);
             return;
         }
-        
-        const notification = new Notification(title, {
+
+        const commonOptions = {
             body,
             icon: options.icon || './logoagapai-ok2.png',
             badge: options.badge || './pin-verde-destino.png',
-            vibrate: options.urgent ? [200, 100, 200, 100, 200] : [100, 50, 100],
-            silent: !options.urgent,
-            requireInteraction: options.urgent
-        });
-        
+            vibrate: options.vibrate || (options.urgent ? [200, 100, 200, 100, 200] : [100, 50, 100]),
+            silent: options.silent ?? !options.urgent,
+            requireInteraction: !!options.urgent,
+            tag: options.tag || (options.urgent ? 'urgent' : 'info'),
+            data: options.data || {}
+        };
+
+        // Si hay Service Worker y es una notificación urgente, preferir SW
+        if (options.urgent && this.registration && typeof this.registration.showNotification === 'function') {
+            const swOptions = { ...commonOptions };
+            if (options.actions) swOptions.actions = options.actions;
+            else {
+                swOptions.actions = [
+                    { action: 'open', title: 'Abrir', icon: './pin-verde-destino.png' },
+                    { action: 'stop_tracking', title: 'Detener seguimiento', icon: './pin-morado.png' }
+                ];
+            }
+            this.registration.showNotification(title, swOptions).catch((e) => {
+                console.warn('⚠️ Fallback a Notification API por error en SW:', e);
+                const n = new Notification(title, commonOptions);
+                if (!options.urgent) setTimeout(() => n.close(), 5000);
+                n.onclick = () => { window.focus(); n.close(); };
+            });
+            return;
+        }
+
+        // Fallback: API de notificaciones en la página
+        const notification = new Notification(title, commonOptions);
         if (!options.urgent) {
             setTimeout(() => notification.close(), 5000);
         }
-        
         notification.onclick = () => {
             window.focus();
             notification.close();
@@ -518,6 +558,10 @@ class BackgroundManager {
                     break;
                 case 'NOTIFICATION_CLICKED':
                     console.log('👆 Notificación clickeada:', data);
+                    break;
+                case 'STOP_TRACKING':
+                    console.log('🛑 Solicitud de detener tracking recibida desde SW');
+                    this.stopBackgroundTracking();
                     break;
             }
         });

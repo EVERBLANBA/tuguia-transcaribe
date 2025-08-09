@@ -195,6 +195,18 @@ self.addEventListener('notificationclick', (event) => {
                 })
         );
     }
+
+    if (event.action === 'stop_tracking') {
+        // Notificar a clientes para detener el tracking
+        event.waitUntil(
+            clients.matchAll({ type: 'window', includeUncontrolled: true })
+                .then((clientList) => {
+                    clientList.forEach((client) => {
+                        client.postMessage({ type: 'STOP_TRACKING' });
+                    });
+                })
+        );
+    }
 });
 
 // =================== MANEJO DE MENSAJES ===================

@@ -330,6 +330,7 @@
     <!-- 🔥 SCRIPTS CRÍTICOS PARA FUNCIONAMIENTO EN SEGUNDO PLANO -->
     <script src="background-manager.js"></script>
     <script src="mobile-optimization.js"></script>
+    <script src="notification-manager.js"></script>
     <!-- Bridge nativo (Capacitor) para tracking/alertas con pantalla apagada cuando esté disponible -->
     <script src="capacitor-bridge.js"></script>
     <script>
@@ -3792,35 +3793,24 @@ window.addEventListener('DOMContentLoaded', async function() {
     
     // =================== NOTIFICACIONES DE PROXIMIDAD EN YO TE LLEVO ===================
     function showYoTeLlevoProximityNotification(distance) {
+      if (window.notificationManager && window.getNotificationStatus && window.getNotificationStatus().permission === 'granted') {
+        window.notificationManager.showProximityNotification(distance);
+        return;
+      }
       if (window.backgroundManager && window.backgroundManager.notificationPermission === 'granted') {
-        window.backgroundManager.showNotification(
-          '¡Casi llegas!',
-          `Faltan ${distance.toFixed(0)} metros para tu destino`,
-          {
-            urgent: true,
-            icon: './pin-morado.png',
-            badge: './pin-verde-destino.png'
-          }
-        );
+        window.backgroundManager.showNotification('¡Casi llegas!', `Faltan ${distance.toFixed(0)} metros para tu destino`, { urgent: true, icon: './pin-morado.png', badge: './pin-verde-destino.png' });
       }
     }
     
     function showYoTeLlevoArrivalNotification() {
-      if (window.backgroundManager && window.backgroundManager.notificationPermission === 'granted') {
-        window.backgroundManager.showNotification(
-          '¡Has llegado!',
-          'Ya estás en tu destino',
-          {
-            urgent: true,
-            icon: './pin-morado.png',
-            badge: './pin-verde-destino.png'
-          }
-        );
-        
-        // Detener tracking automáticamente
-        if (window.backgroundManager.isTracking()) {
-          window.backgroundManager.stopTracking();
-        }
+      if (window.notificationManager && window.getNotificationStatus && window.getNotificationStatus().permission === 'granted') {
+        window.notificationManager.showArrivalNotification();
+      } else if (window.backgroundManager && window.backgroundManager.notificationPermission === 'granted') {
+        window.backgroundManager.showNotification('¡Has llegado!','Ya estás en tu destino',{ urgent: true, icon: './pin-morado.png', badge: './pin-verde-destino.png' });
+      }
+      // Detener tracking automáticamente
+      if (window.backgroundManager && window.backgroundManager.isTracking()) {
+        window.backgroundManager.stopTracking();
       }
     }
     
